@@ -11,6 +11,7 @@ a, .btn-link {
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background: #fff2c1;
 }
 
 
@@ -58,4 +59,18 @@ body {
     .navbar-toggler {
         display: none;
     }
+}
+
+#titlestyle{
+    font-family: 'American Typewriter', serif;
+    font-size: x-large;
+}
+
+#navColor{
+    background: #ff9966;
+    height: max-content;
+}
+
+.expand-menu{
+  
 }

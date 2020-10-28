@@ -1,6 +1,6 @@
-﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3 fixed-top">
+﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3 fixed-top" id="navColor">
     <div class="container">
-        <a class="navbar-brand text-light" asp-area="" asp-page="/Index">Top Menu</a>
+        <a class="navbar-brand text-light" asp-area="" asp-page="/Index" id="titlestyle">PAPERLESS EXAM</a>
         <button class="navbar-toggler" @onclick="ToggleNavMenu" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -16,6 +16,27 @@
                 <li class="nav-item">
                     <a class="nav-link text-light" href="fetchdata">Fetch data</a>
                 </li>
+                
+                <li class="nav-item text-light">Dropdown
+                <NavDropdown title="Dropdown" id="collapsible-nav-dropdown">
+                        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+                      </NavDropdown>
+                </li>
+                
+                @*                 <li class="nav-item text-light" @onclick="()=>expandSubNav = !expandSubNav">Fetch data</li> *@
+@*                     @if (expandSubNav) *@
+@*                 { *@
+@*                     <NavLink class="expand-menu" href=""> *@
+@*                         <span>Sub1</span> *@
+@*                     </NavLink> *@
+@*                     <NavLink class="" href=""> *@
+@*                         <span>Sub2</span> *@
+@*                     </NavLink> *@
+@*                 } *@
             </ul>
         </div>
     </div>
@@ -23,6 +44,7 @@
 
 @code {
     bool collapseNavMenu = true;
+    private bool expandSubNav;
 
     string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
