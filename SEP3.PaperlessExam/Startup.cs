@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SEP3.PaperlessExam.Data;
+using SEP3.PaperlessExam.Data.PaperlessExamSevice;
 
 namespace SEP3.PaperlessExam
 {
@@ -29,6 +30,7 @@ namespace SEP3.PaperlessExam
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<IPaperlessExamService, PaperlessExamServiceImpl>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

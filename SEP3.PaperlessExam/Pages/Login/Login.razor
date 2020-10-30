@@ -1,8 +1,10 @@
 ﻿@page "/"
 @page "/login"
 @using LoginExample.Pages.Login
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Model
+@inject IPaperlessExamService PaperlessExamService;
 @layout LoginLayout
-
 
 <link rel="stylesheet" href="css/Login/style.css">
 <body>
@@ -14,12 +16,12 @@
         <form class="login-form">
           <div class="form-group">
             <label for="exampleInputEmail1" class="text-uppercase">Username</label>
-            <input type="text" class="form-control" placeholder="">
+            <input type="text" class="form-control" placeholder="" @bind-value="username">
     
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1" class="text-uppercase">Password</label>
-            <input type="password" class="form-control" placeholder="">
+            <input type="password" class="form-control" placeholder="" @bind-value="password">
           </div>
   
   
@@ -28,7 +30,7 @@
               <input type="checkbox" class="form-check-input">
               <small>Remember Me</small>
             </label>
-            <button type="submit" class="btn btn-login float-right">Submit</button>
+            <button type="submit" class="btn btn-login float-right" @onclick="@SubmitLogin">Submit</button>
           </div>
   
         </form>
@@ -81,4 +83,19 @@
 	private string username;
 	private string password;
 	private string errorMessage;
+  
+  private async Task SubmitLogin()
+  {
+    try
+    {
+      await PaperlessExamService.LoginUser(new User(1, username, password));
+      Console.WriteLine("Submit button");
+      
+    }
+    catch (Exception e)
+    {
+      
+    }
+
+  }
 }
