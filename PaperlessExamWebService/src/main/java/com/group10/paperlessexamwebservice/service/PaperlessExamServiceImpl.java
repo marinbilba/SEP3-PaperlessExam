@@ -1,15 +1,17 @@
 package com.group10.paperlessexamwebservice.service;
 
-import com.group10.paperlessexamwebservice.dao.ILoginDao;
-import com.group10.paperlessexamwebservice.dao.User;
+import com.group10.paperlessexamwebservice.dao.IUserDAO;
+import com.group10.paperlessexamwebservice.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaperlessExamServiceImpl implements IPaperlessExamService{
+public class PaperlessExamServiceImpl implements IUserService{
 
 @Autowired
-    private ILoginDao loginDao;
+    private IUserDAO loginDao;
+
 
 @Override
     public User logInUser(User user){

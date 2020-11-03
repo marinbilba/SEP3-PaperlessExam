@@ -1,6 +1,8 @@
 package com.group10.paperlessexamwebservice.dao;
 
-public interface ILoginDao {
+import com.group10.paperlessexamwebservice.model.User;
+
+public interface IUserDAO {
     User logInUser(User user);
 
 }
