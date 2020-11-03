@@ -15,7 +15,7 @@ public class User {
 // Identity generation type will let the Database to generate the PK
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   // @Column(name="id",updatable = false,nullable = false)
+ //   @Column(name="id",updatable = false,nullable = false)
     private Long id;
     //  @Column(name = "username")
     private String username;
