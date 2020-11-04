@@ -3,6 +3,7 @@ package com.group10.paperlessexamwebservice.dao;
 import com.group10.paperlessexamwebservice.model.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -20,8 +21,7 @@ public class DaoImpl implements IUserDAO {
 //            }
 //        };
 
-  //  }
-
+    //  }
 
 
     @Override
@@ -34,8 +34,24 @@ public class DaoImpl implements IUserDAO {
     public boolean checkPassword(String password) {
         return false;
     }
-@Override
+
+    @Override
     public User getCashedUser() {
         return cashedUser;
+    }
+
+    @Override
+    public boolean emailExists(String email) {
+        return false;
+    }
+
+    @Override
+    public String createAccount() {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsersList() {
+        return null;
     }
 }
