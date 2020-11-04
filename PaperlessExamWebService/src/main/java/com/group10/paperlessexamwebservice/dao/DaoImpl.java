@@ -7,8 +7,10 @@ import java.util.Map;
 
 @Repository
 public class DaoImpl implements IUserDAO {
-
     private static Map<Integer, User> fakeUsersDB;
+
+
+    private User cashedUser;
 
 //    static {
 //        fakeUsersDB = new HashMap<Integer, User>() {
@@ -20,11 +22,20 @@ public class DaoImpl implements IUserDAO {
 
   //  }
 
+
+
     @Override
-    public User logInUser(User user) {
-// Find user in the db and return the object;
-        User user1 = fakeUsersDB.get(user.getId());
-        System.out.println(user1);
-        return user1;
+    public boolean usernameExists(String username) {
+
+        return false;
+    }
+
+    @Override
+    public boolean checkPassword(String password) {
+        return false;
+    }
+@Override
+    public User getCashedUser() {
+        return cashedUser;
     }
 }
