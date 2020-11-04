@@ -12,25 +12,30 @@ import java.util.Set;
 @Entity
 //@Table(name = "users")
 public class User {
-// Identity generation type will let the Database to generate the PK
+    // Identity generation type will let the Database to generate the PK
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
- //   @Column(name="id",updatable = false,nullable = false)
+    //   @Column(name="id",updatable = true,nullable = false)
     private Long id;
+    //   @Column(name="firstName")
+    private String firstName;
+    //   @Column(name="lastName")
+    private String lastName;
     //  @Column(name = "username")
     private String username;
     //@Column(name = "password")
     private String password;
     @Transient
     private String confirmPassword;
-@OneToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
- private Role roles;
+    @OneToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
+    private Role roles;
 
     public User() {
     }
 
     /**
      * Constructor for login functionality
+     *
      * @param username
      * @param password
      * @param roles
@@ -43,13 +48,15 @@ public class User {
 
     /**
      * Constructor for create user functionality
+     *
      * @param username
      * @param password
      * @param confirmPassword
      * @param role
      */
-    public User(String username, String password, String confirmPassword, Role role) {
-
+    public User(String firstName, String lastName, String username, String password, String confirmPassword, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.confirmPassword = confirmPassword;
