@@ -29,6 +29,25 @@ public class User {
     public User() {
     }
 
+    /**
+     * Constructor for login functionality
+     * @param username
+     * @param password
+     * @param roles
+     */
+    public User(String username, String password, Role roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    /**
+     * Constructor for create user functionality
+     * @param username
+     * @param password
+     * @param confirmPassword
+     * @param role
+     */
     public User(String username, String password, String confirmPassword, Role role) {
 
         this.username = username;
