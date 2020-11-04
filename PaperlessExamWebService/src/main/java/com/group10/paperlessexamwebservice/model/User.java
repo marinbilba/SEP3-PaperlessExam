@@ -23,6 +23,8 @@ public class User {
     private String lastName;
     //  @Column(name = "username")
     private String username;
+    //  @Column(name = "email")
+    private String email;
     //@Column(name = "password")
     private String password;
     @Transient
@@ -93,6 +95,14 @@ public class User {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Role getRoles() {
