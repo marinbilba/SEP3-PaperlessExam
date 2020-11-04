@@ -2,7 +2,7 @@ package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.IUserService;
-import com.group10.paperlessexamwebservice.service.exceptions.user.EmailNotFoundException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.EmailException;
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,10 +41,10 @@ public class UserController {
      *  Method handles the create request. It calls the user service passing the user object.
      * @param user
      * @return
-     * @throws EmailNotFoundException exception in case the user's email matches the email of another user in the database
+     * @throws EmailException exception in case the user's email matches the email of another user in the database
      */
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String createUser(@RequestBody User user) throws EmailNotFoundException {
+    public String createUser(@RequestBody User user) throws EmailException {
         System.out.println("Call post");
        return userService.createUser(user);
     }
