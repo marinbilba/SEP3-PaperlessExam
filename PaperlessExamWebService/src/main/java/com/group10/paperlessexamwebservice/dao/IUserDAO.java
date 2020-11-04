@@ -2,11 +2,20 @@ package com.group10.paperlessexamwebservice.dao;
 
 import com.group10.paperlessexamwebservice.model.User;
 
-public interface IUserDAO {
-    boolean usernameExists(String username);
+import java.util.List;
 
+public interface IUserDAO {
+//    Check if username exists in the database
+    boolean usernameExists(String username);
+    //    Check if the given password matches with the bassword in the database
     boolean checkPassword(String password);
 
     User getCashedUser();
+    //    Check if email exists in the database
+    boolean emailExists(String email);
+
+    String createAccount();
+// Return all users in the database
+    List<User> getAllUsersList();
 
 }
