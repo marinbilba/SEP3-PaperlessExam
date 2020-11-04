@@ -5,4 +5,6 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFo
 
 public interface IUserService {
     User logInUser(User user) throws PasswordNotFoundException;
+    String createUser(User user);
+
 }
