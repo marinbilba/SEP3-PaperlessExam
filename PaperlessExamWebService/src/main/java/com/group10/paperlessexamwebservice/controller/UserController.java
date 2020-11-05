@@ -1,5 +1,6 @@
 package com.group10.paperlessexamwebservice.controller;
 
+import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.user.EmailException;
@@ -33,7 +34,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User loginUser(@RequestBody User user) throws PasswordNotFoundException {
         System.out.println("Call post");
-       return userService.logInUser(user);
+       return new User("marin","12345",new Role());
 
     }
 
