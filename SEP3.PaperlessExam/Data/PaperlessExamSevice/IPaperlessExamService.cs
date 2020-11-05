@@ -5,6 +5,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
 {
     public interface IPaperlessExamService
     {
-        Task LoginUser(User user);
+        Task<User> LoginUser(User user);
     }
 }

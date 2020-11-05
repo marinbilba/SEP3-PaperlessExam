@@ -17,14 +17,17 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             client = new HttpClient();
         }
 
-        public async Task LoginUser(User user)
+        public async Task<User> LoginUser(User user)
         {
           string userSerialized = JsonSerializer.Serialize(user);
              StringContent content=new StringContent(userSerialized,Encoding.UTF8,"application/json");
          
              HttpResponseMessage responseMessage =
                  await client.PostAsync(uri+"/login", content);
-             Console.WriteLine(responseMessage.ToString());   
+       
+       //here the user object should be deserialized
+        string s=   await  responseMessage.Content.ReadAsStringAsync();
+        return null;
         }
     }
  
