@@ -7,12 +7,10 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.EmailExceptio
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for managing login, create, find users requests
@@ -31,10 +29,11 @@ public class UserController {
      * @return user model object
      * @throws PasswordNotFoundException exception in case the user's password does not match the password from the database
      */
+    
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User loginUser(@RequestBody User user) throws PasswordNotFoundException {
+    public Optional<User> loginUser(@RequestBody User user) throws PasswordNotFoundException {
         System.out.println("Call post");
-       return new User("marin","12345",new Role());
+    return null;
 
     }
 
@@ -47,7 +46,7 @@ public class UserController {
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String createUser(@RequestBody User user) throws EmailException {
         System.out.println("Call post");
-       return userService.createUser(user);
+       return null;
     }
 
     /**
@@ -59,6 +58,10 @@ public class UserController {
         System.out.println("Call post");
         return userService.getAllUsersList();
     }
+@RequestMapping(value = "/updateUser",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+public User updateUser(@RequestBody User user){
+        return null;
 
+}
 
 }

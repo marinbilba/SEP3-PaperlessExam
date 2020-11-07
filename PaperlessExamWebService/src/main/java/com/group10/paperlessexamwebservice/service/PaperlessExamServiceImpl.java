@@ -27,7 +27,7 @@ public class PaperlessExamServiceImpl implements IUserService {
         } else if (!loginDao.checkPassword(user.getPassword())) {
             throw new PasswordNotFoundException("Password is incorrect");
         } else
-            return loginDao.getCashedUser();
+            return null;
     }
 
     @Override

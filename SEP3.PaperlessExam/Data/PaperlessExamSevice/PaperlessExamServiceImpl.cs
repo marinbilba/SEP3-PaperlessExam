@@ -27,6 +27,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
        
        //here the user object should be deserialized
         string s=   await  responseMessage.Content.ReadAsStringAsync();
+        Console.WriteLine(s);
         return null;
         }
     }
