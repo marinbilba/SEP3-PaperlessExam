@@ -10,17 +10,10 @@ import java.util.Set;
  * @version 1.0
  */
 
-@Entity
-//@Table(name = "roles")
+
 public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name="id",updatable = false,nullable = false)
     private Long id;
-    //  @Column(name = "name")
     private String name;
-
 
     public Role() {
     }

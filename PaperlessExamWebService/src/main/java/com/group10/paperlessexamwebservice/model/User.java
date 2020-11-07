@@ -9,27 +9,23 @@ import java.util.Set;
  * @author Marin Bilba
  * @version 1.0
  */
-@Entity
-//@Table(name = "users")
+
 public class User {
-    // Identity generation type will let the Database to generate the PK
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //   @Column(name="id",updatable = true,nullable = false)
+
     private Long id;
-    //   @Column(name="firstName")
+
     private String firstName;
-    //   @Column(name="lastName")
+
     private String lastName;
-    //  @Column(name = "username")
+
     private String username;
-    //  @Column(name = "email")
+
     private String email;
-    //@Column(name = "password")
+
     private String password;
-    @Transient
+
     private String confirmPassword;
-    @OneToOne(targetEntity = Role.class, cascade = CascadeType.ALL)
+
     private Role roles;
 
     public User() {
