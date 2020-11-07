@@ -1,9 +1,7 @@
-package entity.user;
+package com.group10.databaselayer.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Simple JavaBean object that represents role of {@link User}.
@@ -12,14 +10,15 @@ import javax.persistence.Id;
  * @version 1.0
  */
 @Entity
+@Table(name = "roles")
 public class Role {
-    //@Table(name = "roles")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name="id",updatable = false,nullable = false)
     private Long id;
-    //  @Column(name = "name")
+    @Column(name = "name")
     private String name;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 
     public Role() {
     }
