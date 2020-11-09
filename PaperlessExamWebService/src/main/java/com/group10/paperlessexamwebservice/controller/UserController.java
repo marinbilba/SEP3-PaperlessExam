@@ -31,9 +31,11 @@ public class UserController {
      */
     
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Optional<User> loginUser(@RequestBody User user) throws PasswordNotFoundException {
-        System.out.println("Call post");
-    return null;
+    public User loginUser(@RequestBody User user) throws PasswordNotFoundException {
+
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        return userService.logInUser(user);
 
     }
 

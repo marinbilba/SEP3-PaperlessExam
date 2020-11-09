@@ -4,9 +4,9 @@ import com.group10.paperlessexamwebservice.model.User;
 
 import java.util.List;
 
-public interface IUserDAO {
+public interface IUserRequests {
 //    Check if username exists in the database
-    boolean usernameExists(String username);
+    User usernameExists(String username);
     //    Check if the given password matches with the bassword in the database
     boolean checkPassword(String password);
 
