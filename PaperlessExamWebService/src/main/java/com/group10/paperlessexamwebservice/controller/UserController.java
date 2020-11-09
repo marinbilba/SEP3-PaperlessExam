@@ -48,6 +48,7 @@ public class UserController {
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String createUser(@RequestBody User user) throws EmailException {
         System.out.println("Call post");
+        System.out.println("test");
        return null;
     }
 
