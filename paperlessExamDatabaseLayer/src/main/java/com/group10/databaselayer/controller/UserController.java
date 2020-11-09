@@ -29,6 +29,7 @@ public class UserController {
      */
     @RequestMapping(value = "/getUsersList", method = RequestMethod.GET)
     public List<User> getAllUsersList() {
+        System.out.println("Yess");
         return userRepository.findAll();
     }
 
@@ -39,6 +40,7 @@ public class UserController {
      */
     @RequestMapping(value = "/getUsersByLastName/{lastName}", method = RequestMethod.GET)
     public List<User> getUsersByName(@PathVariable(value = ("lastName")) String lastName) {
+        System.out.println(lastName);
         return userRepository.findByLastName(lastName);
     }
 
@@ -51,6 +53,16 @@ public class UserController {
     public User getUserById(@PathVariable(value = ("id")) long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
+    }
+    /**
+     * Method will return the user filtered by id
+     *
+     * @return the list of all users
+     */
+    @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET)
+    public User getUserById(@PathVariable(value = ("username")) String username) {
+        System.out.println(username);
+        return new User("ASD","12345");
     }
 
     /**

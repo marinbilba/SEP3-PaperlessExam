@@ -1,5 +1,7 @@
 package com.group10.paperlessexamwebservice.model;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -9,7 +11,7 @@ import java.util.Set;
  * @author Marin Bilba
  * @version 1.0
  */
-
+@Component
 public class User {
 
     private Long id;
@@ -36,12 +38,10 @@ public class User {
      *
      * @param username
      * @param password
-     * @param roles
      */
-    public User(String username, String password, Role roles) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.roles = roles;
     }
 
     /**
