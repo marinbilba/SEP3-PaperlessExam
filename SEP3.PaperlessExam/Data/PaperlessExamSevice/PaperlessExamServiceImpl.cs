@@ -30,9 +30,9 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
              if (responseMessage.IsCompletedSuccessfully)
              {
                  Console.WriteLine(s);
-                 
+
                  Console.WriteLine("yes");
-                 
+
              }
              else
              {
@@ -40,12 +40,12 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
                  Console.WriteLine("no");
              }
              User userDeserialize = JsonSerializer.Deserialize<User>(s);
-             
 
-             
-       
+
+
+
        //here the user object should be deserialized
-        
+
         return new User("1111", "2222", "3333", "4444", "5555", new Role(2, "Student"));
         }
     }

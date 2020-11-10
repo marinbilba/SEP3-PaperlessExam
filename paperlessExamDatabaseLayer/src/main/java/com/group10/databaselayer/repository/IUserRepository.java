@@ -11,6 +11,7 @@ import java.util.List;
  * Repository that provides CRUD operations for user com.group10.databaselayer.entity
  */
 @Repository
-public interface IUserRepository extends JpaRepository<User, Long>,ICustomUserRepository {
+public interface IUserRepository extends JpaRepository<User, Long> {
+
 
 }

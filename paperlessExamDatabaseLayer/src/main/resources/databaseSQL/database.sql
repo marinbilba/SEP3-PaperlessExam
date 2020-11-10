@@ -5,7 +5,9 @@ CREATE TABLE users (
   lastName VARCHAR(30),
   username VARCHAR(255) NOT NULL,
   email    VARCHAR(30) NOT NULL,
-  password VARCHAR(255) NOT NULL
+  password VARCHAR(255) NOT NULL,
+  FK_RoleId INT,
+      foreign key (FK_RoleId) references roles(id) on update cascade on delete set null
 );
 
 
@@ -29,7 +31,7 @@ CREATE TABLE user_roles (
 
 -- Insert data
 
-INSERT INTO users VALUES (1, 'proselyte', '$2a$11$uSXS6rLJ91WjgOHhEGDx..VGs7MkKZV68Lv5r1uwFu7HgtRn3dcXG');
+INSERT INTO users VALUES (10,'Silvestru','Mandrila','silvmandrila','silvmandr@va.cs','111111',1);
 
 INSERT INTO roles VALUES (1, 'ROLE_USER');
 INSERT INTO roles VALUES (2, 'ROLE_ADMIN');
