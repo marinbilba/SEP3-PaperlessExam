@@ -1,27 +1,27 @@
 ﻿@page "/"
 @page "/login"
 @using LoginExample.Pages.Login
+
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Model
 @inject IPaperlessExamService PaperlessExamService;
 @layout LoginLayout
 
+@inject NavigationManager NavigationManager
+
 <link rel="stylesheet" href="css/Login/style.css">
 <body>
-<div class="login-page">
-  <div class="form">
-    <form class="register-form">
-      <input type="text" placeholder="name"/>
-      <input type="password" placeholder="password"/>
-      <input type="text" placeholder="email address"/>
-    </form>
-    <form class="login-form">
-      <input type="text" placeholder="username"/>
-      <input type="password" placeholder="password"/>
-      <button>login</button>
-    </form>
-  </div>
-</div>
+
+                <div class="login-page">
+                  <div class="form">
+                    <form class="login-form">
+                      <input type="text" placeholder="username" @bind-value="username"/>
+                      <input type="password" placeholder="password" @bind-value="password"/>
+                      <button @onclick="@SubmitLogin">login</button>
+                    </form>
+                  </div>
+                </div>
+                      
 </body>
 
 @code {
@@ -31,15 +31,20 @@
   
   private async Task SubmitLogin()
   {
+    
+    errorMessage = "";
     try
     {
-      await PaperlessExamService.LoginUser(new User( username, password));
-      Console.WriteLine("Submit button");
-      
+     // ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(username, password);
+      PaperlessExamService.LoginUser(new User(username, password));
+      username = "";
+      password = "";
+      Console.WriteLine("logintest");
+      NavigationManager.NavigateTo("/index", true);
     }
     catch (Exception e)
     {
-      
+      errorMessage = e.Message;
     }
     
 
