@@ -28,25 +28,25 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public User usernameExists(String username) {
-
+    public ResponseEntity<User> login(User user) {
+        User temp;
         // request body parameters
         Map<String, String> map = new HashMap<>();
-        map.put("username", username);
+       // map.put("user", user);
         // send POST request
-        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getUserByUsername/" + username, User.class);
+        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
         // check response
         if (response.getStatusCode() == HttpStatus.OK) {
             System.out.println("Request Successful");
+            temp = response.getBody();
+            System.out.println(temp.getUsername());
 
-            User tempp = new User();
-            tempp = response.getBody();
-            System.out.println(tempp.getUsername());
 
         } else {
             System.out.println("Request Failed");
         }
-        return null;
+
+        return response;
     }
 
     @Override

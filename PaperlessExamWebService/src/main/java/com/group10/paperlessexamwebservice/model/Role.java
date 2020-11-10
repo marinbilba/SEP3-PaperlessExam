@@ -1,5 +1,7 @@
 package com.group10.paperlessexamwebservice.model;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -10,14 +12,17 @@ import java.util.Set;
  * @author Marin Bilba
  * @version 1.0
  */
+
 public class Role {
-    private Long id;
+    private int id;
     private String name;
 
     /**
      * Instantiates a new Role.
+     * @param i
+     * @param sda
      */
-    public Role() {
+        public Role(int i, String sda) {
     }
 
 
@@ -26,7 +31,7 @@ public class Role {
      *
      * @return the id
      */
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -35,7 +40,7 @@ public class Role {
      *
      * @param id the id
      */
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -62,4 +62,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\poppins\Poppins-ThinItalic.ttf" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Pages\Views\Student" />
+    </ItemGroup>
+
 </Project>

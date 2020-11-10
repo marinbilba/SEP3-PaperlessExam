@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using SEP3.PaperlessExam.Data;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
 
@@ -31,7 +33,14 @@ namespace SEP3.PaperlessExam
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IPaperlessExamService, PaperlessExamServiceImpl>();
+                //  services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+       //     services.AddAuthorization(options => {
+            //    options.AddPolicy("MustBeStudent",  a => 
+           //         a.RequireAuthenticatedUser().RequireClaim("Role", "Student"));
+           //    
+            //});
         }
+        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
