@@ -1,37 +1,41 @@
 ﻿// TEMP CLASS
+
+using System.Text.Json.Serialization;
+
 namespace SEP3.PaperlessExam.Model
 {
     public class User
     {
-        private int id;
-        private string username;
-        private string password;
-
+        
+        [JsonPropertyName("username")] public string Username { get; set; }
+        
+        [JsonPropertyName("email")] public string Email { get; set; }
+        [JsonPropertyName("password")] public string Password { get; set; }
+        [JsonPropertyName("confirmPassword")] public string ConfirmPassword { get; set; }
+        [JsonPropertyName("firstName")] public string FirstName { get; set; }
+         [JsonPropertyName("lastName")] public string LastName { get; set; }
+        [JsonPropertyName("role")] public Role Role { get; set; }
+        
+        
+        public User()
+        {  }
         
         public User(string username, string password)
         {
     
-            this.username = username;
-            this.password = password;
+            this.Username = username;
+            this.Password = password;
         }
+        
+        public User(string firstName, string lastName, string username, string password, string confirmPassword, Role role) {
 
-        public int Id
-        {
-            get => id;
-            set => id = value;
+            this.Username = username;
+            this.Password = password;
+            this.ConfirmPassword = confirmPassword;
+            this.Role = role;
         }
+        
 
-        public string Username
-        {
-            get => username;
-            set => username = value;
-        }
-
-        public string Password
-        {
-            get => password;
-            set => password = value;
-        }
     }
     
 }
