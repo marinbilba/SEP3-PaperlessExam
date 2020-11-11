@@ -13,6 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role {
+    @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +21,11 @@ public class Role {
     private String name;
 
     public Role() {
+    }
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
