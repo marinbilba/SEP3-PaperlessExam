@@ -69,41 +69,39 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public ResponseEntity<User> createUser(User user)
+    public User createUser(User user)
     {
         User temp;
-        Map<String, String> map = new HashMap<>();
-        ResponseEntity<User> response = null;
-        ResponseEntity<User> responseCheck = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
-        if (responseCheck.getStatusCode() != HttpStatus.OK)
-        {
-            if (user.getPassword().equals(user.getConfirmPassword()))
-            {
-            System.out.println("User is available");
-            response = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
-            if (response.getStatusCode() == HttpStatus.OK)
-            {
-                temp = response.getBody();
-                System.out.println("User "+temp.getUsername()+" successfully created");
-            }
-            }
-            else
-            {
-                System.out.println("password and confirm password does not mach");
-            }
+        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
+        temp = response.getBody();
 
-        }
-        else
-        {
-            System.out.println(": User is already in the system");
-        }
-
-
-        return response;
+        return temp;
     }
 
     @Override
     public List<User> getAllUsersList() {
         return null;
+    }
+
+    @Override
+    public Role getRoleIdByName(String name)
+    {
+        Role temp;
+        ResponseEntity<Role> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/"+ name , Role.class);
+        temp = response.getBody();
+
+        return temp;
+    }
+
+    @Override
+    public boolean usernameExist(String username)
+    {
+        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/"+ username , User.class);
+        if (response.getBody() == null)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
