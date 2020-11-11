@@ -3,7 +3,7 @@ package com.group10.databaselayer.controller;
 import com.group10.databaselayer.exception.ResourceNotFoundException;
 import com.group10.databaselayer.repository.IUserRepository;
 import com.group10.databaselayer.entity.User;
-import com.group10.databaselayer.repository.IUserRepositoryString;
+//import com.group10.databaselayer.repository.IUserRepositoryString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,8 +23,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     IUserRepository userRepository;
-    @Autowired
-    IUserRepositoryString userRepositoryString;
+//    @Autowired
+//    IUserRepositoryString userRepositoryString;
 
     /**
      * Post Method for login user. It is processing POST request with User object in format of JSON as an argument.
@@ -46,7 +46,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<User> login(@RequestBody User user) {
         if (validateLogin(user.getUsername(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.OK).body(userRepositoryString.findByUsername(user.getUsername()));
+            return ResponseEntity.status(HttpStatus.OK).body(userRepository.findByUsername(user.getUsername()));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
@@ -70,7 +70,7 @@ public class UserController {
     @RequestMapping(value = "/getUsersByLastName/{lastName}", method = RequestMethod.GET)
     public List<User> getUsersByName(@PathVariable(value = ("lastName")) String lastName) {
         System.out.println(lastName);
-        return userRepositoryString.findByLastName(lastName);
+        return userRepository.findByLastName(lastName);
     }
 
     /**
@@ -136,7 +136,7 @@ public class UserController {
         System.out.println("Username: " + username);
         User user;
         try {
-            user = userRepositoryString.findByUsername(username);
+            user = userRepository.findByUsername(username);
 
         } catch (Exception e){
             return false;
