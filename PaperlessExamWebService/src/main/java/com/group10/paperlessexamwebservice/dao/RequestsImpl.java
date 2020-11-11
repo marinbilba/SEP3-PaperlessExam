@@ -50,7 +50,8 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public boolean checkPassword(String password) {
+    public boolean checkPassword(String password)
+    {
         return true;
     }
 
@@ -65,8 +66,37 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public String createAccount() {
-        return null;
+    public ResponseEntity<User> createUser(User user)
+    {
+        User temp;
+        Map<String, String> map = new HashMap<>();
+        ResponseEntity<User> response = null;
+        ResponseEntity<User> responseCheck = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
+        if (responseCheck.getStatusCode() != HttpStatus.OK)
+        {
+            if (user.getPassword().equals(user.getConfirmPassword()))
+            {
+            System.out.println("User is available");
+            response = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
+            if (response.getStatusCode() == HttpStatus.OK)
+            {
+                temp = response.getBody();
+                System.out.println("User "+temp.getUsername()+" successfully created");
+            }
+            }
+            else
+            {
+                System.out.println("password and confirm password does not mach");
+            }
+
+        }
+        else
+        {
+            System.out.println(": User is already in the system");
+        }
+
+
+        return response;
     }
 
     @Override

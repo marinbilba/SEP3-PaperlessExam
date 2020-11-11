@@ -59,10 +59,15 @@ public class UserController {
      * @throws EmailException exception in case the user's email matches the email of another user in the database
      */
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String createUser(@RequestBody User user) throws EmailException {
-        System.out.println("Call post");
-        System.out.println("test2");
-       return null;
+    public User createUser(@RequestBody User user) throws EmailException {
+        User temp = null;
+        try {
+            temp = userService.createUser(user);
+        } catch (EmailException e) {
+            e.printStackTrace();
+        }
+        System.out.println("createUser test");
+       return temp;
     }
 
     /**

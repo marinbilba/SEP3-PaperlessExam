@@ -15,7 +15,7 @@ public interface IUserRequests {
     //    Check if email exists in the database
     boolean emailExists(String email);
 
-    String createAccount();
+    ResponseEntity<User> createUser(User user);
 // Return all users in the database
     List<User> getAllUsersList();
 

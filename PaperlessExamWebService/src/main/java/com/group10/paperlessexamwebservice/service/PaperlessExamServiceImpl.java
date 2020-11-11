@@ -33,11 +33,7 @@ public class PaperlessExamServiceImpl implements IUserService {
         else if (temp.getStatusCode().isError())
         {
             throw new DataBaseException("Smth went wrong");
-
-
         }
-
-
 //
 //
 //        if (userRequest.usernameExists(user.getUsername())) {
@@ -49,14 +45,17 @@ public class PaperlessExamServiceImpl implements IUserService {
     }
 
     @Override
-    public String createUser(User user) throws EmailException {
-//        if (userRequest.usernameExists(user.getUsername())) {
-//            throw new UsernameNotFoundException("User with username:'" + user.getUsername() + "' already exists");
-//        } else if (userRequest.emailExists(user.getEmail())) {
-//            throw new EmailException("User with email:'" + user.getEmail() + "' already exists");
-//        }
-//        return userRequest.createAccount();
-        return null;
+    public User createUser(User user) throws EmailException {
+        ResponseEntity<User> temp = userRequest.createUser(user);
+        if (temp.getStatusCode().is2xxSuccessful())
+        {
+            temp.getBody();
+        }
+        else
+        {
+            System.out.println("CreateUser went wrong");
+        }
+        return temp.getBody();
     }
 
     @Override
