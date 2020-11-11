@@ -66,4 +66,9 @@
       <Folder Include="Pages\Views\Student" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Remove="Pages\Counter.razor" />
+      <Content Remove="Pages\FetchData.razor" />
+    </ItemGroup>
+
 </Project>

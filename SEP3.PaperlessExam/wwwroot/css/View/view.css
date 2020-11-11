@@ -1,0 +1,40 @@
+.create
+{
+    background: #DE6262;
+    height:200px;
+    width: 200px;
+    float: left;
+    box-shadow: inherit;
+    border: 2px solid black;
+}
+
+.button
+{
+    background: #FFFFFF;
+    width: 200px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.update
+{
+    background: #DE6262;
+    height:200px;
+    width: 200px;
+    float: left;
+    box-shadow: inherit;
+    border: 2px solid black;
+    
+}
+.red{
+    background: #DE6262;
+    border-radius: 10px;
+    box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+
+}
+
+.black{
+    background: black;
+    border-radius: 10px;
+    box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+
+}

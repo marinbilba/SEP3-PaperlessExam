@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
+using SEP3.PaperlessExam.Pages.AdminView.ManageAccounts;
 
 namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
 {
@@ -47,6 +48,14 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
        //here the user object should be deserialized
 
         return new User("1111", "2222", "3333", "4444", "5555", new Role(2, "Student"));
+        }
+        
+        public async Task CreateUserAsync(User user)
+        {
+            string accountSerialized = JsonSerializer.Serialize(user);
+            StringContent content = new StringContent(accountSerialized, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = await client.PostAsync(uri + "/createUser", content);
+            Console.WriteLine(responseMessage.ToString());
         }
     }
  

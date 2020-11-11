@@ -40,7 +40,8 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
 
-        System.out.println("test 555");        User temp = null;
+        System.out.println("test 555");
+        User temp = null;
         try {
             temp = userService.logInUser(user);
         } catch (DataBaseException e) {
