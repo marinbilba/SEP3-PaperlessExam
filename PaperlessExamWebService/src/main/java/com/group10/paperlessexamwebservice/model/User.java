@@ -2,9 +2,6 @@ package com.group10.paperlessexamwebservice.model;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
-import java.util.Set;
-
 /**
  * Simple JavaBean domain object that represents a User
  *
@@ -28,7 +25,7 @@ public class User {
 
     private String confirmPassword;
 
-    private Role roles;
+    private Role role;
 
     public User() {
     }
@@ -44,21 +41,30 @@ public class User {
         this.password = password;
     }
 
-    /**
-     * Constructor for create user functionality
-     *
-     * @param username
-     * @param password
-     * @param confirmPassword
-     * @param role
-     */
-    public User(String firstName, String lastName, String username, String password, String confirmPassword, Role role) {
+    public User(String firstName, String lastName, String username, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.email = email;
         this.password = password;
-        this.confirmPassword = confirmPassword;
-        this.roles = role;
+
+        this.role = role;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Long getId() {
@@ -101,11 +107,11 @@ public class User {
         this.email = email;
     }
 
-    public Role getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Role roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

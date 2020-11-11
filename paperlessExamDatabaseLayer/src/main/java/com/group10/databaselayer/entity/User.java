@@ -1,7 +1,8 @@
 package com.group10.databaselayer.entity;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Simple JavaBean domain object that represents a User
@@ -15,11 +16,11 @@ public class User {
     // Identity generation type will let the Database to generate the PK
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @Column(name = "id")
     private Long id;
-    @Column(name = "firstName")
+    @Column(name = "firstname")
     private String firstName;
-    @Column(name = "lastName")
+    @Column(name = "lastname")
     private String lastName;
     @Column(name = "username")
     private String username;
@@ -27,6 +28,10 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
+    @OneToOne
+    @NotNull
+    @JoinColumn(name="fk_role_id")
+    private Role role;
     public User(){
 
     }
@@ -106,6 +111,12 @@ public class User {
         this.email = email;
     }
 
+    public Role getRole() {
+        return role;
+    }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }
 

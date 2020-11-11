@@ -19,10 +19,16 @@ public class Role {
 
     /**
      * Instantiates a new Role.
-     * @param i
-     * @param sda
+     * @param id
+     * @param name
      */
-        public Role(int i, String sda) {
+        public Role(int id, String name) {
+            this.id=id;
+            this.name=name;
+    }
+
+    public Role(String name) {
+        this.name=name;
     }
 
 
