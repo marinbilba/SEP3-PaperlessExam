@@ -35,7 +35,7 @@ public class RequestsImpl implements IUserRequests {
         Map<String, String> map = new HashMap<>();
        // map.put("user", user);
         // send POST request
-        user=new User("1111","222","3333","4444","Clar",new Role(1,"Student"));
+      //  user=new User("1111","222","3333","4444","Clar",new Role(1,"Student"));
         System.out.println(user.getRole().getName());
         ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
         // check response
@@ -96,12 +96,18 @@ public class RequestsImpl implements IUserRequests {
     @Override
     public boolean usernameExist(String username)
     {
-        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/"+ username , User.class);
+        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getUserByUsername/"+ username , User.class);
         if (response.getBody() == null)
         {
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getUserByUsername/"+ username , User.class);
+return response.getBody();
     }
 }

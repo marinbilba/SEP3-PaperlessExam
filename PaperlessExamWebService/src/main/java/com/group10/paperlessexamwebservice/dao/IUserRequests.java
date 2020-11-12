@@ -23,4 +23,7 @@ public interface IUserRequests {
     Role getRoleIdByName(String name);
 
     boolean usernameExist(String username);
+
+    User getUserByUsername(String username);
+
 }
