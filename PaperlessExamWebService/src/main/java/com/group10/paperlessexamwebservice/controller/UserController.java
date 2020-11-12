@@ -32,27 +32,28 @@ public class UserController {
 
     /**
      * Method handles the login request. It calls the user service passing the username and password.
+     *
      * @param user
      * @return user model object
      * @throws PasswordNotFoundException exception in case the user's password does not match the password from the database
      */
-    
+
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
-
-        System.out.println("test 555");        User temp = null;
+        System.out.println("test 555");
+        User temp = null;
         try {
             temp = userService.logInUser(user);
         } catch (DataBaseException e) {
             e.printStackTrace();
         }
-
+        System.out.println("here");
         return temp;
-
     }
 
     /**
-     *  Method handles the create request. It calls the user service passing the user object.
+     * Method handles the create request. It calls the user service passing the user object.
+     *
      * @param user
      * @return
      * @throws EmailException exception in case the user's email matches the email of another user in the database
@@ -61,22 +62,24 @@ public class UserController {
     public String createUser(@RequestBody User user) throws EmailException {
         System.out.println("Call post");
         System.out.println("test2");
-       return null;
+        return null;
     }
 
     /**
      * Method will return all users from the database
+     *
      * @return the list of all users
      */
     @RequestMapping(value = "/getUsersList", method = RequestMethod.GET)
-    public List<User> getAllUsersList()  {
+    public List<User> getAllUsersList() {
         System.out.println("Call post");
         return userService.getAllUsersList();
     }
-@RequestMapping(value = "/updateUser",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-public User updateUser(@RequestBody User user){
+
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public User updateUser(@RequestBody User user) {
         return null;
 
-}
+    }
 
 }
