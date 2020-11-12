@@ -24,11 +24,20 @@ public class PaperlessExamServiceImpl implements IUserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User logInUser(User user) throws UsernameNotFoundException, PasswordNotFoundException  {
-//        Get user by username
-        if(!userRequest.usernameExist(user.getUsername())){
-         throw new UsernameNotFoundException("Username is incorrect");
+    public User logInUser(User user) throws UsernameNotFoundException, PasswordNotFoundException {
+//        Check user by username
+        if (!userRequest.usernameExist(user.getUsername())) {
+            throw new UsernameNotFoundException("Username is incorrect");
         }
+//        Get the user object by username for further validation
+        User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
+        // Password validation
+        if (!requestedUserFromTheDatabase.getPassword().equals(user.getPassword())) {
+            throw new PasswordNotFoundException("Password is incorrect");
+        }
+        System.out.println("bleati");
+        return requestedUserFromTheDatabase;
+
 //
 //        ResponseEntity<User> temp = userRequest.login(user);
 //        if (temp.getStatusCode().is2xxSuccessful())
@@ -46,7 +55,6 @@ public class PaperlessExamServiceImpl implements IUserService {
 //        } else if (!userRequest.checkPassword(user.getPassword())) {
 //            throw new PasswordNotFoundException("Password is incorrect");
 //        } else
-            return null;
     }
 
     @Override
@@ -58,13 +66,10 @@ public class PaperlessExamServiceImpl implements IUserService {
         Role tempRole = userRequest.getRoleIdByName(user.getRole().getName());
         // set the recieved role to the current user
         user.setRole(tempRole);
-        if (userRequest.usernameExist(user.getUsername()))
-        {
+        if (userRequest.usernameExist(user.getUsername())) {
             throw new Exception("Username");
             // throw la exceptie !!!!!
-        }
-        else
-        {
+        } else {
             return userRequest.createUser(user);
         }
 
