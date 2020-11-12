@@ -60,6 +60,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\poppins\Poppins-SemiBoldItalic.ttf" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\poppins\Poppins-Thin.ttf" />
       <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\poppins\Poppins-ThinItalic.ttf" />
+      <_ContentIncludedByDefault Remove="Pages\Util\LoadingComponent.razor" />
     </ItemGroup>
 
     <ItemGroup>

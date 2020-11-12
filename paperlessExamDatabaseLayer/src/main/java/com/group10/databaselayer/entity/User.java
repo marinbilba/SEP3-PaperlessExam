@@ -22,13 +22,13 @@ public class User {
     private String firstName;
     @Column(name = "lastname")
     private String lastName;
-    @Column(name = "username")
+    @Column(name = "username",unique = true)
     private String username;
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
     @Column(name = "password")
     private String password;
-    @OneToOne
+   @OneToOne
     @NotNull
     @JoinColumn(name="fk_role_id")
     private Role role;

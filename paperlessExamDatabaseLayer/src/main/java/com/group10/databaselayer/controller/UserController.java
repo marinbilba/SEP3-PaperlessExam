@@ -16,7 +16,7 @@ import java.util.List;
  * Controller for managing login, create, find users requests
  *
  * @author Marin Bilba
- * @version 1.0
+ * @version 1.2
  */
 
 @RestController
@@ -93,7 +93,7 @@ public class UserController {
     @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET)
     public User getUserById(@PathVariable(value = ("username")) String username) {
 
-        return new User("ASD","12345");
+        return userRepository.getUserByUsername(username);
     }
 
     /**
@@ -135,6 +135,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("The user with the id: " + existingUser.getId() +
                 " and username: " + existingUser.getUsername() + " was deleted from the system");
     }
+
+
     private boolean validateLogin(String username, String password) {
         System.out.println("Username: " + username);
         User user;

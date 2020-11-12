@@ -1,4 +1,4 @@
-package com.group10.paperlessexamwebservice.service.exceptions.user;
+package com.group10.paperlessexamwebservice.service.exceptions;
 
 public class CustomException extends RuntimeException
 {
