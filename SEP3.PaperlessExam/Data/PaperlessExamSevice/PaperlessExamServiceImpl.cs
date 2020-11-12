@@ -12,38 +12,45 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
     {
         private string uri = "http://localhost:8080";
         private readonly HttpClient client;
-   
+
 
         public PaperlessExamServiceImpl()
         {
             client = new HttpClient();
         }
 
-        public  async Task<User> LoginUser(User user)
+        public async Task<User> LoginUser(User user)
         {
             User userDeserialize;
+            HttpResponseMessage responseMessage;
             string userSerialized = JsonSerializer.Serialize(user);
             var content = new StringContent(userSerialized, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage responseMessage =
-               await client.PostAsync(uri + "/login", content);
-            
-            string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-
+            // Send POST request
             try
             {
-                userDeserialize = JsonSerializer.Deserialize<User>(readAsStringAsync);
-                Console.WriteLine(userDeserialize.Role.Name);
+                responseMessage =
+                    await client.PostAsync(uri + "/login", content);
+
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception(responseMessage.ReasonPhrase);
+                }
             }
-            catch (Exception e)
+            catch (HttpRequestException e)
             {
-                Console.WriteLine(e.Message);
-                throw;
+             
+                throw new Exception("No connection could be made because the server is not responding");
             }
+
+            string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+
+
+            userDeserialize = JsonSerializer.Deserialize<User>(readAsStringAsync);
+            Console.WriteLine(userDeserialize.Role.Name);
+
             //return userDeserialize;
-           
-       return new User("1111", "2222", "3333", "4444", "5555", new Role(2, "s"));
+
+            return new User("1111", "2222", "3333", "4444", "5555", new Role(2, "s"));
         }
     }
 }
-
