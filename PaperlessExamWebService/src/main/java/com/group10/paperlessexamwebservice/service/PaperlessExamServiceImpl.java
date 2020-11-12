@@ -24,17 +24,21 @@ public class PaperlessExamServiceImpl implements IUserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User logInUser(User user) throws UsernameNotFoundException, PasswordNotFoundException, DataBaseException {
+    public User logInUser(User user) throws UsernameNotFoundException, PasswordNotFoundException  {
 //        Get user by username
-        ResponseEntity<User> temp = userRequest.login(user);
-        if (temp.getStatusCode().is2xxSuccessful())
-        {
-            temp.getBody();
+        if(!userRequest.usernameExist(user.getUsername())){
+         throw new UsernameNotFoundException("Username is incorrect");
         }
-        else if (temp.getStatusCode().isError())
-        {
-            throw new DataBaseException("Smth went wrong");
-        }
+//
+//        ResponseEntity<User> temp = userRequest.login(user);
+//        if (temp.getStatusCode().is2xxSuccessful())
+//        {
+//            temp.getBody();
+//        }
+//        else if (temp.getStatusCode().isError())
+//        {
+//            throw new DataBaseException("Smth went wrong");
+//        }
 //
 //
 //        if (userRequest.usernameExists(user.getUsername())) {
@@ -42,7 +46,7 @@ public class PaperlessExamServiceImpl implements IUserService {
 //        } else if (!userRequest.checkPassword(user.getPassword())) {
 //            throw new PasswordNotFoundException("Password is incorrect");
 //        } else
-            return temp.getBody();
+            return null;
     }
 
     @Override

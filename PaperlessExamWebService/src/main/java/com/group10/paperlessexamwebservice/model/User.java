@@ -1,5 +1,7 @@
 package com.group10.paperlessexamwebservice.model;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,7 +29,9 @@ public class User {
 
     private Role role;
 
+
     public User() {
+
     }
 
     /**
@@ -50,6 +54,8 @@ public class User {
 
         this.role = role;
     }
+
+
 
     public String getFirstName() {
         return firstName;

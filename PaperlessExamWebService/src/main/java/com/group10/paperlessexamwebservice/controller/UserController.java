@@ -7,7 +7,10 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.EmailExceptio
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,15 +35,15 @@ public class UserController {
      */
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
-        User temp = null;
-        try {
-            temp = userService.logInUser(user);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
-        }
-
-        return temp;
+    public ResponseEntity<?> loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
+//        User temp = null;
+//        try {
+//            temp = userService.logInUser(user);
+//        } catch (UsernameNotFoundException e) {
+     
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("suca na");
+//        }
+//        return temp;
     }
 
     /**

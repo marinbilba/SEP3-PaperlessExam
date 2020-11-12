@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IUserService {
 
-    User logInUser(User user) throws PasswordNotFoundException, DataBaseException;
+    User logInUser(User user) throws PasswordNotFoundException;
     User createUser(User user) throws Exception;
 
 //    Returns the list of all stored users
