@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using SEP3.PaperlessExam.Authentication;
 using SEP3.PaperlessExam.Data;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
 
@@ -33,12 +33,15 @@ namespace SEP3.PaperlessExam
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IPaperlessExamService, PaperlessExamServiceImpl>();
-                //  services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-       //     services.AddAuthorization(options => {
-            //    options.AddPolicy("MustBeStudent",  a => 
-           //         a.RequireAuthenticatedUser().RequireClaim("Role", "Student"));
-           //    
-            //});
+         
+          services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+          
+            
+            services.AddAuthorization(options => {
+                options.AddPolicy("MustBeStudent",  a => 
+                    a.RequireAuthenticatedUser().RequireClaim("Role", "Student"));
+               
+            });
         }
         
 

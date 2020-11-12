@@ -1,48 +1,53 @@
 ﻿@page "/"
 @page "/login"
-@using SEP3.PaperlessExam.Pages.Login
 
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
-@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Authentication
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPaperlessExamService PaperlessExamService;
+
 @layout LoginLayout
 
 @inject NavigationManager NavigationManager
 
 <link rel="stylesheet" href="css/Login/style.css">
+<AuthorizeView>
 
-<div class="login-page">
-    <div class="form">
-        <form class="login-form">
-            <input type="text" placeholder="username" @bind-value="username"/>
-            <input type="password" placeholder="password" @bind-value="password"/>
-            <button @onclick="@SubmitLogin">login</button>
-            <div style="color:red">@errorMessage</div>
-        </form>
-    </div>
-</div>
-
+    <NotAuthorized>
+        <div class="login-page">
+            <div class="form">
+                <form class="login-form">
+                    <input type="text" placeholder="username" @bind-value="username"/>
+                    <input type="password" placeholder="password" @bind-value="password"/>
+                    <button type="button" @onclick="@SubmitLogin">login</button>
+                    <div style="color:red">@errorMessage</div>
+                </form>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private string username;
     private string password;
     private string errorMessage;
 
-    private async Task SubmitLogin()
+    private  async Task SubmitLogin()
     {
         errorMessage = "";
         try
         {
-    // ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(username, password);
-            PaperlessExamService.LoginUser(new User(username, password));
+           await  ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(username, password);
+    //  PaperlessExamService.LoginUser(new User(username, password));
             username = "";
             password = "";
             Console.WriteLine("logintest");
-            NavigationManager.NavigateTo("/index", true);
+           NavigationManager.NavigateTo("/index", true);
         }
         catch (Exception e)
         {
             errorMessage = e.Message;
+            Console.WriteLine(e);
         }
     }
 
