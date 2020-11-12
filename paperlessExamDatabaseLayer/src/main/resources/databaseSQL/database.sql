@@ -6,8 +6,8 @@ CREATE TABLE users (
   username VARCHAR(255) NOT NULL,
   email    VARCHAR(30) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  FK_RoleId INT NOT NULL ,
-       foreign key (FK_RoleId) references roles(id) on update cascade on delete set null
+  fk_role_id INT NOT NULL ,
+       foreign key (fk_role_id) references roles(id) on update cascade on delete set null
 );
 
 
@@ -30,10 +30,12 @@ CREATE TABLE user_roles (
 );
 
 -- Insert data
+USE paperlessexam;
 
-INSERT INTO users VALUES (10,'Silvestru','Mandrila','silvmandrila','silvmandr@va.cs','111111',1);
+INSERT INTO roles VALUES (1, 'Student');
+INSERT INTO roles VALUES (2, 'Teacher');
 
-INSERT INTO roles VALUES (1, 'ROLE_USER');
-INSERT INTO roles VALUES (2, 'ROLE_ADMIN');
+INSERT INTO users(id,firstName,lastName,username,email,password,fk_role_id) VALUES (10,'Silvestru','Mandrila','silvmandrila','silvmandr@va.cs','111111',1);
+
 
 INSERT INTO user_roles VALUES (1, 2);
