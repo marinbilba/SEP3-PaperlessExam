@@ -22,7 +22,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
 
         public async Task<User> LoginUser(User user)
         {
-            User userDeserialize;
+            User userDeserialize = null;
             HttpResponseMessage responseMessage;
             string userSerialized = JsonSerializer.Serialize(user);
             var content = new StringContent(userSerialized, Encoding.UTF8, "application/json");
@@ -31,7 +31,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             {
                 responseMessage =
                     await client.PostAsync(uri + "/login", content);
-// 2. Check if the resource was found, else throw exception to the client
+                // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
                     throw new Exception("Ooops, resource not found");
@@ -40,29 +40,29 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             // 3. Catch the exception in case the Server is not running 
             catch (HttpRequestException e)
             {
-             
                 throw new Exception("No connection could be made because the server is not responding");
             }
 
-          string serverMessage=  responseMessage.Content.ReadAsStringAsync().Result;
-            // Check the response status codes
-          
-            if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
             {
-                Console.WriteLine( );
-                
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                userDeserialize = JsonSerializer.Deserialize<User>(readAsStringAsync);
+                Console.WriteLine(userDeserialize.Role.Name);
+            }
+
+            else if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                Console.WriteLine();
+
                 throw new Exception(serverMessage);
-           }
-            string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+            }
 
-
-            userDeserialize = JsonSerializer.Deserialize<User>(readAsStringAsync);
-            Console.WriteLine(userDeserialize.Role.Name);
-
-            //return userDeserialize;
-
-            return new User("1111", "2222", "3333", "4444", "5555", new Role(2, "s"));
+            return userDeserialize;
         }
+
         //
         // public async Task CreateUserAsync(User user)
         // {
