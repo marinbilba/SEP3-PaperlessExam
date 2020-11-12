@@ -1,6 +1,5 @@
 package com.group10.paperlessexamwebservice.controller;
 
-import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.user.DataBaseException;
@@ -8,16 +7,10 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.EmailExceptio
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for managing login, create, find users requests
@@ -40,14 +33,13 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
-        System.out.println("test 555");
         User temp = null;
         try {
             temp = userService.logInUser(user);
         } catch (DataBaseException e) {
             e.printStackTrace();
         }
-        System.out.println("here");
+
         return temp;
     }
 
