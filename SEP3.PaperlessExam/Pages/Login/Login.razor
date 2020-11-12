@@ -5,15 +5,11 @@
 @using SEP3.PaperlessExam.Authentication
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPaperlessExamService PaperlessExamService;
-
-
 @layout LoginLayout
-
 @inject NavigationManager NavigationManager
 
 <link rel="stylesheet" href="css/Login/style.css">
 <AuthorizeView>
-
     <NotAuthorized>
         <div class="login-page">
             <div class="form">
@@ -29,7 +25,6 @@
                 </form>
             </div>
         </div>
-        <Spinner></Spinner>
     </NotAuthorized>
 </AuthorizeView>
 

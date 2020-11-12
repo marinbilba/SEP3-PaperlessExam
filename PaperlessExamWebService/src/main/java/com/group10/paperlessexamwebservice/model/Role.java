@@ -17,6 +17,8 @@ public class Role {
     private int id;
     private String name;
 
+    public Role() {
+    }
     /**
      * Instantiates a new Role.
      * @param id

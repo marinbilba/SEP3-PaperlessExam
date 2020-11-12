@@ -1,5 +1,6 @@
 package com.group10.paperlessexamwebservice.controller;
 
+import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.user.DataBaseException;
@@ -7,7 +8,10 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.EmailExceptio
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,23 +28,32 @@ public class UserController {
     private IUserService userService;
 
     /**
-     * Method handles the login request. It calls the user service passing the username and password.
+     * Post Method for login user. It is processing POST request with User object in format of JSON as an argument.
+     * <p>
+     *  <b>EXAMPLE</b>:
      *
-     * @param user
-     * @return user model object
-     * @throws PasswordNotFoundException exception in case the user's password does not match the password from the database
+     *  http://{host}:8080/login
+     *
+     *  <b>BODY</b>:
+     *  {
+     * 	    "username": "Test",
+     * 	    "password": "123456"
+     *  }
+     * </p>
+     *
+     * @param user User object in JSON format
+     * @return <i>HTTP 200 - OK</i> code if credentials are verified. Returns <i>HTTP 403 - FORBIDDEN</i> if credentials are incorrect.
      */
-
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
-        User temp = null;
+    public ResponseEntity<Object> loginUser(@RequestBody User user) throws PasswordNotFoundException, HttpResponseException {
+        User temp;
         try {
             temp = userService.logInUser(user);
-        } catch (DataBaseException e) {
-            e.printStackTrace();
-        }
+        } catch (UsernameNotFoundException | PasswordNotFoundException e) {
 
-        return temp;
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
 
     /**
