@@ -5,6 +5,7 @@ import com.group10.databaselayer.entity.User;
 import com.group10.databaselayer.repository.IRoleRepository;
 import com.group10.databaselayer.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  */
 
-@RestController
+@Component
 public class RoleController {
     @Autowired
     IRoleRepository roleRepository;
