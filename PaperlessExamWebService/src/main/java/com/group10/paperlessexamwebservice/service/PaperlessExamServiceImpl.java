@@ -1,13 +1,10 @@
 package com.group10.paperlessexamwebservice.service;
 
-import com.group10.paperlessexamwebservice.dao.IUserRequests;
+import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
-import com.group10.paperlessexamwebservice.service.exceptions.user.DataBaseException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.EmailException;
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
