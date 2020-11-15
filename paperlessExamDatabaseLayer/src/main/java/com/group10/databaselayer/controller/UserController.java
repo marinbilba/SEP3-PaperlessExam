@@ -5,9 +5,13 @@ import com.group10.databaselayer.repository.IUserRepository;
 import com.group10.databaselayer.entity.User;
 //import com.group10.databaselayer.repository.IUserRepositoryString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +23,17 @@ import java.util.List;
  * @version 1.2
  */
 
-@RestController
+//@RestController
+//@EnableJpaRepositories
+@Service
 public class UserController {
-    @Autowired
     IUserRepository userRepository;
-//    @Autowired
-//    IUserRepositoryString userRepositoryString;
+
+    @Autowired
+    public UserController(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+
+    }
 
     /**
      * Post Method for login user. It is processing POST request with User object in format of JSON as an argument.
@@ -70,7 +79,7 @@ public class UserController {
      * @return the list of all users
      */
     @RequestMapping(value = "/getUsersByLastName/{lastName}", method = RequestMethod.GET)
-    public List<User> getUsersByName(@PathVariable(value = ("lastName")) String lastName) {
+    public List<User> getUsersByLastName(@PathVariable(value = ("lastName")) String lastName) {
         System.out.println(lastName);
         return userRepository.findByLastName(lastName);
     }
@@ -90,9 +99,9 @@ public class UserController {
      *
      * @return the list of all users
      */
-    @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable(value = ("username")) String username) {
 
+    public User getUserByUsername(String username) {
+        System.out.println("suca");
         return userRepository.getUserByUsername(username);
     }
 
@@ -154,5 +163,9 @@ public class UserController {
         System.out.println(user.getPassword());
         return user.getPassword().equals(password);
 
+    }
+
+    public void connect() {
+        System.out.println("pulamea");
     }
 }
