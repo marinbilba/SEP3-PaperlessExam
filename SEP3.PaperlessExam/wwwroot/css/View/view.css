@@ -29,7 +29,14 @@
     background: #DE6262;
     border-radius: 10px;
     box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+}
 
+.red:hover{
+    border-radius: 50px;
+    transition: all 0.3s ease 0s;
+    text-align: center;
+    cursor: pointer;
+    background: #8b1d2f;
 }
 
 .black{

@@ -1,0 +1,31 @@
+@page "/MainView"
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" type="text/css" href="css/View/view.css">
+<div class="container">
+<div class="row">
+    <div class="col-md-4 red">
+        <img src="images/group.png" @onclick="@ToManageUsers" style="float: right; height: 100px"/>
+        <h3><b>Manage Users</b></h3></div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4 red">
+        <img src="images/test.png" @onclick="@ToManageExaminationEvents" style="float: right; height: 100px"/>
+        <h3><b>Manage Exam Events</b></h3>
+          
+    </div>
+</div>
+</div>
+
+@code {
+
+    private void ToManageUsers()
+    {
+        NavigationManager.NavigateTo("/ManageUsers");
+    }
+
+    private void ToManageExaminationEvents()
+    {
+        NavigationManager.NavigateTo("/ManageExaminationEvents");
+    }
+
+}
