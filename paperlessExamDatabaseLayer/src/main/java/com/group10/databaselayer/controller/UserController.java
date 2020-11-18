@@ -44,11 +44,13 @@ public class UserController {
      * @return <i>HTTP 200 - OK</i> code if credentials are verified. Returns <i>HTTP 400 - BAD_REQUEST</i> if credentials are incorrect.
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User user) {
         if (validateLogin(user.getUsername(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.OK).body(userRepository.findByUsername(user.getUsername()));
+            User user1=userRepository.findByUsername(user.getUsername());
+            System.out.println(user1.getRole().getName());
+            return ResponseEntity.status(HttpStatus.OK).body(user1);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("sad");
     }
 
     /**
@@ -102,7 +104,8 @@ public class UserController {
      */
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User createUser(@RequestBody User user) {
-
+        System.out.println(user.getFirstName());
+        System.out.println(user.getRole().getName());
         return userRepository.save(user);
     }
 

@@ -1,5 +1,6 @@
 package com.group10.paperlessexamwebservice.dao;
 
+import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,9 @@ public class RequestsImpl implements IUserRequests {
         Map<String, String> map = new HashMap<>();
        // map.put("user", user);
         // send POST request
-        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/login", user, User.class);
+        user=new User("1111","222","3333","4444","Clar",new Role(1,"Student"));
+        System.out.println(user.getRole().getName());
+        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
         // check response
         if (response.getStatusCode() == HttpStatus.OK) {
             System.out.println("Request Successful");
@@ -42,7 +45,7 @@ public class RequestsImpl implements IUserRequests {
             System.out.println(temp.getUsername());
 
 
-        } else {
+        } else if(response.getStatusCode() == HttpStatus.BAD_REQUEST){
             System.out.println("Request Failed");
         }
 
@@ -50,7 +53,8 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public boolean checkPassword(String password) {
+    public boolean checkPassword(String password)
+    {
         return true;
     }
 
@@ -65,12 +69,39 @@ public class RequestsImpl implements IUserRequests {
     }
 
     @Override
-    public String createAccount() {
-        return null;
+    public User createUser(User user)
+    {
+        User temp;
+        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
+        temp = response.getBody();
+
+        return temp;
     }
 
     @Override
     public List<User> getAllUsersList() {
         return null;
+    }
+
+    @Override
+    public Role getRoleIdByName(String name)
+    {
+        Role temp;
+        ResponseEntity<Role> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/"+ name , Role.class);
+        temp = response.getBody();
+
+        return temp;
+    }
+
+    @Override
+    public boolean usernameExist(String username)
+    {
+        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/"+ username , User.class);
+        if (response.getBody() == null)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

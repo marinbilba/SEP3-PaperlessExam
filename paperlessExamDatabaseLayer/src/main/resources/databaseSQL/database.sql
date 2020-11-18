@@ -6,8 +6,8 @@ CREATE TABLE users (
   username VARCHAR(255) NOT NULL,
   email    VARCHAR(30) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  FK_RoleId INT,
-      foreign key (FK_RoleId) references roles(id) on update cascade on delete set null
+  FK_RoleId INT NOT NULL ,
+       foreign key (FK_RoleId) references roles(id) on update cascade on delete set null
 );
 
 
