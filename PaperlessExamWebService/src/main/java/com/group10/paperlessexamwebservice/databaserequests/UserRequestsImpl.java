@@ -3,11 +3,10 @@ package com.group10.paperlessexamwebservice.databaserequests;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
-import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
-import com.group10.paperlessexamwebservice.databaserequests.socketmediator.SocketConnector;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +19,32 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This class sends and receives HTTP requests to the database tier
+ * Class Handles the client requests to the third tier through a Socket connection
+ * The following socket protocol is followed:
+ * 1. Create socket connection
+ * 2. Send the input stream
+ * 3. Read the output stream from the Server
+ * 4. Disconnect from the server
+ *
+ * @author Marin Bilba
+ * @version 2.2
  */
+
 @Service
 public class UserRequestsImpl implements IUserRequests {
     private static final String DATABASE_TIER_URI = "http://localhost:8091";
+    /**
+     * The Socket connector.
+     */
     @Autowired
     ISocketConnector socketConnector;
     //private User cashedUser;
     private RestTemplate restTemplate;
     private Gson gson;
 
+    /**
+     * Instantiates a new User requests.
+     */
     public UserRequestsImpl() {
         // create an instance of RestTemplate
         restTemplate = new RestTemplate();
@@ -94,33 +108,51 @@ public class UserRequestsImpl implements IUserRequests {
         return temp;
     }
 
+    /**
+     * Makes a queries to the database, passing the {@param username}.
+     * <p>
+     * 1. Create socket connection
+     * 2. Create the NetworkContainer and pass the method parameter as second argument.
+     * 3. Serialize the Network Container.
+     * 4. Send the Network Container as input stream
+     * 5. Read the output stream from the Server
+     * 6. Deserialize the Network Container
+     * 7. Deserialize the second argument of the network container
+     * 8. Check the queried result
+     *
+     *
+     * @param username username
+     * @return a boolean expresion. If user was found==true, else false
+     */
     @Override
-    public boolean usernameExist(String username) {
-        User user=null;
+    public User getUserByUsername(String username) throws ServiceNotAvailable {
+        User user = null;
+
+// Connect
         try {
             socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+//            Send request
             NetworkContainer networkContainer = new NetworkContainer(USERNAME_EXISTS, username);
-            String stringSerialized = gson.toJson(networkContainer);
-            socketConnector.sendToServer(stringSerialized);
+            String stringRequestSerialized = gson.toJson(networkContainer);
+            socketConnector.sendToServer(stringRequestSerialized);
+
+//            Read response
             String responseMessage = socketConnector.readFromServer();
-            NetworkContainer networkContainerResponse = gson.fromJson(responseMessage, NetworkContainer.class);
-             user = (User) networkContainerResponse.getObject();
-            System.out.println(user.getUsername());
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            user  = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+            System.out.println("[CLIENT] Disconnected from server");
 
         } catch (IOException e) {
             e.printStackTrace();
+           throw new ServiceNotAvailable("Couldn't connect to the server");
         }
 
-        if (user == null) {
-            return false;
-        }
 
-        return true;
+return user;
     }
 
-    @Override
-    public User getUserByUsername(String username) {
-        ResponseEntity<User> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getUserByUsername/" + username, User.class);
-        return response.getBody();
-    }
+
 }
