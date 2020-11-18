@@ -1,66 +1,63 @@
 package com.group10.paperlessexamwebservice.databaserequests.networkcontainer;
 
-import org.springframework.http.HttpStatus;
-
-import java.io.Serializable;
-
 /**
- * NetworkContainer class is used to send objects across the network
+ * NetworkContainer class is used to send objects across the network.
+ * Request operation is used as an ENUM identifier of the container{@link RequestOperation}.
+ * The second parameter must contain the Serialized JSON object.
  *
  * @author Marin Bilba
  * @version 1.0
  */
-public class NetworkContainer implements Serializable {
+public class NetworkContainer  {
     private RequestOperation requestOperation;
-    private Object object;
-    private HttpStatus httpStatus;
-    private String message;
+    private String serializedObject;
 
-    public NetworkContainer(Object object) {
-        this.object = object;
+    /**
+     * Instantiates a new Network container.
+     *
+     * @param requestOperation the request operation
+     * @param serializedObject   the serialized object
+     */
+    public NetworkContainer(RequestOperation requestOperation, String serializedObject) {
+        this.requestOperation=requestOperation;
+        this.serializedObject = serializedObject;
+
     }
 
-    public NetworkContainer(RequestOperation requestOperation, Object object) {
-        this.requestOperation = requestOperation;
-        this.object = object;
-    }
-
-    public NetworkContainer(RequestOperation requestOperation, Object object, HttpStatus httpStatus, String message) {
-       this.requestOperation=requestOperation;
-        this.object = object;
-        this.httpStatus = httpStatus;
-        this.message = message;
-    }
-
+    /**
+     * Gets request operation.
+     *
+     * @return the request operation
+     */
     public RequestOperation getRequestOperation() {
         return requestOperation;
     }
 
+    /**
+     * Sets request operation.
+     *
+     * @param requestOperation the request operation
+     */
     public void setRequestOperation(RequestOperation requestOperation) {
         this.requestOperation = requestOperation;
     }
 
-    public Object getObject() {
-        return object;
+    /**
+     * Gets object.
+     *
+     * @return the object
+     */
+    public String getSerializedObject() {
+        return serializedObject;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    /**
+     * Sets object.
+     *
+     * @param serializedObject the object
+     */
+    public void setSerializedObject(String serializedObject) {
+        this.serializedObject = serializedObject;
     }
 
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    public void setHttpStatus(HttpStatus httpStatus) {
-        this.httpStatus = httpStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
