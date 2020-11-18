@@ -19,7 +19,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
         {
             client = new HttpClient();
         }
-
         public async Task<User> LoginUser(User user)
         {
             User userDeserialize = null;
@@ -58,12 +57,13 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
                 Console.WriteLine();
 
                 throw new Exception(serverMessage);
+            }else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
             }
 
             return userDeserialize;
         }
-
-        
         public async Task CreateUserAsync(User user)
         {
             // string accountSerialized = JsonSerializer.Serialize(user);
@@ -72,4 +72,5 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             // Console.WriteLine(responseMessage.ToString());
         }
     }
+
 }

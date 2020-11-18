@@ -1,17 +1,16 @@
 package com.group10.paperlessexamwebservice.service;
 
-import com.group10.paperlessexamwebservice.dao.IUserRequests;
+import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
-import com.group10.paperlessexamwebservice.service.exceptions.user.DataBaseException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.EmailException;
+import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -24,17 +23,30 @@ public class PaperlessExamServiceImpl implements IUserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User logInUser(User user) throws UsernameNotFoundException, PasswordNotFoundException, DataBaseException {
-//        Get user by username
-        ResponseEntity<User> temp = userRequest.login(user);
-        if (temp.getStatusCode().is2xxSuccessful())
-        {
-            temp.getBody();
+    public User logInUser(User user) throws ServiceNotAvailable,PasswordNotFoundException {
+        //        Get the user object by username for further validation
+        User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
+        //        Check user by username
+        if (userRequest.getUserByUsername(user.getUsername()) == null) {
+            throw new UsernameNotFoundException("Username is incorrect");
         }
-        else if (temp.getStatusCode().isError())
-        {
-            throw new DataBaseException("Smth went wrong");
+        // Password validation
+        if (!requestedUserFromTheDatabase.getPassword().equals(user.getPassword())) {
+            throw new PasswordNotFoundException("Password is incorrect");
         }
+        System.out.println("bleati");
+        return requestedUserFromTheDatabase;
+
+//
+//        ResponseEntity<User> temp = userRequest.login(user);
+//        if (temp.getStatusCode().is2xxSuccessful())
+//        {
+//            temp.getBody();
+//        }
+//        else if (temp.getStatusCode().isError())
+//        {
+//            throw new DataBaseException("Smth went wrong");
+//        }
 //
 //
 //        if (userRequest.usernameExists(user.getUsername())) {
@@ -42,7 +54,6 @@ public class PaperlessExamServiceImpl implements IUserService {
 //        } else if (!userRequest.checkPassword(user.getPassword())) {
 //            throw new PasswordNotFoundException("Password is incorrect");
 //        } else
-            return temp.getBody();
     }
 
     @Override
@@ -54,13 +65,10 @@ public class PaperlessExamServiceImpl implements IUserService {
         Role tempRole = userRequest.getRoleIdByName(user.getRole().getName());
         // set the recieved role to the current user
         user.setRole(tempRole);
-        if (userRequest.usernameExist(user.getUsername()))
-        {
+        if (userRequest.getUserByUsername(user.getUsername())==null) {
             throw new Exception("Username");
             // throw la exceptie !!!!!
-        }
-        else
-        {
+        } else {
             return userRequest.createUser(user);
         }
 

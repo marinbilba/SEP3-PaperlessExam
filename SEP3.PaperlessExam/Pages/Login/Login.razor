@@ -1,49 +1,64 @@
-﻿@page "/tyutre"
+﻿@page "/"
 @page "/login"
-@using SEP3.PaperlessExam.Pages.Login
 
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
-@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Authentication
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPaperlessExamService PaperlessExamService;
 @layout LoginLayout
-
 @inject NavigationManager NavigationManager
 
 <link rel="stylesheet" href="css/Login/style.css">
-
-<div class="login-page">
-    <div class="form">
-        <form class="login-form">
-            <input type="text" placeholder="username" @bind-value="username"/>
-            <input type="password" placeholder="password" @bind-value="password"/>
-            <button @onclick="@SubmitLogin">login</button>
-            <div style="color:#ff0000">@errorMessage</div>
-        </form>
-    </div>
-</div>
-
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="login-page">
+            <div class="form">
+                <form class="login-form">
+                    <input type="text" placeholder="username" @bind-value="_username"/>
+                    <input type="password" placeholder="password" @bind-value="_password"/>
+                    <button type="button" @onclick="@SubmitLogin">Login</button>
+                    <div style="color:red">@_errorMessage</div>
+                    @if (_loadingShow)
+                    {
+                        <div class="spinner"></div>
+                    }
+                </form>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-    private string username;
-    private string password;
-    private string errorMessage;
+    private string _username;
+    private string _password;
+    private string _errorMessage;
+
+    private bool _loadingShow;
 
     private async Task SubmitLogin()
     {
-        errorMessage = "";
+        _errorMessage = "";
         try
         {
-    // ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(username, password);
-            PaperlessExamService.LoginUser(new User(username, password));
-            username = "";
-            password = "";
-            Console.WriteLine("logintest");
+            ValidateUsernameAndPasswordField();
+            _loadingShow = true;
+            await ((CustomAuthenticationStateProvider) AuthenticationStateProvider).ValidateLogin(_username, _password);
+            _username = "";
+            _password = "";
             NavigationManager.NavigateTo("/index", true);
         }
         catch (Exception e)
-        {
-            errorMessage = e.Message;
+        { 
+            _loadingShow = false;
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
         }
+    }
+
+    private void ValidateUsernameAndPasswordField()
+    {
+        if (string.IsNullOrEmpty(_username)) throw new Exception("Enter username");
+        if (string.IsNullOrEmpty(_password)) throw new Exception("Enter password");
     }
 
 }

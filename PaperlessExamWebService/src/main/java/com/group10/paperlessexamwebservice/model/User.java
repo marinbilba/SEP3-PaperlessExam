@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @author Marin Bilba
  * @version 1.0
  */
-@Component
+
 public class User {
 
     private Long id;
@@ -27,7 +27,9 @@ public class User {
 
     private Role role;
 
+
     public User() {
+
     }
 
     /**
@@ -41,7 +43,8 @@ public class User {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String username, String email, String password, Role role) {
+    public User(long id,String firstName, String lastName, String username, String email, String password, Role role) {
+      this.id=id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -50,6 +53,8 @@ public class User {
 
         this.role = role;
     }
+
+
 
     public String getFirstName() {
         return firstName;

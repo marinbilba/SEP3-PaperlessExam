@@ -11,6 +11,7 @@ import javax.persistence.*;
  * @version 1.0
  */
 @Entity
+
 @Table(name = "users")
 public class User {
     // Identity generation type will let the Database to generate the PK
@@ -22,13 +23,13 @@ public class User {
     private String firstName;
     @Column(name = "lastname")
     private String lastName;
-    @Column(name = "username")
+    @Column(name = "username",unique = true)
     private String username;
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
     @Column(name = "password")
     private String password;
-    @OneToOne
+   @OneToOne
     @NotNull
     @JoinColumn(name="fk_role_id")
     private Role role;
