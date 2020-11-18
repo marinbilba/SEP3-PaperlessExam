@@ -52,8 +52,8 @@ public class UserController {
      * @param user User object in JSON format
      * @return <i>HTTP 200 - OK</i> code if credentials are verified. Returns <i>HTTP 400 - BAD_REQUEST</i> if credentials are incorrect.
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> login(@RequestBody User user) {
+
+    public ResponseEntity<?> login(User user) {
         if (validateLogin(user.getUsername(), user.getPassword())) {
             User user1=userRepository.findByUsername(user.getUsername());
             System.out.println(user1.getRole().getName());
@@ -67,7 +67,7 @@ public class UserController {
      *
      * @return the list of all users
      */
-    @RequestMapping(value = "/getUsersList", method = RequestMethod.GET)
+
     public List<User> getAllUsersList() {
         System.out.println("Yess");
         return userRepository.findAll();
@@ -78,8 +78,8 @@ public class UserController {
      *
      * @return the list of all users
      */
-    @RequestMapping(value = "/getUsersByLastName/{lastName}", method = RequestMethod.GET)
-    public List<User> getUsersByLastName(@PathVariable(value = ("lastName")) String lastName) {
+
+    public List<User> getUsersByLastName( String lastName) {
         System.out.println(lastName);
         return userRepository.findByLastName(lastName);
     }
@@ -89,8 +89,8 @@ public class UserController {
      *
      * @return the list of all users
      */
-    @RequestMapping(value = "/getUserById/{id}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable(value = ("id")) long userId) {
+
+    public User getUserById( long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
     }
@@ -101,8 +101,9 @@ public class UserController {
      */
 
     public User getUserByUsername(String username) {
-        System.out.println("suca");
-        return userRepository.getUserByUsername(username);
+        System.out.println("here");
+
+        return   userRepository.getUserByUsername(username);
     }
 
     /**
@@ -111,15 +112,15 @@ public class UserController {
      * @param user
      * @return the create user object
      */
-    @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User createUser(@RequestBody User user) {
+
+    public User createUser(User user) {
         System.out.println(user.getFirstName());
         System.out.println(user.getRole().getName());
         return userRepository.save(user);
     }
 
-    @RequestMapping("/updateUser/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable("id") long userId) {
+
+    public User updateUser( User user, long userId) {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
@@ -137,8 +138,7 @@ public class UserController {
      *       exists in the database a 200 OK status code will be returned to the client including a confirmation
      *       String message with the id and username of the delete user in the http body.
      */
-    @RequestMapping(value = "/deleteUser/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long userId) {
+    public ResponseEntity<String> deleteUser(long userId) {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
         userRepository.delete(existingUser);
         return ResponseEntity.status(HttpStatus.OK).body("The user with the id: " + existingUser.getId() +
