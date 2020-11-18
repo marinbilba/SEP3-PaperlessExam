@@ -26,6 +26,7 @@ public class Server {
     private UserController userController;
     @Autowired
     private RoleController roleController;
+
     private static final HashSet<Object> controllersSet = new HashSet<>();
 
     @PostConstruct
