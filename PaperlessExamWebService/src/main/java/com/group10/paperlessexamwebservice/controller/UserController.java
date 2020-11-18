@@ -3,6 +3,7 @@ package com.group10.paperlessexamwebservice.controller;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.IUserService;
+import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.DataBaseException;
 import com.group10.paperlessexamwebservice.service.exceptions.user.EmailException;
 import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,8 +52,9 @@ public class UserController {
         try {
             temp = userService.logInUser(user);
         } catch (UsernameNotFoundException | PasswordNotFoundException e) {
-
             return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (ServiceNotAvailable e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
