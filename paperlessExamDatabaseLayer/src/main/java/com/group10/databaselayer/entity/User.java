@@ -11,6 +11,7 @@ import javax.persistence.*;
  * @version 1.0
  */
 @Entity
+
 @Table(name = "users")
 public class User {
     // Identity generation type will let the Database to generate the PK

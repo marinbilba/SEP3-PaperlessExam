@@ -1,7 +1,5 @@
 package com.group10.paperlessexamwebservice.model;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @author Marin Bilba
  * @version 1.0
  */
-@Component
+
 public class User {
 
     private Long id;
@@ -45,7 +43,8 @@ public class User {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String username, String email, String password, Role role) {
+    public User(long id,String firstName, String lastName, String username, String email, String password, Role role) {
+      this.id=id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
