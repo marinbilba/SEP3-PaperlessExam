@@ -5,13 +5,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
+import com.group10.databaselayer.controller.UserControllerTEMO;
 import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
+import com.group10.databaselayer.entity.Role;
 import com.group10.databaselayer.entity.User;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
+
+import static com.group10.databaselayer.controller.networkcontainer.RequestOperation.*;
 
 
 /**
@@ -33,8 +37,10 @@ public class ServerSocketHandler implements Runnable {
     private final Socket socket;
     private final HashSet<Object> controllersSet;
 
-    private UserController userController;
+    private UserControllerTEMO userControllerTEMO;
     private RoleController roleController;
+    private UserController userController;
+
 
     private final Gson gson;
 
@@ -61,13 +67,14 @@ public class ServerSocketHandler implements Runnable {
      */
     private void parseControllerSet(HashSet<Object> controllersSet) {
         for (Object controller : controllersSet) {
-            if (controller instanceof UserController) {
-                this.userController = (UserController) controller;
-                System.out.println(userController.hashCode());
-//     wtf IS THIS???????
- userController.getUserByUsername("s");
+            if (controller instanceof UserControllerTEMO) {
+                this.userControllerTEMO = (UserControllerTEMO) controller;
+                //     wtf IS THIS???????
+           //     userControllerTEMO.getUsersByLastName("s");
             } else if (controller instanceof RoleController) {
                 this.roleController = (RoleController) controller;
+            }else if (controller instanceof UserController){
+                this.userController=(UserController) controller;
             }
 
         }
@@ -82,30 +89,41 @@ public class ServerSocketHandler implements Runnable {
         return controllersSet;
     }
 
+
     @Override
     public void run() {
-
+        String userSerialized;
+        NetworkContainer networkContainer;
+        String stringResponseSerialized;
         try {
             String message = receiveRequest();
             NetworkContainer networkContainerRequestDeserialized = gson.fromJson(message, NetworkContainer.class);
-            System.out.println(networkContainerRequestDeserialized.getRequestOperation());
             RequestOperation requestOperation = networkContainerRequestDeserialized.getRequestOperation();
-            System.out.println(requestOperation);
-            switch (requestOperation) {
-                case USERNAME_EXISTS:
 
+            switch (requestOperation) {
+                case GET_USER_BY_USERNAME:
+                    System.out.println("GET_USER_BY_USERNAME start");
                     String username = networkContainerRequestDeserialized.getSerializedObject();
-                    System.out.println(username);
                     User userFromDatabase = userController.getUserByUsername(username);
-                    String userSerialized = gson.toJson(userFromDatabase);
-                    NetworkContainer networkContainer = new NetworkContainer(RequestOperation.USERNAME_EXISTS, userSerialized);
-                    String stringResponseSerialized = gson.toJson(networkContainer);
-                    System.out.println(stringResponseSerialized);
+                     userSerialized = gson.toJson(userFromDatabase);
+                     networkContainer = new NetworkContainer(GET_USER_BY_USERNAME, userSerialized);
+                     stringResponseSerialized = gson.toJson(networkContainer);
                     sendResponse(stringResponseSerialized);
+                    System.out.println("GET_USER_BY_USERNAME end");
+                    break;
+                case CREATE_USER:
+                    System.out.println("CREATE_USER start");
+                    User userDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
+                   //User pula=new User("Marin","Bilba","marinbilba","marin@.sd","123456",new Role((long) 1,"Student"));
+                    User createdUser = userController.createUser(userDeserialized);
+                    System.out.println("doneeeee");
+                     userSerialized = gson.toJson(createdUser);
+                     networkContainer = new NetworkContainer(CREATE_USER, userSerialized);
+                     stringResponseSerialized = gson.toJson(networkContainer);
+                    sendResponse(stringResponseSerialized);
+                    System.out.println("CREATE_USER end");
                     break;
             }
-            System.out.println("Received from client: " + message);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

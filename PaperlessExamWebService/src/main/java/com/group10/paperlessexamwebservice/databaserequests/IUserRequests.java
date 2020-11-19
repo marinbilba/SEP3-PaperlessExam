@@ -16,7 +16,7 @@ public interface IUserRequests {
     //    Check if email exists in the database
     boolean emailExists(String email);
 
-    User createUser(User user);
+    User createUser(User user) throws ServiceNotAvailable;
 // Return all users in the database
     List<User> getAllUsersList();
 

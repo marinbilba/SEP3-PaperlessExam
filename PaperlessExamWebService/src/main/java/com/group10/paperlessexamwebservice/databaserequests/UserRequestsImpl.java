@@ -3,10 +3,13 @@ package com.group10.paperlessexamwebservice.databaserequests;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
+import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import jdk.jfr.Unsigned;
+import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,15 +88,51 @@ public class UserRequestsImpl implements IUserRequests {
         return false;
     }
 
+
     @Override
-    public User createUser(User user) {
-        User temp;
-        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
-        temp = response.getBody();
+    public User createUser(User user) throws ServiceNotAvailable {
+        User tempUser = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+//            Send request
+            String userSerialized = gson.toJson(user);
+            NetworkContainer networkContainer = new NetworkContainer(CREATE_USER, userSerialized);
+            String networkContainerSerialized = gson.toJson(networkContainer);
+            socketConnector.sendToServer(networkContainerSerialized);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            tempUser  = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+            System.out.println("[CLIENT] Disconnected from server");
 
-        return temp;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return tempUser;
     }
-
+//
+//   private <T> T makeRequest(RequestOperation requestOperation,Object objectToSerialize,Class<T> classOfT) throws IOException {
+//       socketConnector.connect();
+//       System.out.println("[CLIENT] Connected to server");
+//        classOfT = (Class<T>) objectToSerialize;
+//       String objectSerialized = gson.toJson(classOfT);
+//       NetworkContainer networkContainer = new NetworkContainer(requestOperation, objectSerialized);
+//       String stringRequestSerialized = gson.toJson(networkContainer);
+//       socketConnector.sendToServer(stringRequestSerialized);
+//       //            Read response
+//       String responseMessage = socketConnector.readFromServer();
+//       NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+//       tempUser  = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+//       //            Disconnect
+//       socketConnector.disconnect();
+//       System.out.println("[CLIENT] Disconnected from server");
+//
+//   }
     @Override
     public List<User> getAllUsersList() {
         return null;
@@ -127,31 +166,28 @@ public class UserRequestsImpl implements IUserRequests {
     @Override
     public User getUserByUsername(String username) throws ServiceNotAvailable {
         User user = null;
-
-// Connect
+        // Connect
         try {
             socketConnector.connect();
             System.out.println("[CLIENT] Connected to server");
 //            Send request
-            NetworkContainer networkContainer = new NetworkContainer(USERNAME_EXISTS, username);
+            NetworkContainer networkContainer = new NetworkContainer(GET_USER_BY_USERNAME, username);
             String stringRequestSerialized = gson.toJson(networkContainer);
             socketConnector.sendToServer(stringRequestSerialized);
 
 //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
-            user  = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            user = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
             //            Disconnect
             socketConnector.disconnect();
             System.out.println("[CLIENT] Disconnected from server");
 
         } catch (IOException e) {
             e.printStackTrace();
-           throw new ServiceNotAvailable("Couldn't connect to the server");
+            throw new ServiceNotAvailable("Couldn't connect to the server");
         }
-
-
-return user;
+        return user;
     }
 
 
