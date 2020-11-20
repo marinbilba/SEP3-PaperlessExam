@@ -20,7 +20,7 @@ public interface IUserRequests {
 // Return all users in the database
     List<User> getAllUsersList();
 
-    Role getRoleIdByName(String name);
+    Role getRoleIdByName(String name) throws ServiceNotAvailable;
 
     User getUserByUsername(String username) throws ServiceNotAvailable;
 

@@ -48,6 +48,22 @@ public class PaperlessExamServiceImpl implements IUserService {
         return requestedUserFromTheDatabase;
     }
 
+    /**
+     * Creates and stores a user in the database. The following steps are performed
+     *  1. Check if the username exists in the database, else exception is thrown
+     *  2. Check if the username does match the substring of the email until the '@' char, else exception is thrown
+     *  3. Password validation
+     *  4. Get the role id by provided name from the Client
+     *  5. Set the received role id to the current user object instance
+     *  6. Create the user
+     *  
+     * @param user user object that should be stored
+     * @return created User object
+     * @throws UsernameNotMatchEmail the username does not match the substring of the email until the '@' char
+     * @throws PasswordException if credentials are incorrect
+     * @throws ServiceNotAvailable if there are connection problems with the third tier
+     * @throws UsernameFoundException the username already exists in the database
+     */
     @Override
     public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException {
         // Check if the username exists in the database
@@ -61,10 +77,12 @@ public class PaperlessExamServiceImpl implements IUserService {
             throw new UsernameNotMatchEmail("Username must match the email until the '@' sign ");
         }
         //   Password validation
-
         if(!user.getPassword().equals(user.getConfirmPassword())){
             throw new PasswordException("Password does not match Confirm Password field");
         }
+        // Get role id
+        Role roleId= userRequest.getRoleIdByName(user.getRole().getName());
+        user.setRole(roleId);
         return userRequest.createUser(user);
     }
 

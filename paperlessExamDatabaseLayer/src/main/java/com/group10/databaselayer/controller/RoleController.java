@@ -28,12 +28,9 @@ public class RoleController {
      * Method will return the user filtered by id
      *
      * @return the list of all users
+     * @param roleDeserialized
      */
-    @RequestMapping(value = "/getRoleByName/{roleName}", method = RequestMethod.GET)
-    public Role getUserById(@PathVariable(value = ("roleName")) String roleName) {
-        System.out.println(roleName);
-        return roleRepository.findByName(roleName);
+    public Role getRoleByName(String roleDeserialized) {
+        return roleRepository.findByName(roleDeserialized);
     }
-
-
 }

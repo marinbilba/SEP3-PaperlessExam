@@ -15,6 +15,7 @@ public enum RequestOperation {
       //    User request
       @Enumerated
       GET_USER_BY_USERNAME,
-    CREATE_USER
+    CREATE_USER,
+    GET_ROLE_ID_BY_NAME
 
 }
