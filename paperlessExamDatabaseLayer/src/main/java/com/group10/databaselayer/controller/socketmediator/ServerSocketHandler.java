@@ -10,11 +10,11 @@ import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
 import com.group10.databaselayer.entity.Role;
 import com.group10.databaselayer.entity.User;
+import org.springframework.context.annotation.Scope;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
-import java.util.concurrent.Callable;
 
 import static com.group10.databaselayer.controller.networkcontainer.RequestOperation.*;
 
@@ -33,7 +33,8 @@ import static com.group10.databaselayer.controller.networkcontainer.RequestOpera
  * @author Marin Bilba
  * @version 2.5
  */
-public class ServerSocketHandler implements  Runnable {
+@Scope("prototype")
+public class ServerSocketHandler implements Runnable {
 
     private final Socket socket;
     private final HashSet<Object> controllersSet;
@@ -47,17 +48,20 @@ public class ServerSocketHandler implements  Runnable {
     private String objectSerialized;
     private NetworkContainer networkContainer;
     private String stringResponseSerialized;
+
+
     /**
      * Instantiates a new Server socket handler.
-     *
-     * @param socket         the socket
+     *  @param socket         the socket
      * @param controllersSet the controllers set
+
      */
     public ServerSocketHandler(Socket socket, HashSet<Object> controllersSet) {
         this.socket = socket;
         this.controllersSet = controllersSet;
         gson = new GsonBuilder().setPrettyPrinting().create();
         parseControllerSet(this.controllersSet);
+
     }
 
     /**
@@ -87,8 +91,8 @@ public class ServerSocketHandler implements  Runnable {
      * object {@link NetworkContainer}. Based on first argument of the NetworkContainer the
      * request operation is get and routed to the appropriate functionality.
      */
-    @Override
-    public void run() {
+@Override
+ public void run() {
         try {
             String message = receiveRequest();
             NetworkContainer networkContainerRequestDeserialized = gson.fromJson(message, NetworkContainer.class);
@@ -206,28 +210,4 @@ public class ServerSocketHandler implements  Runnable {
 
     }
 
-//
-//    @Override
-//    public String call() throws Exception {
-//        try {
-//            String message = receiveRequest();
-//            NetworkContainer networkContainerRequestDeserialized = gson.fromJson(message, NetworkContainer.class);
-//            RequestOperation requestOperation = networkContainerRequestDeserialized.getRequestOperation();
-//
-//            switch (requestOperation) {
-//                case GET_USER_BY_USERNAME:
-//                    getUserByUsername(networkContainerRequestDeserialized);
-//                    break;
-//                case CREATE_USER:
-//                    createUser(networkContainerRequestDeserialized);
-//                    break;
-//                case GET_ROLE_ID_BY_NAME:
-//                    getRoleIdByName(networkContainerRequestDeserialized);
-//                    break;
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return "Done";
-//    }
 }
