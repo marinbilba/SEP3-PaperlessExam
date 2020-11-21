@@ -4,8 +4,6 @@ import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
 import com.group10.databaselayer.controller.UserControllerTEMO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -13,13 +11,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @Component
-
 public class Server {
     private static final int SERVER_PORT = 8000;
     @Autowired
@@ -29,9 +24,10 @@ public class Server {
     @Autowired
     private UserController userController;
 
-    @Autowired
-    @Qualifier("fixedThreadPool")
-    private ExecutorService executorService;
+
+
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     private static final HashSet<Object> controllersSet = new HashSet<>();
 
@@ -43,7 +39,6 @@ public class Server {
         runServer();
     }
 
-@Scope
     public void runServer() {
 
         try {
@@ -51,11 +46,20 @@ public class Server {
             while (true) {
                 System.out.println("[SERVER] Waiting for client connection on port " + SERVER_PORT);
                 Socket socket = server.accept();
-               // ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
-             //   executeWithResult(serverSocketHandler);
-           //     serverSocketHandler.run();
-                Thread thread=new Thread(new ServerSocketHandler(socket, controllersSet));
-                thread.start();
+                ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
+                executorService.submit(serverSocketHandler);
+
+                try {
+                    executorService.shutdown();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // serverSocketHandler.start();
+                // executorService.execute(serverSocketHandler.run());
+                //   executeWithResult(serverSocketHandler);
+                //     serverSocketHandler.run();
+//                Thread thread=new Thread(new ServerSocketHandler(socket, controllersSet));
+//                thread.start();
                 System.out.println("[SERVER] Connected to client");
 
             }
