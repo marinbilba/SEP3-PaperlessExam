@@ -18,6 +18,7 @@ public class UserController {
      */
 
     public User getUserByUsername(String username) {
+        System.out.println("sad");
         return userRepository.getUserByUsername(username);
     }
     /**
