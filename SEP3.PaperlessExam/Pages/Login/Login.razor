@@ -16,12 +16,25 @@
                 <form class="login-form">
                     <input type="text" placeholder="username" @bind-value="_username"/>
                     <input type="password" placeholder="password" @bind-value="_password"/>
-                    <button type="button" @onclick="@SubmitLogin">Login</button>
-                    <div style="color:red">@_errorMessage</div>
-                    @if (_loadingShow)
+
+                    @if (!_loadingShow)
                     {
-                        <div class="spinner"></div>
+                        <button type="button" @onclick="@SubmitLogin">
+                            Login
+                        </button>
                     }
+                    else
+                    {
+                        <button type="button" @onclick="@SubmitLogin">
+                            <div id="spinner">
+                                   <Chase Color="#4a6ac8"Size="20px" />
+                            </div>
+                             
+                           Login
+                        </button>
+                    }
+                    <div style="color:red">@_errorMessage</div>
+
                 </form>
             </div>
         </div>
@@ -33,7 +46,7 @@
     private string _password;
     private string _errorMessage;
 
-    private bool _loadingShow;
+    private bool _loadingShow = false;
 
     private async Task SubmitLogin()
     {
@@ -48,7 +61,7 @@
             NavigationManager.NavigateTo("/index", true);
         }
         catch (Exception e)
-        { 
+        {
             _loadingShow = false;
             _errorMessage = e.Message;
             Console.WriteLine(e);
