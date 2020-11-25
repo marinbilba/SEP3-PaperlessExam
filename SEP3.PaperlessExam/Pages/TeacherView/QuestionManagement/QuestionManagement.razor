@@ -1,0 +1,44 @@
+﻿@page "/"
+@page "/questionManagement"
+
+<link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/questionManagement.css">
+
+<div class="jumbotron text-center">
+    <h1>QuestionManagement</h1>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            @* sa *@
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="css/TeacherView/QuestionManagement/createQuestion.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Create questions</h5>
+                    <p class="card-text">
+                      You can compose written and multiple choice questions here
+                    </p>
+                    <a href="createQuestion" class="btn btn-primary">Create</a>
+                </div>
+            </div>
+            @* sa *@
+        </div>
+        <div class="col-md-3">
+    <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="css/TeacherView/QuestionManagement/reviewQuestions.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Review/Update questions</h5>
+                    <p class="card-text">
+                       You can update and delete the questions you created here
+                    </p>
+                    <a href="reviewQuestions" class="btn btn-primary">Display</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+}
