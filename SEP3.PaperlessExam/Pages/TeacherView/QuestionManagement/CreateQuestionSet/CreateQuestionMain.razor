@@ -1,5 +1,88 @@
-﻿<h3>CreateQuestion</h3>
+﻿@page "/createQuestion"
+@using Radzen
+
+
+<div class="jumbotron text-center">
+    <h1>Create Question</h1>
+</div>
+<RadzenContent Container="main">
+    <ChildContent>
+        <RadzenSteps NextText="Next" Change=@((args) => StepChange(args))>
+            <Steps>
+                @* First step *@
+                <RadzenStepsItem Disabled="false" Selected="false" Text="Question type">
+                    <ChildContent>
+                        <RadzenLabel Text="Choose question type:">
+                        </RadzenLabel>
+
+                        <RadzenRadioButtonList @bind-Value=@value TValue="int" Orientation="Orientation.Vertical" Change=@((args) => OnChange(args))>
+                            <Items>
+                                <RadzenRadioButtonListItem Text="Written" Value="1"/>
+                                <RadzenRadioButtonListItem Text="Multiple-choice" Value="2"/>
+                            </Items>
+                        </RadzenRadioButtonList>
+                    </ChildContent>
+                </RadzenStepsItem>
+                @* Second step *@
+                <RadzenStepsItem Text="Title">
+                    <RadzenLabel Text="Title"/>
+                    <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTitle(args))>
+                    </RadzenTextBox>
+                    <div style="color:red">@errorMessage</div>
+                    <RadzenLabel Text="Topic"/>
+                    <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTopic(args))>
+                    </RadzenTextBox>
+                    <div style="color:red">@errorMessage</div>
+                </RadzenStepsItem>
+            </Steps>
+        </RadzenSteps>
+    </ChildContent>
+</RadzenContent>
 
 @code {
+    private string questionType;
     
+    private string errorMessage;
+
+    int value = 1;
+    int? nullableValue = null;
+
+    void OnChange(int? value)
+    {
+        switch (value)
+
+        {
+            case 1:
+                questionType = "Written";
+                break;
+            case 2:
+                questionType = "Multiple-choice";
+                break;
+        }
+    }
+
+
+    private void SetTopic(string value)
+    {
+        Console.WriteLine(value);
+    }
+
+    private void SetTitle(string value)
+    {
+        throw new NotImplementedException();
+    }
+
+    private int previousStep;
+    private int currentStep;
+    internal async Task StepChange(int args)
+    {
+        previousStep = currentStep;
+        currentStep = args;
+
+        Console.WriteLine(currentStep); 
+    }
+
+
+
+
 }
