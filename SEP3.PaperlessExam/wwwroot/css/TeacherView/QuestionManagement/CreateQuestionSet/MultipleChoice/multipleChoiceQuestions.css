@@ -1,0 +1,22 @@
+﻿.questionContainer{
+    border:1px solid #222120;
+    padding: 10px;
+}
+/*Black box with question number*/
+.questionNumberBox {
+
+    width: 36px;
+    height: 34px;
+    background: #222120;
+
+
+
+}
+.questionNumber{
+    width: 36px;
+    background: #222120;
+    color: white;
+    text-align: center;
+}
+/* Space between bootstrap rows*/
+.top-buffer { margin-top:20px; }
