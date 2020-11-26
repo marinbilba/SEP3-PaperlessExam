@@ -1,4 +1,5 @@
-﻿@page "/createQuestion"
+﻿@page "/ghfjghj"
+@page "/createQuestion"
 @using Radzen
 
 
@@ -15,24 +16,37 @@
                         <RadzenLabel Text="Choose question type:">
                         </RadzenLabel>
 
-                        <RadzenRadioButtonList @bind-Value=@value TValue="int" Orientation="Orientation.Vertical" Change=@((args) => OnChange(args))>
+                        <RadzenRadioButtonList @bind-Value=@nullableValue TValue="int?" Orientation="Orientation.Vertical" Change=@((args) => SetQuestionType(args))>
                             <Items>
-                                <RadzenRadioButtonListItem Text="Written" Value="1"/>
-                                <RadzenRadioButtonListItem Text="Multiple-choice" Value="2"/>
+                                <RadzenRadioButtonListItem Text="Written" Value="1" TValue="int?"/>
+                                <RadzenRadioButtonListItem Text="Multiple-choice" Value="2" TValue="int?"/>
+
                             </Items>
                         </RadzenRadioButtonList>
                     </ChildContent>
                 </RadzenStepsItem>
                 @* Second step *@
-                <RadzenStepsItem Text="Title">
+                <RadzenStepsItem Text="Setup">
                     <RadzenLabel Text="Title"/>
-                    <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTitle(args))>
+                    <RadzenTextBox style="margin-bottom: 5px; margin-left: 16px" Change=@(args => SetTitle(args))>
                     </RadzenTextBox>
-                    <div style="color:red">@errorMessage</div>
+                    <div style="color:red">@_errorMessage</div>
                     <RadzenLabel Text="Topic"/>
                     <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTopic(args))>
                     </RadzenTextBox>
-                    <div style="color:red">@errorMessage</div>
+                    <div style="color:red">@_errorMessage</div>
+                </RadzenStepsItem>
+                <RadzenStepsItem Text="Create question">
+                    @* Third step *@
+                    @if (_displayWrittenQuestionBuilder)
+                    {
+                        <RadzenLabel Text="Written Question Builder"/>
+                    }
+                    @if (_displayMultipleChoiceQuestionBuilder)
+                    {
+                        <RadzenLabel Text="Multiple-choice Question Builder"/>
+                        <MultipleChoiceQuestions></MultipleChoiceQuestions>
+                    }
                 </RadzenStepsItem>
             </Steps>
         </RadzenSteps>
@@ -40,23 +54,31 @@
 </RadzenContent>
 
 @code {
-    private string questionType;
-    
-    private string errorMessage;
+    // Question type: Written or Multiple-choice
+    private string _questionType;
 
-    int value = 1;
-    int? nullableValue = null;
+    private string _errorMessage;
 
-    void OnChange(int? value)
+    private bool _displayMultipleChoiceQuestionBuilder;
+    private bool _displayWrittenQuestionBuilder;
+
+    // Used in first step as value for the radio buttons
+     int? nullableValue = null;
+
+    void SetQuestionType(int? value)
     {
+        _displayWrittenQuestionBuilder = false;
+        _displayMultipleChoiceQuestionBuilder = false;
         switch (value)
 
         {
             case 1:
-                questionType = "Written";
+                _questionType = "Written";
+                _displayWrittenQuestionBuilder = true;
                 break;
             case 2:
-                questionType = "Multiple-choice";
+                _questionType = "Multiple-choice";
+                _displayMultipleChoiceQuestionBuilder = true;
                 break;
         }
     }
@@ -72,14 +94,24 @@
         throw new NotImplementedException();
     }
 
-    private int previousStep;
-    private int currentStep;
+  
+
     internal async Task StepChange(int args)
     {
-        previousStep = currentStep;
-        currentStep = args;
-
-        Console.WriteLine(currentStep); 
+        Console.WriteLine(args);
+        switch (args)
+        {
+            case 2:
+                if (_questionType == "Written")
+                {
+                    Console.WriteLine(_questionType);
+                }
+                else if (_questionType == "Multiple-choice")
+                {
+                    Console.WriteLine(_questionType);
+                }
+                break;
+        }
     }
 
 
