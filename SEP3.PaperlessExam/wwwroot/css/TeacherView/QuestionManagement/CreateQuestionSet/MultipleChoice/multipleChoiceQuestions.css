@@ -20,3 +20,17 @@
 }
 /* Space between bootstrap rows*/
 .top-buffer { margin-top:20px; }
+
+/*Add new question*/
+.additionalQuestionSelectBox{
+    width: 36px;
+    height: 34px;
+    border: 2px dotted rgb(12, 12, 12);
+}
+.additionalQuestionButton{
+    border: 2px dotted rgb(12, 12, 12);
+    width: 50%;
+    background: white;
+}
+
+   
