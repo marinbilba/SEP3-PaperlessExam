@@ -1,16 +1,15 @@
 ﻿@page "/"
 @inject IJSRuntime JsRuntime;
-<h3>MultipleChoiceQuestions</h3>
+<h3 xmlns="http://www.w3.org/1999/html">MultipleChoiceQuestions</h3>
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 <div class="container-fluid questionContainer">
-     
+
     <div class="row">
         <div class="col-md-1">
             <div class="questionNumberBox">
                 <p class="questionNumber">@questionNumber</p>
             </div>
-
         </div>
         <div class="col-md-11">
 
@@ -39,7 +38,6 @@
     </div>
     @* Third row *@
     <div class="row top-buffer justify-content-center">
-
         <div class="col-md-1 offset-2">
             <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
             </RadzenCheckBox>
@@ -53,9 +51,30 @@
             </RadzenButton>
         </div>
     </div>
-
+    @* Add additional questions *@
+    <div class="row top-buffer justify-content-center">
+        <div class="col-md-1 offset-2">
+            <div class="additionalQuestionSelectBox">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <button type="button" class="additionalQuestionButton">
+                <span style="color: blue"> Add more</span>
+            </button>
+        </div>
+    </div>
 </div>
-
+@* Add new question && Finish buttons *@
+<div class="row top-buffer justify-content-between">
+    <div class="col-md-3 offset-9">
+        <RadzenButton Icon="" Text="Add question"> </RadzenButton>
+        <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
+                </RadzenButton>
+    </div>
+    @* <div class="col-md-3"> *@
+    @*    *@
+    @* </div> *@
+</div>
 
 @code {
     bool correctAnswerValue;
@@ -72,6 +91,7 @@
 
     private async Task DeleteAnswerRowAsync()
     {
-       await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
+        await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
     }
+
 }
