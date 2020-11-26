@@ -1,5 +1,77 @@
-﻿<h3>MultipleChoiceQuestions</h3>
+﻿@page "/"
+@inject IJSRuntime JsRuntime;
+<h3>MultipleChoiceQuestions</h3>
+
+<link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
+<div class="container-fluid questionContainer">
+     
+    <div class="row">
+        <div class="col-md-1">
+            <div class="questionNumberBox">
+                <p class="questionNumber">@questionNumber</p>
+            </div>
+
+        </div>
+        <div class="col-md-11">
+
+            <input type="text" class="form-control" placeholder="Type your question"/>
+        </div>
+    </div>
+    <div class="row top-buffer justify-content-center">
+        <div class="col-md-2">
+            <RadzenLabel Text="Check the correct question answer">
+            </RadzenLabel>
+
+        </div>
+        <div class="col-md-1">
+
+            <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
+            </RadzenCheckBox>
+
+        </div>
+        <div class="col-md-7">
+            <input type="text" class="form-control" placeholder="Answer"/>
+        </div>
+        <div class="col-md-1">
+            <RadzenButton Icon="delete" style="width: 37px">
+            </RadzenButton>
+        </div>
+    </div>
+    @* Third row *@
+    <div class="row top-buffer justify-content-center">
+
+        <div class="col-md-1 offset-2">
+            <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
+            </RadzenCheckBox>
+
+        </div>
+        <div class="col-md-7">
+            <input type="text" class="form-control" placeholder="Answer"/>
+        </div>
+        <div class="col-md-1">
+            <RadzenButton Icon="delete" style="width: 37px" Click="@DeleteAnswerRowAsync">
+            </RadzenButton>
+        </div>
+    </div>
+
+</div>
+
 
 @code {
-    
+    bool correctAnswerValue;
+
+    int questionNumber;
+
+    bool? correctAnswer;
+
+    private void SetCorrectAnswer(bool? value)
+    {
+        correctAnswer = value;
+        Console.WriteLine(correctAnswer);
+    }
+
+    private async Task DeleteAnswerRowAsync()
+    {
+       await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
+    }
 }
