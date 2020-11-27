@@ -1,4 +1,4 @@
-﻿@page "/ghfjghj"
+﻿@page "/"
 @page "/createQuestion"
 @using Radzen
 
@@ -40,11 +40,10 @@
                     @* Third step *@
                     @if (_displayWrittenQuestionBuilder)
                     {
-                        <RadzenLabel Text="Written Question Builder"/>
+                        <WrittenQuestions></WrittenQuestions>
                     }
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
-                        <RadzenLabel Text="Multiple-choice Question Builder"/>
                         <MultipleChoiceQuestions></MultipleChoiceQuestions>
                     }
                 </RadzenStepsItem>
