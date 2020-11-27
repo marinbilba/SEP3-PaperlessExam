@@ -1,43 +1,74 @@
 ﻿@page "/"
 @page "/createQuestion"
 @using Radzen
+@inject NotificationService NotificationService;
 
+<link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
 
 <div class="jumbotron text-center">
     <h1>Create Question</h1>
 </div>
 <RadzenContent Container="main">
     <ChildContent>
-        <RadzenSteps NextText="Next" Change=@((args) => StepChange(args))>
+        <RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
             <Steps>
                 @* First step *@
                 <RadzenStepsItem Disabled="false" Selected="false" Text="Question type">
                     <ChildContent>
-                        <RadzenLabel Text="Choose question type:">
-                        </RadzenLabel>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <RadzenLabel Text="*Choose question type:">
+                                </RadzenLabel>
+                            </div>
+                            <div class="col-md-1 offset-9">
+                                <RadzenButton Icon="help_outline" Click="@CheckErrorsOnFirstStep">
+                                </RadzenButton>
+                            </div>
+                        </div>
 
                         <RadzenRadioButtonList @bind-Value=@nullableValue TValue="int?" Orientation="Orientation.Vertical" Change=@((args) => SetQuestionType(args))>
                             <Items>
                                 <RadzenRadioButtonListItem Text="Written" Value="1" TValue="int?"/>
                                 <RadzenRadioButtonListItem Text="Multiple-choice" Value="2" TValue="int?"/>
-
                             </Items>
                         </RadzenRadioButtonList>
+                        <label style="color: red">@_errorMessage</label>
                     </ChildContent>
                 </RadzenStepsItem>
                 @* Second step *@
-                <RadzenStepsItem Text="Setup">
-                    <RadzenLabel Text="Title"/>
-                    <RadzenTextBox style="margin-bottom: 5px; margin-left: 16px" Change=@(args => SetTitle(args))>
-                    </RadzenTextBox>
-                    <div style="color:red">@_errorMessage</div>
-                    <RadzenLabel Text="Topic"/>
-                    <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTopic(args))>
-                    </RadzenTextBox>
+                <RadzenStepsItem Text="Setup" Disabled="_secondStepDisable">
+                    <div class="row">
+                        <div class="col-md-1 padding-right0">
+                            <RadzenLabel Text="Title"/>
+
+                        </div>
+                        <div class="col-md-3 padding-left0">
+                            <RadzenTextBox style="margin-bottom: 5px;" Change=@(args => SetTitle(args))>
+                            </RadzenTextBox>
+
+                        </div>
+                        <div class="col-md-1 offset-7">
+                            <RadzenButton Icon="help_outline" Click="@CheckErrorsOnSecondStep">
+                            </RadzenButton>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-1 padding-right0">
+                            <RadzenLabel Text="Topic"/>
+
+                        </div>
+                        <div class="col-md-3 padding-left0">
+                            <RadzenTextBox style="margin-left: 10px" Change=@(args => SetTopic(args))>
+                            </RadzenTextBox>
+
+
+                        </div>
+                    </div>
                     <div style="color:red">@_errorMessage</div>
                 </RadzenStepsItem>
-                <RadzenStepsItem Text="Create question">
-                    @* Third step *@
+                @* Third step *@
+                <RadzenStepsItem Text="Create question" Disabled="_thirdStepDisable">
                     @if (_displayWrittenQuestionBuilder)
                     {
                         <WrittenQuestions></WrittenQuestions>
@@ -45,6 +76,10 @@
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
                         <MultipleChoiceQuestions></MultipleChoiceQuestions>
+                    }
+                    else
+                    {
+                        <label style="color: red">Select </label>
                     }
                 </RadzenStepsItem>
             </Steps>
@@ -62,7 +97,19 @@
     private bool _displayWrittenQuestionBuilder;
 
     // Used in first step as value for the radio buttons
-     int? nullableValue = null;
+    int? nullableValue = null;
+
+    // Controls the access to second step.
+    private bool _secondStepDisable = true;
+    // Controls the access to third step.
+    private bool _thirdStepDisable = true;
+
+    // Second step
+    private string _questionSetTopic;
+    private string _questionSetTitle;
+
+    private bool _questionSetTopicIsSet;
+    private bool _questionSetTitleIsSet;
 
     void SetQuestionType(int? value)
     {
@@ -74,10 +121,12 @@
             case 1:
                 _questionType = "Written";
                 _displayWrittenQuestionBuilder = true;
+                _secondStepDisable = false;
                 break;
             case 2:
                 _questionType = "Multiple-choice";
                 _displayMultipleChoiceQuestionBuilder = true;
+                _secondStepDisable = false;
                 break;
         }
     }
@@ -85,21 +134,40 @@
 
     private void SetTopic(string value)
     {
-        Console.WriteLine(value);
+        if (value != null)
+        {
+            _questionSetTopic = value;
+            _questionSetTopicIsSet = true;
+        }
+        EvaluateIfThirdStepIsAvailable();
     }
 
     private void SetTitle(string value)
     {
-        throw new NotImplementedException();
+        if (value != null)
+        {
+            _questionSetTitle = value;
+            _questionSetTitleIsSet = true;
+        }
+        EvaluateIfThirdStepIsAvailable();
     }
 
-  
+    // Check if user has entered the title and the topic. If the expresion is fulfilled the third step will be open
+    private void EvaluateIfThirdStepIsAvailable()
+    {
+        if (_questionSetTitleIsSet && _questionSetTopicIsSet)
+        {
+            _thirdStepDisable = false;
+        }
+    }
 
-    internal async Task StepChange(int args)
+    protected async Task StepChange(int args)
     {
         Console.WriteLine(args);
         switch (args)
         {
+            case 1:
+                break;
             case 2:
                 if (_questionType == "Written")
                 {
@@ -113,7 +181,39 @@
         }
     }
 
+    private void CheckErrorsOnFirstStep()
+    {
+    // Check if user has selected the type
+        if (_questionType == null)
+        {
+            _errorMessage = "You must select a question type";
+        }
+        else if (_questionType != null)
+        {
+            _errorMessage = String.Empty;
+        }
+    }
 
+    private void CheckErrorsOnSecondStep()
+    {
+        if (_questionSetTopic == null)
+        {
+            _errorMessage = "Enter the topic";
+        }
+        else if (_questionSetTopic != null)
+        {
+            _errorMessage = String.Empty;
+        }
 
+        if (_questionSetTitle == null)
+        {
+            _errorMessage = "Enter the title";
+        }
+        else if (_questionSetTopic != null)
+        {
+            _errorMessage = String.Empty;
+        }
+      
+    }
 
 }
