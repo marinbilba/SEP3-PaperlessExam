@@ -1,4 +1,4 @@
-package com.group10.databaselayer.repositories;
+package com.group10.databaselayer.repositories.user;
 
 
 import com.group10.databaselayer.entity.user.User;
