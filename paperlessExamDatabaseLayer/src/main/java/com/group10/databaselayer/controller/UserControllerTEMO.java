@@ -1,18 +1,13 @@
 package com.group10.databaselayer.controller;
 
 import com.group10.databaselayer.exception.ResourceNotFoundException;
-import com.group10.databaselayer.repository.IUserRepository;
-import com.group10.databaselayer.entity.User;
+import com.group10.databaselayer.repositories.user.IUserRepository;
+import com.group10.databaselayer.entity.user.User;
 //import com.group10.databaselayer.repository.IUserRepositoryString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
