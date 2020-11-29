@@ -1,15 +1,9 @@
 package com.group10.databaselayer.controller;
 
-import com.group10.databaselayer.entity.Role;
-import com.group10.databaselayer.entity.User;
-import com.group10.databaselayer.repository.IRoleRepository;
-import com.group10.databaselayer.repository.IUserRepository;
+import com.group10.databaselayer.entity.user.Role;
+import com.group10.databaselayer.repositories.user.IRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for managing roles
