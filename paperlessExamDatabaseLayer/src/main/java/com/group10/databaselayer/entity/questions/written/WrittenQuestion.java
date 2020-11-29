@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * The type Written question.
- */
+
 @Entity
 @IdClass(Question.class)
 public class WrittenQuestion extends Question {
@@ -18,14 +16,22 @@ public class WrittenQuestion extends Question {
     private WrittenSet writtenSet;
 
 
+    /**
+     * Instantiates a new Written question.
+     */
     public WrittenQuestion() {
 
     }
 
+    /**
+     * Instantiates a new Written question.
+     *
+     * @param question the question
+     * @param score    the score
+     */
     public WrittenQuestion(String question, double score) {
         super(question, score);
     }
-
 
 
     /**

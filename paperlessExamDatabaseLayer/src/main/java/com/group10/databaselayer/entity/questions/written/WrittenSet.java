@@ -8,6 +8,13 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * WrittenSet entity. Class provides the functionality to add/remove questions and questions options as a requirment
+ * of the bidirectional one-to-many mapping between WrittenSet entity and WrittenQuestion {@link WrittenQuestion}
+ *
+ * @author Marin Bilba
+ * @version v1.0
+ */
 @Entity
 @IdClass(QuestionsSet.class)
 public class WrittenSet extends QuestionsSet {
@@ -17,20 +24,43 @@ public class WrittenSet extends QuestionsSet {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
+    private List<WrittenQuestion> writtenQuestions = new ArrayList<>();
 
+    /**
+     * Instantiates a new Written set.
+     */
     public WrittenSet() {
     }
 
+    /**
+     * Instantiates a new Written set.
+     *
+     * @param title the title
+     * @param topic the topic
+     */
     public WrittenSet(String title, String topic) {
         super(title, topic);
     }
 
+    /**
+     * Add question. Method synchronizes both sides of the bidirectional association between
+     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
+     * in order to avoid very subtle state propagation issues
+     *
+     * @param writtenQuestion the written question
+     */
     public void addQuestion(WrittenQuestion writtenQuestion) {
         this.writtenQuestions.add(writtenQuestion);
         writtenQuestion.setWrittenSet(this);
     }
 
+    /**
+     * Remove question. Method synchronizes both sides of the bidirectional association between
+     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
+     * in order to avoid very subtle state propagation issues
+     *
+     * @param writtenQuestion the written question
+     */
     public void removeQuestion(WrittenQuestion writtenQuestion) {
         this.writtenQuestions.remove(writtenQuestion);
         writtenQuestion.setWrittenSet(null);
@@ -38,11 +68,15 @@ public class WrittenSet extends QuestionsSet {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) { return false; }
-        if (getClass() != o.getClass()) { return false; }
-        if (! super.equals(o)) return false;
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) return false;
         else {
-            WrittenSet other=(WrittenSet) o;
+            WrittenSet other = (WrittenSet) o;
             return writtenQuestions.equals(other.writtenQuestions);
         }
     }

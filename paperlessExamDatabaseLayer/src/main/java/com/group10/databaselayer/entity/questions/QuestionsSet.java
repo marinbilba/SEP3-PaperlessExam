@@ -7,20 +7,35 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Mapped superclass for question sets. Class implements Serializable, because
+ * that’s a JPA requirement since the identifier might be use as the key for a second-level cache entry.
+ *
+ * @author Marin Bilba
+ * @version v1.0
+ */
 
 @MappedSuperclass
 @Embeddable
-public  class QuestionsSet implements Serializable {
-@Id
+public class QuestionsSet implements Serializable {
+    @Id
     private String title;
-  @Id
+    @Id
     private String topic;
 
 
-
+    /**
+     * Instantiates a new Questions set.
+     */
     public QuestionsSet() {
     }
 
+    /**
+     * Instantiates a new Questions set.
+     *
+     * @param title the title
+     * @param topic the topic
+     */
     public QuestionsSet(String title, String topic) {
         this.title = title;
         this.topic = topic;
