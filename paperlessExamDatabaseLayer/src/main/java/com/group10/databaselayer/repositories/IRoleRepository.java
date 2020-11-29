@@ -1,6 +1,6 @@
-package com.group10.databaselayer.repository;
+package com.group10.databaselayer.repositories;
 
-import com.group10.databaselayer.entity.Role;
+import com.group10.databaselayer.entity.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
