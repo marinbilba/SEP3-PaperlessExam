@@ -37,6 +37,7 @@ public class Server {
         controllersSet.add(roleController);
         controllersSet.add(userController);
         runServer();
+
     }
 
     public void runServer() {
@@ -47,13 +48,8 @@ public class Server {
                 System.out.println("[SERVER] Waiting for client connection on port " + SERVER_PORT);
                 Socket socket = server.accept();
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
-                executorService.submit(serverSocketHandler);
+                executorService.execute(serverSocketHandler);
 
-                try {
-                    executorService.shutdown();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());
                 //   executeWithResult(serverSocketHandler);
