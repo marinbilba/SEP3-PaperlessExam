@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository that provides CRUD operations for user com.group10.databaselayer.entity
+ * Repository that provides CRUD operations for user entity{@link User}
  */
 @Repository
 public interface IUserRepository extends JpaRepository<User, Long> {
