@@ -1,4 +1,4 @@
-package com.group10.databaselayer.entity;
+package com.group10.databaselayer.entity.user;
 
 import com.sun.istack.NotNull;
 
