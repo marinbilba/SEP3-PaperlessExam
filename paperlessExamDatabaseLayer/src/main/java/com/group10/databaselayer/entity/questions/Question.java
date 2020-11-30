@@ -35,6 +35,42 @@ public class Question implements Serializable {
         this.score = score;
     }
 
+    /**
+     * Gets question.
+     *
+     * @return the question
+     */
+    public String getQuestion() {
+        return question;
+    }
+
+    /**
+     * Sets question.
+     *
+     * @param question the question
+     */
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    /**
+     * Gets score.
+     *
+     * @return the score
+     */
+    public double getScore() {
+        return score;
+    }
+
+    /**
+     * Sets score.
+     *
+     * @param score the score
+     */
+    public void setScore(double score) {
+        this.score = score;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Question)) {
