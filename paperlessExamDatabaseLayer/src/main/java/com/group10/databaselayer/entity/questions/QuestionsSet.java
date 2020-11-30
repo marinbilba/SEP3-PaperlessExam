@@ -14,7 +14,6 @@ import java.util.Objects;
  * @author Marin Bilba
  * @version v1.0
  */
-
 @MappedSuperclass
 @Embeddable
 public class QuestionsSet implements Serializable {
@@ -41,6 +40,41 @@ public class QuestionsSet implements Serializable {
         this.topic = topic;
     }
 
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets title.
+     *
+     * @param title the title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets topic.
+     *
+     * @return the topic
+     */
+    public String getTopic() {
+        return topic;
+    }
+
+    /**
+     * Sets topic.
+     *
+     * @param topic the topic
+     */
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
 
     @Override
     public boolean equals(Object o) {
