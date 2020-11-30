@@ -3,10 +3,7 @@ package com.group10.databaselayer.controller;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.repositories.questions.IMultipleChoiceSetRepository;
-import com.group10.databaselayer.repositories.questions.IWrittenSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
