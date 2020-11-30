@@ -3,7 +3,9 @@ package com.group10.databaselayer.entity.questions.written;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +26,7 @@ public class WrittenSet extends QuestionsSet {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<WrittenQuestion> writtenQuestions = new ArrayList<>();
+    private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
 
     /**
      * Instantiates a new Written set.
@@ -65,6 +67,20 @@ public class WrittenSet extends QuestionsSet {
         this.writtenQuestions.remove(writtenQuestion);
         writtenQuestion.setWrittenSet(null);
     }
+
+    public String getTitle() {
+       return super.getTitle();
+    }
+    public String getTopic() {
+        return super.getTopic();
+    }
+
+
+
+    public List<WrittenQuestion> getWrittenQuestions() {
+        return writtenQuestions;
+    }
+
 
     @Override
     public boolean equals(Object o) {
