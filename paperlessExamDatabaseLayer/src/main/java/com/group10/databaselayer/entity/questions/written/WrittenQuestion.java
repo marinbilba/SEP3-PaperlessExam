@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * Entity Written question.
+ */
 @Entity
 @IdClass(Question.class)
 public class WrittenQuestion extends Question {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
     private WrittenSet writtenSet;
 
 
@@ -31,7 +34,8 @@ public class WrittenQuestion extends Question {
      */
     public WrittenQuestion(String question, double score) {
         super(question, score);
-    }
+
+}
 
 
     /**
@@ -51,7 +55,34 @@ public class WrittenQuestion extends Question {
     public void setWrittenSet(WrittenSet writtenSet) {
         this.writtenSet = writtenSet;
     }
+public String getQuestion(){
+        return super.getQuestion();
+}
 
+    /**
+     * Get question score double.
+     *
+     * @return the double
+     */
+    public double getQuestionScore(){
+        return super.getScore();
+    }
+    /**
+     * Sets question.
+     *
+     * @param question the question
+     */
+    public void setQuestion(String question) {
+        super.setQuestion(question);
+    }
+    /**
+     * Sets score.
+     *
+     * @param score the question
+     */
+    public void setScore(double score) {
+        super.setScore(score);
+    }
     @Override
     public boolean equals(Object o) {
         if (o == null) { return false; }
