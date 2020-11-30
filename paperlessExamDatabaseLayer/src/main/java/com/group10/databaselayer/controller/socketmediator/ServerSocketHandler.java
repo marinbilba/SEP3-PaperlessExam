@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
-import com.group10.databaselayer.controller.UserControllerTEMO;
 import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
 import com.group10.databaselayer.entity.user.Role;
@@ -39,7 +38,6 @@ public class ServerSocketHandler implements Runnable {
     private final Socket socket;
     private final HashSet<Object> controllersSet;
 
-    private UserControllerTEMO userControllerTEMO;
     private RoleController roleController;
     private UserController userController;
 
@@ -72,9 +70,7 @@ public class ServerSocketHandler implements Runnable {
      */
     private void parseControllerSet(HashSet<Object> controllersSet) {
         for (Object controller : controllersSet) {
-            if (controller instanceof UserControllerTEMO) {
-                this.userControllerTEMO = (UserControllerTEMO) controller;
-            } else if (controller instanceof RoleController) {
+             if (controller instanceof RoleController) {
                 this.roleController = (RoleController) controller;
             } else if (controller instanceof UserController) {
                 this.userController = (UserController) controller;

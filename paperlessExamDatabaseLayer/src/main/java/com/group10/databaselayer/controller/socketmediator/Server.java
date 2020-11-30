@@ -1,8 +1,7 @@
 package com.group10.databaselayer.controller.socketmediator;
 
-import com.group10.databaselayer.controller.RoleController;
-import com.group10.databaselayer.controller.UserController;
-import com.group10.databaselayer.controller.UserControllerTEMO;
+import com.group10.databaselayer.controller.*;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +16,17 @@ import java.util.concurrent.Executors;
 @Component
 public class Server {
     private static final int SERVER_PORT = 8000;
-    @Autowired
-    private UserControllerTEMO userControllerTEMO;
+
     @Autowired
     private RoleController roleController;
     @Autowired
     private UserController userController;
 
+    @Autowired
+    WrittenQuestionsController writtenQuestionsController;
 
-
+    @Autowired
+    MultipleChoiceQuestionsController multipleChoiceQuestionsController;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -33,11 +34,10 @@ public class Server {
 
     @PostConstruct
     public void init() {
-        controllersSet.add(userControllerTEMO);
         controllersSet.add(roleController);
         controllersSet.add(userController);
+     multipleChoiceQuestionsController.createMultipleChoiceSet(new MultipleChoiceSet());
         runServer();
-
     }
 
     public void runServer() {
