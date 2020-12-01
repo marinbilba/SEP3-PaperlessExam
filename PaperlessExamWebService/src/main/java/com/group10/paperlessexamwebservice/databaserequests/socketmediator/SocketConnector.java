@@ -42,7 +42,6 @@ public class SocketConnector implements ISocketConnector {
     public String readFromServer() throws IOException {
         byte[] lenbytes = new byte[1024];
         int read = inputStream.read(lenbytes, 0, lenbytes.length);
-        String message = new String(lenbytes, 0, read);
-        return message;
+        return new String(lenbytes, 0, read);
     }
 }

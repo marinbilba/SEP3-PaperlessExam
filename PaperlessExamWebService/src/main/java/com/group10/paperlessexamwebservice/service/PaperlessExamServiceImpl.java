@@ -4,13 +4,14 @@ import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordNotFoundException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameFoundException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotMatchEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -22,56 +23,77 @@ public class PaperlessExamServiceImpl implements IUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Send a request that returns a User object to {@link IUserRequests}. The requested user object
+     * is checked. If the user is null => the user was not found in the database. The password received from
+     * the database is compared with the one provided by the client.
+     * @param user user object
+     * @return If the credentials are validated successfully the received User object from the database will be
+     * returned to the Client.
+     * @throws ServiceNotAvailable if there are connection problems with the third tier
+     * @throws PasswordException if credentials are incorrect.
+     */
     @Override
-    public User logInUser(User user) throws ServiceNotAvailable,PasswordNotFoundException {
+    public User logInUser(User user) throws ServiceNotAvailable, PasswordException {
         //        Get the user object by username for further validation
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
         //        Check user by username
-        if (userRequest.getUserByUsername(user.getUsername()) == null) {
+        if (requestedUserFromTheDatabase == null) {
             throw new UsernameNotFoundException("Username is incorrect");
         }
         // Password validation
         if (!requestedUserFromTheDatabase.getPassword().equals(user.getPassword())) {
-            throw new PasswordNotFoundException("Password is incorrect");
+            throw new PasswordException("Password is incorrect");
         }
-        System.out.println("bleati");
         return requestedUserFromTheDatabase;
-
-//
-//        ResponseEntity<User> temp = userRequest.login(user);
-//        if (temp.getStatusCode().is2xxSuccessful())
-//        {
-//            temp.getBody();
-//        }
-//        else if (temp.getStatusCode().isError())
-//        {
-//            throw new DataBaseException("Smth went wrong");
-//        }
-//
-//
-//        if (userRequest.usernameExists(user.getUsername())) {
-//            throw new UsernameNotFoundException("There is NO account found with that username:" + user.getUsername());
-//        } else if (!userRequest.checkPassword(user.getPassword())) {
-//            throw new PasswordNotFoundException("Password is incorrect");
-//        } else
     }
 
+    /**
+     * Creates and stores a user in the database. The following steps are performed
+     *  1. Check if the username exists in the database, else exception is thrown
+     *  2. Check if the username does match the substring of the email until the '@' char, else exception is thrown
+     *  3. Password validation
+     *  4. Get the role id by provided name from the Client
+     *  5. Set the received role id to the current user object instance
+     *  6. Create the user
+     *  
+     * @param user user object that should be stored
+     * @return created User object
+     * @throws UsernameNotMatchEmail the username does not match the substring of the email until the '@' char
+     * @throws PasswordException if credentials are incorrect
+     * @throws ServiceNotAvailable if there are connection problems with the third tier
+     * @throws UsernameFoundException the username already exists in the database
+     */
     @Override
-    public User createUser(User user) throws Exception {
-//        check username == email before@
-//        password
-
-        // get role id
-        Role tempRole = userRequest.getRoleIdByName(user.getRole().getName());
-        // set the recieved role to the current user
-        user.setRole(tempRole);
-        if (userRequest.getUserByUsername(user.getUsername())==null) {
-            throw new Exception("Username");
-            // throw la exceptie !!!!!
-        } else {
-            return userRequest.createUser(user);
+    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException {
+        // Check if the username exists in the database
+        User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
+        if (requestedUserFromTheDatabase != null) {
+            throw new UsernameFoundException("Username already exists");
         }
+        // Check username == email before@
+       String subtractedString= getEmailSubstring(user.getEmail());
+        if(!user.getUsername().equals(subtractedString)){
+            throw new UsernameNotMatchEmail("Username must match the email until the '@' sign ");
+        }
+        //   Password validation
+        if(!user.getPassword().equals(user.getConfirmPassword())){
+            throw new PasswordException("Password does not match Confirm Password field");
+        }
+        // Get role id
+        Role roleId= userRequest.getRoleIdByName(user.getRole().getName());
+        user.setRole(roleId);
+        return userRequest.createUser(user);
+    }
 
+    /**
+     * Method to subtract the String until the '@' character
+     * @param email email to check
+     * @return the String until the '@' character
+     */
+    private String getEmailSubstring(String email) {
+        int i =email.indexOf("@");
+        return email.substring(0,i);
     }
 
     @Override

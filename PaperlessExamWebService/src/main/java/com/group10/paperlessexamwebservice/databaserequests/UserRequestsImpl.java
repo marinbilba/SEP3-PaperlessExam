@@ -3,10 +3,13 @@ package com.group10.paperlessexamwebservice.databaserequests;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
+import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import jdk.jfr.Unsigned;
+import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,73 +88,132 @@ public class UserRequestsImpl implements IUserRequests {
         return false;
     }
 
+    /**
+     * Make a quire to the database with the purpose of creating a new user, passing the {@param user}.
+     * <p>
+     * 1. Create socket connection
+     * 2. The user object is serialized as JSON
+     * 3. Send the request
+     * 4. Read the output stream from the Server
+     * 5. Deserialize the Network Container
+     * 6. Deserialize the second argument of the network container
+     * 7. Close the socket connection
+     *
+     * @param user user object that should be created
+     * @return a user object. <i>The object might be null if was not found in the database</>
+     */
     @Override
-    public User createUser(User user) {
-        User temp;
-        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
-        temp = response.getBody();
+    public User createUser(User user) throws ServiceNotAvailable {
+        User tempUser = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String userSerialized = gson.toJson(user);
+            //            Send request
+            sendRequest(userSerialized, CREATE_USER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            tempUser = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return tempUser;
+    }
 
-        return temp;
+    /**
+     * Make a quire to the database with the purpose of finding a user by the given username, passing the {@param username}.
+     * <p>
+     * 1. Create socket connection
+     * 2. Send the request
+     * 3. Read the output stream from the Server
+     * 4. Deserialize the Network Container
+     * 5. Deserialize the second argument of the network container
+     * 6. Close the socket connection
+     *
+     * @param username username
+     * @return a user object. <i>The object might be null if was not found in the database</>
+     */
+    @Override
+    public User getUserByUsername(String username) throws ServiceNotAvailable {
+        User user = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+//            Send request
+            sendRequest(username, GET_USER_BY_USERNAME);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            user = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return user;
     }
 
     @Override
     public List<User> getAllUsersList() {
         return null;
     }
-
-    @Override
-    public Role getRoleIdByName(String name) {
-        Role temp;
-        ResponseEntity<Role> response = restTemplate.getForEntity(DATABASE_TIER_URI + "/getRoleByName/" + name, Role.class);
-        temp = response.getBody();
-
-        return temp;
-    }
-
     /**
-     * Makes a queries to the database, passing the {@param username}.
+     * Make a quire to the database with the purpose of finding the role id by the given name, passing the {@param name}.
      * <p>
      * 1. Create socket connection
-     * 2. Create the NetworkContainer and pass the method parameter as second argument.
-     * 3. Serialize the Network Container.
-     * 4. Send the Network Container as input stream
-     * 5. Read the output stream from the Server
-     * 6. Deserialize the Network Container
-     * 7. Deserialize the second argument of the network container
-     * 8. Check the queried result
+     * 2. Send the request
+     * 3. Read the output stream from the Server
+     * 4. Deserialize the Network Container
+     * 5. Deserialize the second argument of the network container
+     * 6. Close the socket connection
      *
-     *
-     * @param username username
-     * @return a boolean expresion. If user was found==true, else false
+     * @param name username
+     * @return a Role object. <i>The object might be null if was not found in the database</>
      */
     @Override
-    public User getUserByUsername(String username) throws ServiceNotAvailable {
-        User user = null;
-
-// Connect
+    public Role getRoleIdByName(String name) throws ServiceNotAvailable {
+        Role role = null;
+        // Connect
         try {
             socketConnector.connect();
             System.out.println("[CLIENT] Connected to server");
 //            Send request
-            NetworkContainer networkContainer = new NetworkContainer(USERNAME_EXISTS, username);
-            String stringRequestSerialized = gson.toJson(networkContainer);
-            socketConnector.sendToServer(stringRequestSerialized);
-
-//            Read response
+            sendRequest(name, GET_ROLE_ID_BY_NAME);
+            //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
-            user  = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            role = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), Role.class);
             //            Disconnect
             socketConnector.disconnect();
-            System.out.println("[CLIENT] Disconnected from server");
-
         } catch (IOException e) {
             e.printStackTrace();
-           throw new ServiceNotAvailable("Couldn't connect to the server");
+            throw new ServiceNotAvailable("Couldn't connect to the server");
         }
+        return role;
+    }
 
-
-return user;
+    /**
+     * Sends a request through the socket connection.
+     * 1. Create the NetworkContainer with the received parameters{@param objectSerialized},{@param requestOperation}.
+     * 2. Serialize the Network Container.
+     * 3. Send the Network Container as input stream
+     *
+     * @param name used as the second argument in the NetworkContainer <i>MUST be serialized</>
+     * @param requestOperation operation that should be performed.
+     * @throws IOException exceptions produced by failed or interrupted I/O operations
+     */
+    private void sendRequest(String name, RequestOperation requestOperation) throws IOException {
+        NetworkContainer networkContainer = new NetworkContainer(requestOperation, name);
+        String networkContainerSerialized = gson.toJson(networkContainer);
+        socketConnector.sendToServer(networkContainerSerialized);
     }
 
 

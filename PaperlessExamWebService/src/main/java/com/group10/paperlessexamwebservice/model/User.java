@@ -43,18 +43,14 @@ public class User {
         this.password = password;
     }
 
-    public User(long id,String firstName, String lastName, String username, String email, String password, Role role) {
-      this.id=id;
+    public User(String firstName, String lastName, String username, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.password = password;
-
         this.role = role;
     }
-
-
 
     public String getFirstName() {
         return firstName;

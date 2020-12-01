@@ -1,14 +1,14 @@
-package com.group10.databaselayer.repository;
+package com.group10.databaselayer.repositories.user;
 
 
-import com.group10.databaselayer.entity.User;
+import com.group10.databaselayer.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * Repository that provides CRUD operations for user com.group10.databaselayer.entity
+ * Repository that provides CRUD operations for user entity{@link User}
  */
 @Repository
 public interface IUserRepository extends JpaRepository<User, Long> {
