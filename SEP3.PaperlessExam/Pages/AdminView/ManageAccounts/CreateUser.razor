@@ -45,6 +45,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
+                                                                            <div class="form-group">
+                                                                                <label for="form_need"> Confirm Password *</label>
+                                                                                <InputTextArea rows="1" id="form_name" @bind-Value="_createUser.ConfirmPassword" type="text" name="name" class="form-control" required="required" data-error="Confirm Password is required."></InputTextArea>
+                                                                            </div>
+                                                                        </div>
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_need"> Role *</label>
                                             <select id="form_need" @bind="@roleName" name="need" class="form-control" required="required" data-error="Please specify role.">
