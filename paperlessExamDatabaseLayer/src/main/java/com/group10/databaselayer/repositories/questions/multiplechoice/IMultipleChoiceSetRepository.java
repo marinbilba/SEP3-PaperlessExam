@@ -1,4 +1,4 @@
-package com.group10.databaselayer.repositories.questions;
+package com.group10.databaselayer.repositories.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
