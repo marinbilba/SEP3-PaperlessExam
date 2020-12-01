@@ -6,17 +6,19 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-5 red"  @onclick="@ToCreateUser" >
+        <div class="col-md-1"></div>
+        <div class="col-md-4 red" @onclick="@ToCreateUser">
             <img src="images/add-group.png"style="float: right; height: 100px"/>
             <h4><b>Create User</b></h4></div>
         <div class="col-md-2"></div>
-        <div class="col-md-5 red" @onclick="@ToFindEditDelete">
+        <div class="col-md-4 red" @onclick="@ToFindEditDelete">
             <img src="images/edit.png" style="float: right; height: 100px"/>
             <h4><b>Find User</b></h4>
             <h4><b>Edit User</b></h4>
             <h4><b>Delete User</b></h4>
         </div>
-        </div>
+        <div class="col-md-1"></div>
+    </div>
 </div>
 
      @code {

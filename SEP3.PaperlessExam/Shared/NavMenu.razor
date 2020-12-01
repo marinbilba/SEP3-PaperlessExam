@@ -7,28 +7,39 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
+        @* <li class="nav-item px-3"> *@
+        @*     <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> *@
+        @*         <span class="oi oi-home" aria-hidden="true"></span> Home *@
+        @*     </NavLink> *@
+        @* </li> *@
+         <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="MainView">
+                                        <span class="oi oi-list-rich" aria-hidden="true"></span> Main View
+                                    </NavLink>
+                                </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="index" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+            <NavLink class="nav-link" href="ManageUsers">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Users
             </NavLink>
         </li>
+         <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="ManageExaminationEvents">
+                                        <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Exam Events
+                                    </NavLink>
+                                </li>
+           <AuthorizeView Policy="MustBeStudent">
+                  <li class="nav-item px-3">
+                      <NavLink class="nav-link" href="mainPage">
+                          <span class="oi oi-lock-unlocked" aria-hidden="true"></span> test
+                      </NavLink>
+                  </li>
+        </AuthorizeView>  
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-        <AuthorizeView Policy="MustBeStudent">
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="mainPage">
-                    <span class="oi oi-lock-unlocked" aria-hidden="true"></span> test
-                </NavLink>
-            </li>
-        </AuthorizeView>
+                                            <NavLink class="nav-link" href="TeacherMainView">
+                                                <span class="oi oi-list-rich" aria-hidden="true"></span> Main Page Teacher
+                                            </NavLink>
+                                        </li>
+       
     </ul>
 </div>
 
