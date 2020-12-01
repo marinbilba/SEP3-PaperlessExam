@@ -85,7 +85,7 @@ public class PaperlessExamServiceImpl implements IUserService {
         user.setRole(roleId);
         return userRequest.createUser(user);
     }
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! BUG HERE email without @ exception
     /**
      * Method to subtract the String until the '@' character
      * @param email email to check
