@@ -115,6 +115,24 @@ public class MultipleChoiceQuestion extends Question {
         super.setScore(score);
     }
 
+    /**
+     * Gets question options.
+     *
+     * @return the question options
+     */
+    public List<QuestionOption> getQuestionOptions() {
+        return questionOptions;
+    }
+
+    /**
+     * Sets question options.
+     *
+     * @param questionOptions the question options
+     */
+    public void setQuestionOptions(List<QuestionOption> questionOptions) {
+        this.questionOptions = questionOptions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) {
