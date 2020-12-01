@@ -11,9 +11,8 @@ namespace SEP3.PaperlessExam.Model
         {
         }
 
-        public Role(int i, string name)
+        public Role( string name)
         {
-            Id = i;
             Name = name;
         }
 

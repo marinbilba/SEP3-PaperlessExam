@@ -1,6 +1,6 @@
 .create
 {
-    background: #DE6262;
+    background: #337ab7;
     height:200px;
     width: 200px;
     float: left;
@@ -12,12 +12,12 @@
 {
     background: #FFFFFF;
     width: 200px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .update
 {
-    background: #DE6262;
+    background: #337ab7;
     height:200px;
     width: 200px;
     float: left;
@@ -26,15 +26,28 @@
     
 }
 .red{
-    background: #DE6262;
+    background: #337ab7;
     border-radius: 10px;
-    box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
-
+    box-shadow: 10px 15px 0px rgba(0, 0, 0, 0.1);
+    margin-top: 100px;
+    text-align: center;
+    height: 200px;
 }
 
-.black{
-    background: black;
-    border-radius: 10px;
-    box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+.red:hover{
+    border-radius: 50px;
+    transition: all 0.3s ease 0s;
+    text-align: center;
+    cursor: pointer;
+    background: #255d8f;
+}
 
+
+.teacher{
+    margin: 10px;
+}
+
+.comment{
+    background: #0f6674;
+    border: 1px solid black;
 }
