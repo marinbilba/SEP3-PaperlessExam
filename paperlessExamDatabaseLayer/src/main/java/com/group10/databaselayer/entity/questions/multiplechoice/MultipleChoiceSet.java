@@ -88,6 +88,13 @@ public class MultipleChoiceSet extends QuestionsSet {
         }
     }
 
+    public String getTitle() {
+        return super.getTitle();
+    }
+    public String getTopic() {
+        return super.getTopic();
+    }
+
     /**
      * Remove question option.
      *

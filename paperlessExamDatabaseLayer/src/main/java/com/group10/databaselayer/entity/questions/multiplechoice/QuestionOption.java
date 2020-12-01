@@ -18,7 +18,7 @@ public class QuestionOption {
     private String answer;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST )
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**
