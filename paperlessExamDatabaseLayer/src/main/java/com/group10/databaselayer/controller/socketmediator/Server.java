@@ -1,7 +1,16 @@
 package com.group10.databaselayer.controller.socketmediator;
 
 import com.group10.databaselayer.controller.*;
+import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
+import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+import com.group10.databaselayer.entity.questions.Question;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
+import com.group10.databaselayer.exception.questions.QuestionNotFound;
+import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
+import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +45,6 @@ public class Server {
     public void init() {
         controllersSet.add(roleController);
         controllersSet.add(userController);
-     multipleChoiceQuestionsController.createMultipleChoiceSet(new MultipleChoiceSet());
         runServer();
     }
 
