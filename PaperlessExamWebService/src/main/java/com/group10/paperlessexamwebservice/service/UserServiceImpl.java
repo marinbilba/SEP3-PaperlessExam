@@ -4,10 +4,7 @@ import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameFoundException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotMatchEmail;
+import com.group10.paperlessexamwebservice.service.exceptions.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,7 +63,7 @@ public class UserServiceImpl implements IUserService {
      * @throws UsernameFoundException the username already exists in the database
      */
     @Override
-    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException {
+    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException, EmailException {
         // Check if the username exists in the database
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
         if (requestedUserFromTheDatabase != null) {
@@ -86,15 +83,17 @@ public class UserServiceImpl implements IUserService {
         user.setRole(roleId);
         return userRequest.createUser(user);
     }
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! BUG HERE email without @ exception
     /**
      * Method to subtract the String until the '@' character
      * @param email email to check
      * @return the String until the '@' character
      */
-    private String getEmailSubstring(String email) {
-        int i =email.indexOf("@");
-        return email.substring(0,i);
+    private String getEmailSubstring(String email) throws EmailException {
+        if(email.contains("@")){
+            int i =email.indexOf("@");
+            return email.substring(0,i);
+        }
+       throw new EmailException("Email must contain character '@'");
     }
 
     @Override
