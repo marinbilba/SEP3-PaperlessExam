@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.group10.databaselayer.controller.networkcontainer.RequestOperation.*;
 
@@ -102,10 +103,21 @@ public class ServerSocketHandler implements Runnable {
                 case GET_ROLE_ID_BY_NAME:
                     getRoleIdByName(networkContainerRequestDeserialized);
                     break;
+                case GET_USERS_BY_FIRST_NAME:
+                    getUsersListByFirstName(networkContainerRequestDeserialized);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getUsersListByFirstName(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        String firstNameDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
+        List<User> fetchedUserList=userController.getUsersListByFirstName(firstNameDeserialized);
+        objectSerialized = gson.toJson(fetchedUserList);
+        networkContainer = new NetworkContainer(GET_USERS_BY_FIRST_NAME, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
     }
 
     /**
@@ -165,6 +177,7 @@ public class ServerSocketHandler implements Runnable {
     private void getUserByUsername(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_USER_BY_USERNAME start");
         String username = networkContainerRequestDeserialized.getSerializedObject();
+        System.out.println(username);
         User userFromDatabase = userController.getUserByUsername(username);
         objectSerialized = gson.toJson(userFromDatabase);
         networkContainer = new NetworkContainer(GET_USER_BY_USERNAME, objectSerialized);
