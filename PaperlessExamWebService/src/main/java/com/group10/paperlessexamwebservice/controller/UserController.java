@@ -84,18 +84,17 @@ public class UserController {
      *
      * @param user User object in JSON format
      * @return <i>HTTP 200 - OK</i> code if the created user passes validation process
-     * <i>HTTP 409 - CONFLICT</i> code if the username already exists or the username
-     * does not match the substring of the email until the '@' char
+     * <i>HTTP 409 - CONFLICT</i> code if the username already exists, the username
+     * does not match the substring of the email until the '@' char or email does not contain character '@'
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 401 - UNAUTHORIZED</i> code if the password does not match with the confirm password field
-     * @throws EmailException the email exception
      */
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createUser(@RequestBody User user) throws EmailException {
+    public ResponseEntity<Object> createUser(@RequestBody User user) {
         User temp = null;
         try {
             temp = userService.createUser(user);
-        } catch (UsernameFoundException | UsernameNotMatchEmail e) {
+        } catch (UsernameFoundException | UsernameNotMatchEmail | EmailException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (ServiceNotAvailable e) {
@@ -105,7 +104,7 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(temp);
+            return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
 
     /**
