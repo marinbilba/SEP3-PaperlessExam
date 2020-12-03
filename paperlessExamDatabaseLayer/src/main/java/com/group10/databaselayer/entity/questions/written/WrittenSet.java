@@ -13,7 +13,7 @@ import java.util.Objects;
 
 
 /**
- * WrittenSet entity. Class provides the functionality to add/remove questions and questions options as a requirment
+ * WrittenSet entity. Class provides the functionality to add/remove questions as a requirement
  * of the bidirectional one-to-many mapping between WrittenSet entity and WrittenQuestion {@link WrittenQuestion}
  *
  * @author Marin Bilba
