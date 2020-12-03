@@ -1,6 +1,6 @@
 package com.group10.paperlessexamwebservice.controller;
 
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.user.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
@@ -21,6 +21,7 @@ import java.util.List;
  * @version 1.1
  */
 @RestController
+@RequestMapping("/userController")
 public class UserController {
     @Autowired
     private IUserService userService;
