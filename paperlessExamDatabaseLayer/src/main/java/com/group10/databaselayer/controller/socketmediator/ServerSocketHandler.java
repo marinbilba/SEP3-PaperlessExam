@@ -75,13 +75,13 @@ public class ServerSocketHandler implements Runnable {
      */
     private void parseControllerSet(HashSet<Object> controllersSet) {
         for (Object controller : controllersSet) {
-             if (controller instanceof RoleController) {
+            if (controller instanceof RoleController) {
                 this.roleController = (RoleController) controller;
             } else if (controller instanceof UserController) {
                 this.userController = (UserController) controller;
-             }else if(controller instanceof MultipleChoiceQuestionsController){
-                 this.multipleChoiceQuestionsController=(MultipleChoiceQuestionsController) controller;
-             }
+            } else if (controller instanceof MultipleChoiceQuestionsController) {
+                this.multipleChoiceQuestionsController = (MultipleChoiceQuestionsController) controller;
+            }
 
         }
     }
@@ -112,17 +112,31 @@ public class ServerSocketHandler implements Runnable {
                     getUsersListByFirstName(networkContainerRequestDeserialized);
                 case MULTIPLE_CHOICE_SET_EXISTS:
                     existsMultipleChoiceSet(networkContainerRequestDeserialized);
+                case CREATE_MULTIPLE_CHOICE_SET:
+                    createMultipleChoiceSet(networkContainerRequestDeserialized);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void existsMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+    private void createMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET start");
         MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
-        boolean existsMultipleChoiceSet= false;
+        MultipleChoiceSet createdMultipleChoiceSet = null;
+        createdMultipleChoiceSet = multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+        objectSerialized = gson.toJson(createdMultipleChoiceSet);
+        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET end");
+    }
+
+    private void existsMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("MULTIPLE_CHOICE_SET_EXISTS start");
+        MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
+        boolean existsMultipleChoiceSet = false;
         try {
-            System.out.println("nleato");
             existsMultipleChoiceSet = multipleChoiceQuestionsController.existsMultipleChoiceSet(multipleChoiceSet);
         } catch (TitleOrTopicAreNull titleOrTopicAreNull) {
             titleOrTopicAreNull.printStackTrace();
@@ -131,15 +145,18 @@ public class ServerSocketHandler implements Runnable {
         networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
+        System.out.println("MULTIPLE_CHOICE_SET_EXISTS end");
     }
 
     private void getUsersListByFirstName(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_USERS_BY_FIRST_NAME start");
         String firstNameDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
-        List<User> fetchedUserList=userController.getUsersListByFirstName(firstNameDeserialized);
+        List<User> fetchedUserList = userController.getUsersListByFirstName(firstNameDeserialized);
         objectSerialized = gson.toJson(fetchedUserList);
         networkContainer = new NetworkContainer(GET_USERS_BY_FIRST_NAME, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
+        System.out.println("GET_USERS_BY_FIRST_NAME start");
     }
 
     /**
