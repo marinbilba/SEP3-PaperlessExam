@@ -3,8 +3,6 @@ package com.group10.databaselayer.controller.questions;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
@@ -12,12 +10,9 @@ import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceQuestionOptionRepository;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceQuestionRepository;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceSetRepository;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +70,7 @@ public class MultipleChoiceQuestionsController {
      * @throws QuestionSetNotFound in case the written set not found
      */
     public String removeMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull, QuestionSetNotFound {
-        if (existsTitleAndTopicMultipleChoiceSet(multipleChoiceSet)) {
+        if (existsMultipleChoiceSet(multipleChoiceSet)) {
             multipleChoiceSetRepository.delete(multipleChoiceSet);
             return "Multiple choice set " + multipleChoiceSet.getTitle() + " was REMOVED";
         }
@@ -90,7 +85,7 @@ public class MultipleChoiceQuestionsController {
      * @return boolean value true if the set was found and false if it was not.
      * @throws TitleOrTopicAreNull in case the title or topic are empty
      */
-    public boolean existsTitleAndTopicMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
+    public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
         Optional<MultipleChoiceSet> queriedMultipleChoiceSet = Optional.empty();
         if (writtenMultipleChoiceQuestionsSharedMethods.checkTitleTopicNotNull(multipleChoiceSet)) {
             queriedMultipleChoiceSet = multipleChoiceSetRepository.findById(multipleChoiceSet);
@@ -147,7 +142,7 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
      */
     public MultipleChoiceQuestion findQuestionInMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet,
          MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionNotFound, TitleOrTopicAreNull, QuestionSetNotFound {
-        if (existsTitleAndTopicMultipleChoiceSet(multipleChoiceSet)) {
+        if (existsMultipleChoiceSet(multipleChoiceSet)) {
             List<MultipleChoiceQuestion> fetchedMultipleChoiceQuestionsList = multipleChoiceQuestionRepository.findByMultipleChoiceSet(multipleChoiceSet);
             MultipleChoiceQuestion foundMultipleChoiceQuestion = null;
 
@@ -176,7 +171,7 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
      * @throws QuestionNotFound    in case the question not found
      */
     public String removeQuestionMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet, MultipleChoiceQuestion multipleChoiceQuestion) throws TitleOrTopicAreNull, QuestionSetNotFound, QuestionNotFound {
-        if (existsTitleAndTopicMultipleChoiceSet(multipleChoiceSet)) {
+        if (existsMultipleChoiceSet(multipleChoiceSet)) {
             findQuestionInMultipleChoiceSet(multipleChoiceSet, multipleChoiceQuestion);
             multipleChoiceSet.removeQuestion(multipleChoiceQuestion);
             multipleChoiceSetRepository.save(multipleChoiceSet);
