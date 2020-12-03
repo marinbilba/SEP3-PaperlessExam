@@ -3,6 +3,7 @@ package com.group10.paperlessexamwebservice.controller;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
 import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,7 @@ public class QuestionSetsController {
      * </p>
      *
      * @param multipleChoiceSet the multiple choice set
-     * @return <i>HTTP 200 - OK</i> with boolean value true if validation was passed
-     * or
+     * @return <i>HTTP 200 - OK</i> with boolean value true if validation was passed or
      * <i>HTTP 400 - BAD_REQUEST</i> if the question set's title or topic are empty
      * <i>HTTP 409 - CONFLICT</i> if the question set was found was not found in the system
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
@@ -117,5 +117,31 @@ public class QuestionSetsController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(temp);
+    }
+
+    /**
+     * Create multiple choice set.It is processed as a POST request requesting <i>MultipleChoiceSet object</i>
+     * in format of JSON as an argument.
+     *
+     * @param multipleChoiceSet the multiple choice set
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set
+     * or
+     * <i>HTTP 400 - BAD_REQUEST</i> if unexpected errors are detected.
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/createMultipleChoiceSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> createMultipleChoiceSet(@RequestBody MultipleChoiceSet multipleChoiceSet) {
+
+        MultipleChoiceSet createdMultipleChoiceSet = null;
+        try {
+            createdMultipleChoiceSet = questionSetsService.createMultipleChoiceSet(multipleChoiceSet);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (UnexpectedError unexpectedError) {
+            unexpectedError.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(unexpectedError.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(createdMultipleChoiceSet);
     }
 }
