@@ -6,4 +6,6 @@ import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAv
 public interface IQuestionSetsRequests {
     boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable;
 
+    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable;
+
 }
