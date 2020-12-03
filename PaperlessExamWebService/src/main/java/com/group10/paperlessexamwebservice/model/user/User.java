@@ -1,6 +1,4 @@
-package com.group10.paperlessexamwebservice.model;
-
-import org.springframework.stereotype.Component;
+package com.group10.paperlessexamwebservice.model.user;
 
 /**
  * Simple JavaBean domain object that represents a User

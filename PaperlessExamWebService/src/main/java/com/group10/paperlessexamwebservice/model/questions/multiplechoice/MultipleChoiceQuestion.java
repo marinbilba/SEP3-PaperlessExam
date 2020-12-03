@@ -1,9 +1,7 @@
-package com.group10.databaselayer.entity.questions.multiplechoice;
+package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.Question;
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
+
+import com.group10.paperlessexamwebservice.model.questions.Question;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,19 +9,12 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Entity Multiple choice question.
+ * Multiple choice question class.
  */
-@Entity
-@IdClass(Question.class)
 public class MultipleChoiceQuestion extends Question {
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
     private MultipleChoiceSet multipleChoiceSet;
-    @OneToMany(
-            mappedBy = "multipleChoiceQuestion",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+
     private List<QuestionOption> questionOptions = new ArrayList<>();
 
 
@@ -37,8 +28,9 @@ public class MultipleChoiceQuestion extends Question {
     /**
      * Instantiates a new Multiple choice question.
      *
-     * @param question the question
-     * @param score    the score
+     * @param questionNumber the question number
+     * @param question       the question
+     * @param score          the score
      */
     public MultipleChoiceQuestion(int questionNumber,String question, double score) {
         super(question, score,questionNumber);
@@ -63,9 +55,7 @@ public class MultipleChoiceQuestion extends Question {
     }
 
     /**
-     * Add question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
+     * Add question option.
      *
      * @param questionOption the question option
      */
@@ -75,9 +65,7 @@ public class MultipleChoiceQuestion extends Question {
     }
 
     /**
-     * Remove question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
+     * Remove question option.
      *
      * @param questionOption the question option
      */

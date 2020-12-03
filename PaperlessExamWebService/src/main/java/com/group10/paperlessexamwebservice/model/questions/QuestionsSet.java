@@ -1,28 +1,21 @@
-package com.group10.databaselayer.entity.questions;
+package com.group10.paperlessexamwebservice.model.questions;
 
-import com.group10.databaselayer.entity.user.Role;
-import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
-
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Mapped superclass for question sets. Class implements Serializable, because
- * that’s a JPA requirement since the identifier might be use as the key for a second-level cache entry.
+ * Superclass for question sets.
  *
  * @author Marin Bilba
  * @version v1.0
  */
-@MappedSuperclass
-@Embeddable
-public class QuestionsSet implements Serializable {
-    @Id
-    private String title;
-    @Id
-    private String topic;
 
+public class QuestionsSet {
+    private String title;
+    private String topic;
 
     /**
      * Instantiates a new Questions set.

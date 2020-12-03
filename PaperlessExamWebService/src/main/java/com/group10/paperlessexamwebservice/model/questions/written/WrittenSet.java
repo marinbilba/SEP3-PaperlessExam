@@ -1,37 +1,22 @@
-package com.group10.databaselayer.entity.questions.written;
+package com.group10.paperlessexamwebservice.model.questions.written;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
 
-import javax.persistence.*;
-import java.lang.reflect.Field;
+import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
+import com.group10.paperlessexamwebservice.model.user.User;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 
 /**
- * WrittenSet entity. Class provides the functionality to add/remove questions as a requirement
- * of the bidirectional one-to-many mapping between WrittenSet entity and WrittenQuestion {@link WrittenQuestion}
+ * Class provides the functionality to add/remove questions
  *
  * @author Marin Bilba
  * @version v1.0
  */
-@Entity
-@IdClass(QuestionsSet.class)
 public class WrittenSet extends QuestionsSet {
-
-    @OneToMany(
-            mappedBy = "writtenSet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
     private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
-    @OneToOne
-    @NotNull
-    @JoinColumn(name="fk_user_id")
     private User user;
 
     /**
@@ -45,6 +30,7 @@ public class WrittenSet extends QuestionsSet {
      *
      * @param title the title
      * @param topic the topic
+     * @param user  the user
      */
     public WrittenSet(String title, String topic,User user) {
         super(title, topic);
@@ -52,9 +38,7 @@ public class WrittenSet extends QuestionsSet {
     }
 
     /**
-     * Add question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
-     * in order to avoid very subtle state propagation issues
+     * Add question.
      *
      * @param writtenQuestion the written question
      */
@@ -64,9 +48,7 @@ public class WrittenSet extends QuestionsSet {
     }
 
     /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
-     * in order to avoid very subtle state propagation issues
+     * Remove question.
      *
      * @param writtenQuestion the written question
      */
@@ -83,7 +65,11 @@ public class WrittenSet extends QuestionsSet {
     }
 
 
-
+    /**
+     * Gets written questions.
+     *
+     * @return the written questions
+     */
     public List<WrittenQuestion> getWrittenQuestions() {
         return writtenQuestions;
     }

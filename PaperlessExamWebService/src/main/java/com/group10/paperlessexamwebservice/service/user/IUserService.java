@@ -1,6 +1,6 @@
-package com.group10.paperlessexamwebservice.service;
+package com.group10.paperlessexamwebservice.service.user;
 
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
 
