@@ -92,9 +92,16 @@
     {
         Role userRole=new Role(roleName);
         _createUser.Role = userRole;
-        PaperlessExamService.CreateUserAsync(_createUser);
-        Console.WriteLine(_createUser.ToString());
-        NavigationManager.NavigateTo("/");
+        try
+        {
+            PaperlessExamService.CreateUserAsync(_createUser);
+            Console.WriteLine(_createUser.ToString());
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 }
