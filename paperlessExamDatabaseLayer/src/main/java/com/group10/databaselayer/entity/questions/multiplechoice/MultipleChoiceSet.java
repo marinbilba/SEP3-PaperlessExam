@@ -30,11 +30,9 @@ public class MultipleChoiceSet extends QuestionsSet {
             orphanRemoval = true
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
-
-
-    @OneToOne
-    @NotNull
-    @JoinColumn(name="fk_user_id")
+// Must be PK as well or at least not null. No idea how to implement.
+    @OneToOne()
+    @JoinColumn(name = "fk_user_id")
     private User user;
 
     /**
@@ -51,9 +49,16 @@ public class MultipleChoiceSet extends QuestionsSet {
      */
     public MultipleChoiceSet(String title, String topic, User user) {
         super(title, topic);
-        this.user=user;
+        this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     /**
      * Add question. Method synchronizes both sides of the bidirectional association between
@@ -96,6 +101,7 @@ public class MultipleChoiceSet extends QuestionsSet {
     public String getTitle() {
         return super.getTitle();
     }
+
     public String getTopic() {
         return super.getTopic();
     }
@@ -125,7 +131,7 @@ public class MultipleChoiceSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions)&&user.equals(other.user);
+            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions) && user.equals(other.user);
         }
     }
 
