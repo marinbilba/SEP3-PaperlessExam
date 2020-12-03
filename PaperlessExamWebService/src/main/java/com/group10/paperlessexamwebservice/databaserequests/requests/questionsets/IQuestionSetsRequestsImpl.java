@@ -6,18 +6,16 @@ import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.Net
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
+
 import java.io.IOException;
 
-import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.CREATE_USER;
-
 @Service
-public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests{
+public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     /**
      * The Socket connector.
@@ -47,7 +45,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests{
             // Serialize the object
             String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSet);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,MULTIPLE_CHOICE_SET_EXISTS);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, MULTIPLE_CHOICE_SET_EXISTS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -59,5 +57,29 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests{
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return multipleChoiceExists;
+    }
+
+    @Override
+    public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
+        MultipleChoiceSet createdMultipleChoiceSet;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSet);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, CREATE_MULTIPLE_CHOICE_SET);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            createdMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return createdMultipleChoiceSet;
     }
 }
