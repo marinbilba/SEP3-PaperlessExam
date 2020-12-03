@@ -75,6 +75,42 @@ public class MultipleChoiceSet extends QuestionsSet {
         }
     }
 
+    /**
+     * Gets multiple choice questions.
+     *
+     * @return the multiple choice questions
+     */
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
+        return multipleChoiceQuestions;
+    }
+
+    /**
+     * Sets multiple choice questions.
+     *
+     * @param multipleChoiceQuestions the multiple choice questions
+     */
+    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
+        this.multipleChoiceQuestions = multipleChoiceQuestions;
+    }
+
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
+    public User getUser() {
+        return user;
+    }
+
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getTitle() {
         return super.getTitle();
     }
