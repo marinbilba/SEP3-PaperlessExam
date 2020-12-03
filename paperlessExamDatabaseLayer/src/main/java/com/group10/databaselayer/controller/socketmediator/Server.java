@@ -56,8 +56,9 @@ public class Server {
                 System.out.println("[SERVER] Waiting for client connection on port " + SERVER_PORT);
                 Socket socket = server.accept();
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
+                //serverSocketHandler.run();
                 executorService.execute(serverSocketHandler);
-
+executorService.shutdown();
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());
                 //   executeWithResult(serverSocketHandler);
