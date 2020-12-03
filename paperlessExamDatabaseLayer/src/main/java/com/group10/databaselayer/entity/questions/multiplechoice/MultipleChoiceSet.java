@@ -30,6 +30,8 @@ public class MultipleChoiceSet extends QuestionsSet {
             orphanRemoval = true
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
+
+
     @OneToOne
     @NotNull
     @JoinColumn(name="fk_user_id")

@@ -1,6 +1,7 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
+import com.group10.databaselayer.entity.questions.written.Hidden;
 
 import javax.persistence.*;
 
@@ -18,7 +19,8 @@ public class QuestionOption {
     private String answer;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Hidden
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**
