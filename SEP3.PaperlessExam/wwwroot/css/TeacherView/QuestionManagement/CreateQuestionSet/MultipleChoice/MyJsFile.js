@@ -4,3 +4,15 @@
     
     alert("pulaaa");
 }
+
+ const containerDiv = document.getElementById("divContainer");
+
+ const myDiv = document.getElementById("myDiv");
+
+
+ function addMoreAnswers(){
+    containerDiv.innerHTML = myDiv.innerHTML;
+ }
+ 
+ 
+ 

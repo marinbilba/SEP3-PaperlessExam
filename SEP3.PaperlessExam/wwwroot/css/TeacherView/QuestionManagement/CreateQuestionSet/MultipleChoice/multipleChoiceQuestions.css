@@ -8,12 +8,15 @@
     width: 36px;
     height: 34px;
     background: #222120;
+    
 }
 .questionNumber{
-    width: 36px;
+    
+    width: 34px;
     background: #222120;
     color: white;
-    text-align: center;
+    
+    
 }
 /*Remove spacing between cols right side*/
 .padding-right0{
