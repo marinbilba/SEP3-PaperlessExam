@@ -1,4 +1,4 @@
-package com.group10.paperlessexamwebservice.service;
+package com.group10.paperlessexamwebservice.service.user;
 
 import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;

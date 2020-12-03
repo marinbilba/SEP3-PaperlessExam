@@ -1,7 +1,7 @@
 package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.User;
-import com.group10.paperlessexamwebservice.service.IUserService;
+import com.group10.paperlessexamwebservice.service.user.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
 import org.apache.http.client.HttpResponseException;
