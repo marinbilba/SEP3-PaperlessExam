@@ -1,11 +1,10 @@
 package com.group10.paperlessexamwebservice.databaserequests;
 
-import com.group10.paperlessexamwebservice.model.Role;
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.Role;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IUserRequests {

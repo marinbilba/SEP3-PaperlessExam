@@ -1,8 +1,8 @@
 package com.group10.paperlessexamwebservice.service.user;
 
 import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
-import com.group10.paperlessexamwebservice.model.Role;
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.Role;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
 import org.springframework.beans.factory.annotation.Autowired;

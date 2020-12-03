@@ -5,11 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
-import com.group10.paperlessexamwebservice.model.Role;
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.Role;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import jdk.jfr.Unsigned;
-import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
