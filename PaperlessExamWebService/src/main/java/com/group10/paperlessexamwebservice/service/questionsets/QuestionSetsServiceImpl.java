@@ -4,6 +4,7 @@ import com.group10.paperlessexamwebservice.databaserequests.requests.questionset
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         return true;
     }
 
-@Override
+    @Override
     public boolean validateMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws EmptyQuestionSetQuestions, MultipleChoiceQuestionOptionError {
         int count = 0;
         if (multipleChoiceQuestion == null) {
@@ -50,6 +51,15 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             throw new MultipleChoiceQuestionOptionError("Multiple choice question option must contain at least 2 options");
         }
         return true;
+    }
+
+    @Override
+    public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError {
+        MultipleChoiceSet createdMultipleChoiceSet = questionSetsRequests.createMultipleChoiceSet(multipleChoiceSet);
+        if (createdMultipleChoiceSet==null){
+            throw new UnexpectedError("Something went wrong");
+        }
+            return createdMultipleChoiceSet;
     }
 }
 
