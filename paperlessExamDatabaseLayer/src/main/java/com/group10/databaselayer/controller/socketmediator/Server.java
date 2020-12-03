@@ -50,35 +50,37 @@ public class Server {
     private IUserRepository userRepository;
 
 
-
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
     private static final HashSet<Object> controllersSet = new HashSet<>();
-    private GsonBuilder  gson;
+    private GsonBuilder gson;
+
     @PostConstruct
     public void init() {
         gson = new GsonBuilder();
-       // gson.setExclusionStrategies( new HiddenAnnotationExclusionStrategy() );
+        // gson.setExclusionStrategies( new HiddenAnnotationExclusionStrategy() );
 
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
-        Gson gson2= gson.setPrettyPrinting().create();
+        Gson gson2 = gson.setPrettyPrinting().create();
 
 
         controllersSet.add(roleController);
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
 
-      User user = userRepository.getUserByUsername("silvmandrila");
+        User user = userRepository.getUserByUsername("silvmandrila");
+        System.out.println(user.getFirstName());
 //WrittenSet writtenSet=new WrittenSet("ads","dssd",user);
 //        WrittenQuestion writtenQuestion=new WrittenQuestion("dsfa2",20,1);
 //        writtenSet.addQuestion(writtenQuestion);
 
 
-        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("123", "Java", user);
+        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Geography", "Capitals", user);
 
-//        MultipleChoiceQuestion multipleChoiceQuestion=new MultipleChoiceQuestion(1,"What is?",20);
-//       multipleChoiceQuestion.addQuestionOption(new QuestionOption(true,"da"));
-//        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
+        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20);
+        multipleChoiceQuestion.addQuestionOption(new QuestionOption(true, "Buenos Aires"));
+        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false, "Berlin"));
+        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
 
         String multipleChoiceSetSerialized = gson2.toJson(multipleChoiceSet);
         System.out.println(multipleChoiceSetSerialized);
@@ -96,8 +98,8 @@ public class Server {
                 Socket socket = server.accept();
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
                 serverSocketHandler.run();
-               // executorService.execute(serverSocketHandler);
-              //  executorService.shutdown();
+                // executorService.execute(serverSocketHandler);
+                //  executorService.shutdown();
 
 
                 // serverSocketHandler.start();
