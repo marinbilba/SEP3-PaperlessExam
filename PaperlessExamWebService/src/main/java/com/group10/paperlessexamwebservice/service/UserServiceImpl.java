@@ -4,9 +4,7 @@ import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
 import com.group10.paperlessexamwebservice.model.Role;
 import com.group10.paperlessexamwebservice.model.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import com.group10.paperlessexamwebservice.service.exceptions.user.PasswordException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameFoundException;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotMatchEmail;
+import com.group10.paperlessexamwebservice.service.exceptions.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PaperlessExamServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService {
 
     @Autowired
     private IUserRequests userRequest;
@@ -65,7 +63,7 @@ public class PaperlessExamServiceImpl implements IUserService {
      * @throws UsernameFoundException the username already exists in the database
      */
     @Override
-    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException {
+    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException, EmailException {
         // Check if the username exists in the database
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
         if (requestedUserFromTheDatabase != null) {
@@ -85,20 +83,40 @@ public class PaperlessExamServiceImpl implements IUserService {
         user.setRole(roleId);
         return userRequest.createUser(user);
     }
-
     /**
      * Method to subtract the String until the '@' character
      * @param email email to check
      * @return the String until the '@' character
      */
-    private String getEmailSubstring(String email) {
-        int i =email.indexOf("@");
-        return email.substring(0,i);
+    private String getEmailSubstring(String email) throws EmailException {
+        if(email.contains("@")){
+            int i =email.indexOf("@");
+            return email.substring(0,i);
+        }
+       throw new EmailException("Email must contain character '@'");
     }
 
     @Override
     public List<User> getAllUsersList() {
         return userRequest.getAllUsersList();
+    }
+
+    @Override
+    public List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable, UserNotFound {
+        List<User> usersList= userRequest.getUsersByFirstName(firstName);
+        if(!usersList.isEmpty()){
+            return usersList;
+        }
+        throw new UserNotFound("Users by given first name were not found");
+    }
+
+    @Override
+    public User getUsersByUsername(String username) throws ServiceNotAvailable, UserNotFound {
+        User user=userRequest.getUserByUsername(username);
+        if(user!=null){
+            return user;
+        }
+        else throw new UserNotFound("Username was not found in the system");
     }
 
 }

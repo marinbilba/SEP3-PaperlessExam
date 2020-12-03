@@ -19,6 +19,8 @@ import org.springframework.web.client.RestTemplate;
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -159,6 +161,29 @@ public class UserRequestsImpl implements IUserRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return user;
+    }
+
+    @Override
+    public List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable {
+        List<User> userList=null;
+        try {
+
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            //            Send request
+            sendRequest(firstName, GET_USERS_BY_FIRST_NAME);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            User[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User[].class);
+            userList= Arrays.asList(tempList);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return userList;
     }
 
     @Override

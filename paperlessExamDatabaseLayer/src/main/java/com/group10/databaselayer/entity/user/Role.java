@@ -1,8 +1,6 @@
-package com.group10.databaselayer.entity;
+package com.group10.databaselayer.entity.user;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Simple JavaBean object that represents role of {@link User}.

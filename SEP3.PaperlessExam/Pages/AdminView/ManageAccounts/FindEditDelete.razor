@@ -1,0 +1,159 @@
+@page "/FindEditDelete"
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using System.Text
+@using Microsoft.AspNetCore.Http.Features
+@using Blazored.Typeahead
+@inject IPaperlessExamService PaperlessExamService
+@inject NavigationManager NavigationManager
+<h3>FindEditDelete</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        @* <p> *@
+        <input type="text" placeholder="Type first name" bind-value="@searchedFirstName"/>
+    </div>
+    
+    <div class="col-md-2">
+        <input @onclick="@(() => SearchByFirstName(searchedFirstName))" class="btn btn-success btn-send pt-2 btn-block " value="Search">
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        @* <p> *@
+        <BlazoredTypeahead id="myInput" SearchMethod="FilterUserByUsername" @bind-Value="_selectedUser" placeholder="Search by username..." MinimumLength="2">
+            <SelectedTemplate >
+                @context.Username
+            </SelectedTemplate>
+            <ResultTemplate>
+                @context.FirstName @context.LastName
+            </ResultTemplate>
+        </BlazoredTypeahead>
+    </div>
+    
+    <div class="col-md-2">
+            <input @onclick="@(() => SearchByUsername(_selectedUser.Username))" class="btn btn-success btn-send pt-2 btn-block " value="Search">
+        </div>
+</div>
+<br/>
+
+@if (_selectedUser != null)
+{
+    var temp = new List<User>();
+    temp.Add(_selectedUser);
+    _usersToShow = temp;
+    _selectedUser = null;
+}
+@* Users Table *@
+@if (_usersToShow == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Select</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Role</th>
+            <th>Email</th>
+            <th>Delete</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in _usersToShow)
+        {
+            <tr>
+                <td><input type="checkbox" name="user"></td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Username</td>
+                <td>@item.Password</td>
+                <td>@item.Role</td>
+                <td>@item.Email</td>
+                <td>
+                    <button @onclick="@(() => DeleteUser(item.Username))">
+                        <i class="oi oi-trash" style = "color:red"/>
+                    </button>
+                </td>
+                <td>
+                    <button @onclick="@(() => ToEditUser(item))">
+                        <i class="oi oi-pencil" style = "color:green"/>
+                    </button>
+                </td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+}
+@*     <button @onclick="@(()=>DeleteTodo())"></button> *@
+@* <div class="container"> *@
+@*     <div class="row"> *@
+@*         <div class="col-md-2 red"  @onclick="@()=>EditUser(" > *@
+@*             <h6><b>Delete</b></h6></div> *@
+@*         <div class="col-md-8"></div> *@
+@*         <div class="col-md-2 red" @onclick="@DeleteUser"> *@
+@*             <h6><b>Edit</b></h6> *@
+@*         </div> *@
+@*         </div> *@
+@* </div> *@
+
+@code {
+    private IList<User> _allUsers;
+    private IList<User> _usersToShow;
+    private string searchedFirstName;
+    private User _selectedUser;
+
+    private async Task<IEnumerable<User>> FilterUserByFirstName(string name)
+    {
+        return await Task.FromResult(_allUsers.Where(x => x.FirstName.ToLower().Contains(name.ToLower())).ToList());
+    }
+
+    private async Task<IEnumerable<User>> FilterUserByUsername(string username)
+    {
+        return await Task.FromResult(_allUsers.Where(x => x.FirstName.ToLower().Contains(username.ToLower())).ToList());
+    }
+    
+    private async Task SearchByFirstName(string name)
+    {
+      _usersToShow= await PaperlessExamService.FindByFirstName(name);
+        // Console.WriteLine(_usersToShow.ToString());
+    }
+
+    private void SearchByUsername(string username)
+    {
+        PaperlessExamService.FindByUsername(username);
+        Console.WriteLine(_usersToShow.ToString());
+    }
+    
+    private void ShowAllAdults()
+    {
+        _usersToShow = _allUsers;
+    }
+
+    private void ToEditUser(User user)
+    {
+        User toEdit = _allUsers.First(u => u.Username == user.Username);
+        NavigationManager.NavigateTo("/UpdateUser");
+    }
+    
+    
+    
+    private void DeleteUser(string username)
+    {
+        User userToDelete = _allUsers.First(u => u.Username == username);
+        PaperlessExamService.DeleteUser(username);
+        _allUsers.Remove(userToDelete);
+
+    }
+}

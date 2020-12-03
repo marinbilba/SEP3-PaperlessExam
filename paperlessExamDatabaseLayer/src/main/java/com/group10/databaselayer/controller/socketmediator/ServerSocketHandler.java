@@ -5,16 +5,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
-import com.group10.databaselayer.controller.UserControllerTEMO;
 import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
-import com.group10.databaselayer.entity.Role;
-import com.group10.databaselayer.entity.User;
+import com.group10.databaselayer.entity.user.Role;
+import com.group10.databaselayer.entity.user.User;
 import org.springframework.context.annotation.Scope;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.group10.databaselayer.controller.networkcontainer.RequestOperation.*;
 
@@ -39,7 +39,6 @@ public class ServerSocketHandler implements Runnable {
     private final Socket socket;
     private final HashSet<Object> controllersSet;
 
-    private UserControllerTEMO userControllerTEMO;
     private RoleController roleController;
     private UserController userController;
 
@@ -52,9 +51,9 @@ public class ServerSocketHandler implements Runnable {
 
     /**
      * Instantiates a new Server socket handler.
-     *  @param socket         the socket
+     *
+     * @param socket         the socket
      * @param controllersSet the controllers set
-
      */
     public ServerSocketHandler(Socket socket, HashSet<Object> controllersSet) {
         this.socket = socket;
@@ -72,15 +71,11 @@ public class ServerSocketHandler implements Runnable {
      */
     private void parseControllerSet(HashSet<Object> controllersSet) {
         for (Object controller : controllersSet) {
-            if (controller instanceof UserControllerTEMO) {
-                this.userControllerTEMO = (UserControllerTEMO) controller;
-                //     wtf IS THIS???????
-                //     userControllerTEMO.getUsersByLastName("s");
-            } else if (controller instanceof RoleController) {
+             if (controller instanceof RoleController) {
                 this.roleController = (RoleController) controller;
             } else if (controller instanceof UserController) {
                 this.userController = (UserController) controller;
-             //   userController.getUserByUsername("s");
+
             }
 
         }
@@ -91,8 +86,8 @@ public class ServerSocketHandler implements Runnable {
      * object {@link NetworkContainer}. Based on first argument of the NetworkContainer the
      * request operation is get and routed to the appropriate functionality.
      */
-@Override
- public void run() {
+    @Override
+    public void run() {
         try {
             String message = receiveRequest();
             NetworkContainer networkContainerRequestDeserialized = gson.fromJson(message, NetworkContainer.class);
@@ -108,10 +103,21 @@ public class ServerSocketHandler implements Runnable {
                 case GET_ROLE_ID_BY_NAME:
                     getRoleIdByName(networkContainerRequestDeserialized);
                     break;
+                case GET_USERS_BY_FIRST_NAME:
+                    getUsersListByFirstName(networkContainerRequestDeserialized);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getUsersListByFirstName(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        String firstNameDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
+        List<User> fetchedUserList=userController.getUsersListByFirstName(firstNameDeserialized);
+        objectSerialized = gson.toJson(fetchedUserList);
+        networkContainer = new NetworkContainer(GET_USERS_BY_FIRST_NAME, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
     }
 
     /**
@@ -122,7 +128,7 @@ public class ServerSocketHandler implements Runnable {
      *
      * @param networkContainerRequestDeserialized deserialized network container
      * @throws IOException exceptions produced by failed or
-     *  interrupted I/O operations.
+     *                     interrupted I/O operations.
      */
     private void getRoleIdByName(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_ROLE_ID_BY_NAME start");
@@ -134,6 +140,7 @@ public class ServerSocketHandler implements Runnable {
         sendResponse(stringResponseSerialized);
         System.out.println("GET_ROLE_ID_BY_NAME end");
     }
+
     /**
      * The second argument of the network container is unparsed from JSON format and passed
      * as a parameter to the appropriate method in {@link UserController} class.
@@ -142,7 +149,7 @@ public class ServerSocketHandler implements Runnable {
      *
      * @param networkContainerRequestDeserialized deserialized network container
      * @throws IOException exceptions produced by failed or
-     *  interrupted I/O operations.
+     *                     interrupted I/O operations.
      */
     private void createUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("CREATE_USER start");
@@ -156,6 +163,7 @@ public class ServerSocketHandler implements Runnable {
         sendResponse(stringResponseSerialized);
         System.out.println("CREATE_USER end");
     }
+
     /**
      * The second argument of the network container is unparsed from JSON format and passed
      * as a parameter to the appropriate method in {@link UserController} class.
@@ -164,11 +172,12 @@ public class ServerSocketHandler implements Runnable {
      *
      * @param networkContainerRequestDeserialized deserialized network container
      * @throws IOException exceptions produced by failed or
-     *  interrupted I/O operations.
+     *                     interrupted I/O operations.
      */
     private void getUserByUsername(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_USER_BY_USERNAME start");
         String username = networkContainerRequestDeserialized.getSerializedObject();
+        System.out.println(username);
         User userFromDatabase = userController.getUserByUsername(username);
         objectSerialized = gson.toJson(userFromDatabase);
         networkContainer = new NetworkContainer(GET_USER_BY_USERNAME, objectSerialized);
@@ -180,9 +189,10 @@ public class ServerSocketHandler implements Runnable {
     /**
      * Receives the input stream as a byte array from the Client and converts it to a
      * String object
+     *
      * @return String representation of the Client request.
      * @throws IOException exceptions produced by failed or
-     *       interrupted I/O operations.
+     *                     interrupted I/O operations.
      */
     private String receiveRequest() throws IOException {
         InputStream inputStream = socket.getInputStream();
@@ -197,7 +207,7 @@ public class ServerSocketHandler implements Runnable {
      *
      * @param sendToClient string representation of the message that should be sent to CLient
      * @throws IOException exceptions produced by failed or
-     *         interrupted I/O operations.
+     *                     interrupted I/O operations.
      */
     public void sendResponse(String sendToClient) throws IOException {
         // respond to client

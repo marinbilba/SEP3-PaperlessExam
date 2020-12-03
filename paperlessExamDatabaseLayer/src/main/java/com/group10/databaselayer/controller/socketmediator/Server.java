@@ -1,8 +1,16 @@
 package com.group10.databaselayer.controller.socketmediator;
 
-import com.group10.databaselayer.controller.RoleController;
-import com.group10.databaselayer.controller.UserController;
-import com.group10.databaselayer.controller.UserControllerTEMO;
+import com.group10.databaselayer.controller.*;
+import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
+import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+import com.group10.databaselayer.entity.questions.Question;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
+import com.group10.databaselayer.exception.questions.QuestionNotFound;
+import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
+import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +25,17 @@ import java.util.concurrent.Executors;
 @Component
 public class Server {
     private static final int SERVER_PORT = 8000;
-    @Autowired
-    private UserControllerTEMO userControllerTEMO;
+
     @Autowired
     private RoleController roleController;
     @Autowired
     private UserController userController;
 
+    @Autowired
+    WrittenQuestionsController writtenQuestionsController;
 
-
+    @Autowired
+    MultipleChoiceQuestionsController multipleChoiceQuestionsController;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -33,7 +43,6 @@ public class Server {
 
     @PostConstruct
     public void init() {
-        controllersSet.add(userControllerTEMO);
         controllersSet.add(roleController);
         controllersSet.add(userController);
         runServer();
@@ -47,13 +56,9 @@ public class Server {
                 System.out.println("[SERVER] Waiting for client connection on port " + SERVER_PORT);
                 Socket socket = server.accept();
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
-                executorService.submit(serverSocketHandler);
-
-                try {
-                    executorService.shutdown();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                //serverSocketHandler.run();
+                executorService.execute(serverSocketHandler);
+executorService.shutdown();
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());
                 //   executeWithResult(serverSocketHandler);

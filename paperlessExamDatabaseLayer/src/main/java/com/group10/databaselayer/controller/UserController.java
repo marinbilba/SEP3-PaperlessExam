@@ -1,10 +1,11 @@
 package com.group10.databaselayer.controller;
 
-import com.group10.databaselayer.entity.User;
-import com.group10.databaselayer.repository.IUserRepository;
+import com.group10.databaselayer.entity.user.User;
+import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Component
 public class UserController {
@@ -18,7 +19,6 @@ public class UserController {
      */
 
     public User getUserByUsername(String username) {
-        System.out.println("sad");
         return userRepository.getUserByUsername(username);
     }
     /**
@@ -36,4 +36,7 @@ public class UserController {
         return user2;
     }
 
+    public List<User> getUsersListByFirstName(String firstNameDeserialized) {
+       return userRepository.findByFirstNameIgnoreCaseContaining(firstNameDeserialized);
+    }
 }
