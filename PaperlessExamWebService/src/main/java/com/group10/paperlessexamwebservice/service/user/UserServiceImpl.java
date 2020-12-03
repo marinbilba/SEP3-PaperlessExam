@@ -1,6 +1,6 @@
 package com.group10.paperlessexamwebservice.service.user;
 
-import com.group10.paperlessexamwebservice.databaserequests.IUserRequests;
+import com.group10.paperlessexamwebservice.databaserequests.requests.user.IUserRequests;
 import com.group10.paperlessexamwebservice.model.user.Role;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
