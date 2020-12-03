@@ -32,8 +32,8 @@ public class WrittenQuestion extends Question {
      * @param question the question
      * @param score    the score
      */
-    public WrittenQuestion(String question, double score) {
-        super(question, score);
+    public WrittenQuestion(String question, double score,int questionNumber) {
+        super(question, score,questionNumber);
 
 }
 

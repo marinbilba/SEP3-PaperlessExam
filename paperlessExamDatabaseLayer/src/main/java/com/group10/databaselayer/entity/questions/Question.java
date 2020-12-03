@@ -13,6 +13,8 @@ import java.util.Objects;
  */
 @MappedSuperclass
 public class Question implements Serializable {
+    @Column(name = "questionNumber", unique = true)
+    private int questionNumber;
     @Id
     private String question;
     @Id
@@ -24,15 +26,24 @@ public class Question implements Serializable {
     public Question() {
     }
 
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
+    }
+
     /**
      * Instantiates a new Question.
      *
      * @param question the question
      * @param score    the score
      */
-    public Question(String question, double score) {
+    public Question(String question, double score, int questionNumber) {
         this.question = question;
         this.score = score;
+        this.questionNumber = questionNumber;
     }
 
     /**
