@@ -22,10 +22,7 @@ public class QuestionsSet implements Serializable {
     private String title;
     @Id
     private String topic;
-    @OneToOne
-    @NotNull
-    @JoinColumn(name="fk_user_id")
-    private User user;
+
 
     /**
      * Instantiates a new Questions set.
@@ -39,11 +36,12 @@ public class QuestionsSet implements Serializable {
      * @param title the title
      * @param topic the topic
      */
-    public QuestionsSet(String title, String topic,User user) {
+    public QuestionsSet(String title, String topic) {
         this.title = title;
         this.topic = topic;
-        this.user=user;
+
     }
+
 
     /**
      * Gets title.

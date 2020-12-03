@@ -2,6 +2,7 @@ package com.group10.databaselayer.entity.questions.written;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.user.User;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
@@ -28,6 +29,10 @@ public class WrittenSet extends QuestionsSet {
             orphanRemoval = true
     )
     private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
+    @OneToOne
+    @NotNull
+    @JoinColumn(name="fk_user_id")
+    private User user;
 
     /**
      * Instantiates a new Written set.
@@ -41,8 +46,9 @@ public class WrittenSet extends QuestionsSet {
      * @param title the title
      * @param topic the topic
      */
-    public WrittenSet(String title, String topic, User user) {
-        super(title, topic,user);
+    public WrittenSet(String title, String topic,User user) {
+        super(title, topic);
+        this.user=user;
     }
 
     /**
@@ -94,7 +100,7 @@ public class WrittenSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             WrittenSet other = (WrittenSet) o;
-            return writtenQuestions.equals(other.writtenQuestions);
+            return writtenQuestions.equals(other.writtenQuestions)&&user.equals(other.user);
         }
     }
 
