@@ -17,6 +17,8 @@ public enum RequestOperation {
       GET_USER_BY_USERNAME,
     CREATE_USER,
     GET_ROLE_ID_BY_NAME,
-    GET_USERS_BY_FIRST_NAME
+    GET_USERS_BY_FIRST_NAME,
 
+    //    Question sets
+    MULTIPLE_CHOICE_SET_EXISTS
 }
