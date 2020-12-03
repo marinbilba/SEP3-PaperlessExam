@@ -41,13 +41,13 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_need"> Password *</label>
-                                            <InputTextArea rows="1" id="form_name" @bind-Value="_createUser.Password" type="text" name="name" class="form-control" required="required" data-error="Password is required."></InputTextArea>
+                                            <input rows="1" id="form_name" @bind-value="_createUser.Password" type="password" name="name" class="form-control" required="required" data-error="Password is required."/>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                                                             <div class="form-group">
                                                                                 <label for="form_need"> Confirm Password *</label>
-                                                                                <InputTextArea rows="1" id="form_name" @bind-Value="_createUser.ConfirmPassword" type="text" name="name" class="form-control" required="required" data-error="Confirm Password is required."></InputTextArea>
+                                                                                <input rows="1" id="form_name" @bind-value="_createUser.ConfirmPassword" type="password" name="name" class="form-control" required="required" data-error="Confirm Password is required."/>
                                                                             </div>
                                                                         </div>
                                     <div class="col-md-12">
@@ -92,9 +92,16 @@
     {
         Role userRole=new Role(roleName);
         _createUser.Role = userRole;
-        PaperlessExamService.CreateUserAsync(_createUser);
-        Console.WriteLine(_createUser.ToString());
-        NavigationManager.NavigateTo("/");
+        try
+        {
+            PaperlessExamService.CreateUserAsync(_createUser);
+            Console.WriteLine(_createUser.ToString());
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 }
