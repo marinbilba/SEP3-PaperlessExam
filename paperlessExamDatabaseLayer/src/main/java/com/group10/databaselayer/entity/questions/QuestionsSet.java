@@ -1,9 +1,10 @@
 package com.group10.databaselayer.entity.questions;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import com.group10.databaselayer.entity.user.Role;
+import com.group10.databaselayer.entity.user.User;
+import com.sun.istack.NotNull;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -21,7 +22,10 @@ public class QuestionsSet implements Serializable {
     private String title;
     @Id
     private String topic;
-
+    @OneToOne
+    @NotNull
+    @JoinColumn(name="fk_user_id")
+    private User user;
 
     /**
      * Instantiates a new Questions set.
@@ -35,9 +39,10 @@ public class QuestionsSet implements Serializable {
      * @param title the title
      * @param topic the topic
      */
-    public QuestionsSet(String title, String topic) {
+    public QuestionsSet(String title, String topic,User user) {
         this.title = title;
         this.topic = topic;
+        this.user=user;
     }
 
     /**

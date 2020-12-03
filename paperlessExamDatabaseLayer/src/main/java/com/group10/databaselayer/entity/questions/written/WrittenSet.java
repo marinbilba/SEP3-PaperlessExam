@@ -1,6 +1,7 @@
 package com.group10.databaselayer.entity.questions.written;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
+import com.group10.databaselayer.entity.user.User;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
@@ -40,8 +41,8 @@ public class WrittenSet extends QuestionsSet {
      * @param title the title
      * @param topic the topic
      */
-    public WrittenSet(String title, String topic) {
-        super(title, topic);
+    public WrittenSet(String title, String topic, User user) {
+        super(title, topic,user);
     }
 
     /**

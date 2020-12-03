@@ -3,6 +3,7 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.user.User;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -45,8 +46,8 @@ public class MultipleChoiceSet extends QuestionsSet {
      * @param title the title
      * @param topic the topic
      */
-    public MultipleChoiceSet(String title, String topic) {
-        super(title, topic);
+    public MultipleChoiceSet(String title, String topic, User user) {
+        super(title, topic,user);
     }
 
 
