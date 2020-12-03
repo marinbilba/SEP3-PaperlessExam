@@ -30,11 +30,7 @@ class WrittenQuestionsControllerTest {
 
     @Test
     void existsTitleAndTopicWrittenSet() {
-        try {
-            writtenMultipleChoiceQuestionsSharedMethods.checkTitleTopicNotNull(new QuestionsSet("ads","sda"));
-        } catch (TitleOrTopicAreNull titleOrTopicAreNull) {
-            titleOrTopicAreNull.printStackTrace();
-        }
+
     }
 
     @Test
