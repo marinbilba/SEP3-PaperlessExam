@@ -20,5 +20,6 @@ public enum RequestOperation {
     GET_USERS_BY_FIRST_NAME,
 
     //    Question sets
-    MULTIPLE_CHOICE_SET_EXISTS
+    MULTIPLE_CHOICE_SET_EXISTS,
+    CREATE_MULTIPLE_CHOICE_SET
 }
