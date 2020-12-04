@@ -30,7 +30,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/login", content);
+                    await client.PostAsync(uri + "/userController/login", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -75,7 +75,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/createUser", content);
+                    await client.PostAsync(uri + "/userController/createUser", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -125,7 +125,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
                 try
                 {
                     responseMessage =
-                        await client.PostAsync(uri + "/findUserByUsername", content);
+                        await client.PostAsync(uri + "/userController/findUserByUsername", content);
                     // 2. Check if the resource was found, else throw exception to the client
                     if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -176,7 +176,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/findUserByUsername", content);
+                    await client.PostAsync(uri + "/userController/findUserByUsername", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {

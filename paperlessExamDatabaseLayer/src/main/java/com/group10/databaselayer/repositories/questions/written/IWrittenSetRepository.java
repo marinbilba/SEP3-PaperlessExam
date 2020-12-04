@@ -1,12 +1,12 @@
-package com.group10.databaselayer.repositories.questions;
+package com.group10.databaselayer.repositories.questions.written;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import com.group10.databaselayer.entity.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
  */
 @Repository
 public interface IWrittenSetRepository extends JpaRepository<WrittenSet,QuestionsSet> {
+// List<Map<String, Object>> findByTitleAndTopic(String title, String topic);
  }
 
 

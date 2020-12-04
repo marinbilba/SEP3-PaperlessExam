@@ -24,4 +24,5 @@ public interface IUserRequests {
 
     User getUserByUsername(String username) throws ServiceNotAvailable;
 
+    List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable;
 }
