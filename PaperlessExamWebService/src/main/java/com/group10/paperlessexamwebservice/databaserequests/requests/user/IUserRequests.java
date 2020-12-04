@@ -15,7 +15,7 @@ User getUserByUsername(String username) throws ServiceNotAvailable;
     //    Check if email exists in the database
     boolean emailExists(String email);
 
-    User createUser(User user) throws ServiceNotAvailable;
+    User createUpdateUser(User user) throws ServiceNotAvailable;
 // Return all users in the database
     List<User> getAllUsersList();
 
