@@ -1,16 +1,15 @@
-package com.group10.paperlessexamwebservice.databaserequests;
+package com.group10.paperlessexamwebservice.databaserequests.requests.user;
 
-import com.group10.paperlessexamwebservice.model.Role;
-import com.group10.paperlessexamwebservice.model.User;
+import com.group10.paperlessexamwebservice.model.user.Role;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IUserRequests {
 //    Check if username exists in the database
-    ResponseEntity<User> login(User username);
+User getUserByUsername(String username) throws ServiceNotAvailable;
     //    Check if the given password matches with the bassword in the database
     boolean checkPassword(String password);
     //    Check if email exists in the database
@@ -22,7 +21,7 @@ public interface IUserRequests {
 
     Role getRoleIdByName(String name) throws ServiceNotAvailable;
 
-    User getUserByUsername(String username) throws ServiceNotAvailable;
+
 
     List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable;
 }

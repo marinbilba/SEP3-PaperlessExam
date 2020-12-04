@@ -1,30 +1,19 @@
-package com.group10.databaselayer.entity.questions.written;
+package com.group10.paperlessexamwebservice.model.questions.written;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.annotations.Expose;
-import com.group10.databaselayer.entity.questions.Question;
-import org.springframework.data.annotation.Transient;
+
+
+import com.group10.paperlessexamwebservice.model.questions.Question;
 
 import javax.persistence.*;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
-@Entity
-@IdClass(Question.class)
+/**
+ * Written question class.
+ */
+
 public class WrittenQuestion extends Question {
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
-    @Hidden
     private WrittenSet writtenSet;
 
 

@@ -1,26 +1,18 @@
-package com.group10.databaselayer.entity.questions.multiplechoice;
-
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.Hidden;
+package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
 import javax.persistence.*;
 
 
 /**
- * Entity Question option.
+ * Question option class.
  */
-@Entity
-@Table(name = "question_option")
+
 public class QuestionOption {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private boolean isCorrectAnswer;
     private String answer;
 
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Hidden
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**
@@ -37,6 +29,22 @@ public class QuestionOption {
      */
     public QuestionOption(boolean isCorrectAnswer, String answer) {
         this.isCorrectAnswer = isCorrectAnswer;
+        this.answer = answer;
+    }
+
+    public boolean isCorrectAnswer() {
+        return isCorrectAnswer;
+    }
+
+    public void setCorrectAnswer(boolean correctAnswer) {
+        isCorrectAnswer = correctAnswer;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 

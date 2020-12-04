@@ -1,9 +1,4 @@
-package com.group10.paperlessexamwebservice.model;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import javax.persistence.*;
-import java.util.Set;
+package com.group10.paperlessexamwebservice.model.user;
 
 
 /**

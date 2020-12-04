@@ -1,9 +1,7 @@
-package com.group10.databaselayer.entity.questions.multiplechoice;
+package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import com.group10.databaselayer.entity.user.User;
+import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
@@ -12,27 +10,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * MultipleChoiceSet entity. Class provides the functionality to add/remove
- * questions and questions options as a requirement
- * of the bidirectional one-to-many mapping between
- * MultipleChoiceSet entity and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
+ * MultipleChoiceSet class. Class provides the functionality to add/remove
+ * questions and questions options
  *
  * @author Marin Bilba
  * @version v1.0
  */
-@Entity
-@IdClass(QuestionsSet.class)
 public class MultipleChoiceSet extends QuestionsSet {
 
-    @OneToMany(
-            mappedBy = "multipleChoiceSet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
-// Must be PK as well or at least not null. No idea how to implement.
-    @OneToOne()
-    @JoinColumn(name = "fk_user_id")
+
     private User user;
 
     /**
@@ -46,24 +33,16 @@ public class MultipleChoiceSet extends QuestionsSet {
      *
      * @param title the title
      * @param topic the topic
+     * @param user  the user
      */
     public MultipleChoiceSet(String title, String topic, User user) {
         super(title, topic);
-        this.user = user;
+        this.user=user;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     /**
-     * Add question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
+     * Add question.
      *
      * @param multipleChoiceQuestion the multiple choice question
      */
@@ -73,9 +52,7 @@ public class MultipleChoiceSet extends QuestionsSet {
     }
 
     /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
+     * Remove question.
      *
      * @param multipleChoiceQuestions the multiple choice questions
      */
@@ -98,10 +75,45 @@ public class MultipleChoiceSet extends QuestionsSet {
         }
     }
 
+    /**
+     * Gets multiple choice questions.
+     *
+     * @return the multiple choice questions
+     */
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
+        return multipleChoiceQuestions;
+    }
+
+    /**
+     * Sets multiple choice questions.
+     *
+     * @param multipleChoiceQuestions the multiple choice questions
+     */
+    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
+        this.multipleChoiceQuestions = multipleChoiceQuestions;
+    }
+
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
+    public User getUser() {
+        return user;
+    }
+
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getTitle() {
         return super.getTitle();
     }
-
     public String getTopic() {
         return super.getTopic();
     }
@@ -131,7 +143,7 @@ public class MultipleChoiceSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions) && user.equals(other.user);
+            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions)&&user.equals(other.user);
         }
     }
 
