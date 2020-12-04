@@ -3,17 +3,13 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.user;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
-import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.user.Role;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
@@ -79,7 +75,7 @@ public class UserRequestsImpl implements IUserRequests {
      * @return a user object. <i>The object might be null if was not found in the database</>
      */
     @Override
-    public User createUser(User user) throws ServiceNotAvailable {
+    public User createUpdateUser(User user) throws ServiceNotAvailable {
         User tempUser = null;
         // Connect
         try {
@@ -88,7 +84,7 @@ public class UserRequestsImpl implements IUserRequests {
             // Serialize the object
             String userSerialized = gson.toJson(user);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized, CREATE_USER);
+            requestSharedMethods.sendRequest(userSerialized, CREATE_UPDATE_USER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
