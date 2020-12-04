@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input type="submit" class="btn btn-success btn-send pt-2 btn-block " value="Send Message">
+                                        <input type="submit" class="btn btn-success btn-send pt-2 btn-block " @onclick="CreateNewUser" value="Create User">
                                     </div>
                                 </div>
 
@@ -87,21 +87,26 @@
 @code {
     private User _createUser = new User();
     private string roleName;
+    private string errorMessage;
 
     private void CreateNewUser()
     {
+        errorMessage = "";
         Role userRole=new Role(roleName);
         _createUser.Role = userRole;
         try
         {
             PaperlessExamService.CreateUserAsync(_createUser);
             Console.WriteLine(_createUser.ToString());
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/EX");
         }
         catch (Exception e)
         {
+            errorMessage = e.Message;
             Console.WriteLine(e);
         }
+        
+        //hahaha
     }
 
 }
