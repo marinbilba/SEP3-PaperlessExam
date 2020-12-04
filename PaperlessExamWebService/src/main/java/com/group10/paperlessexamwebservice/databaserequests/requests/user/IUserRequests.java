@@ -24,4 +24,7 @@ User getUserByUsername(String username) throws ServiceNotAvailable;
 
 
     List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable;
+
+    User deleteUser(User requestedUserFromTheDatabase) throws ServiceNotAvailable;
+
 }
