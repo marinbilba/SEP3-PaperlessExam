@@ -125,7 +125,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
                 try
                 {
                     responseMessage =
-                        await client.PostAsync(uri + "/user/findUserByUsername", content);
+                        await client.PostAsync(uri + "/user/getUserByFirstName", content);
                     // 2. Check if the resource was found, else throw exception to the client
                     if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -176,7 +176,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/user/findUserByUsername", content);
+                    await client.PostAsync(uri + "/user/getUserByUsername", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
