@@ -18,6 +18,7 @@ public enum RequestOperation {
     CREATE_UPDATE_USER,
     GET_ROLE_ID_BY_NAME,
     GET_USERS_BY_FIRST_NAME,
+    DELETE_USER,
 
     //    Question sets
     MULTIPLE_CHOICE_SET_EXISTS,
