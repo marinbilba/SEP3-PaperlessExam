@@ -22,4 +22,5 @@ public interface IUserService {
 
     User updateUser(User user) throws UsernameNotFoundException, NullFieldUser, ServiceNotAvailable, UnexpectedError, EmailException, UsernameNotMatchEmail, PasswordException, com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException;
 
+    User deleteUser(User user) throws ServiceNotAvailable, com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException;
 }
