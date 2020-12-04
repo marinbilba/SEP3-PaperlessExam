@@ -102,8 +102,8 @@ public class ServerSocketHandler implements Runnable {
                 case GET_USER_BY_USERNAME:
                     getUserByUsername(networkContainerRequestDeserialized);
                     break;
-                case CREATE_USER:
-                    createUser(networkContainerRequestDeserialized);
+                case CREATE_UPDATE_USER:
+                    createUpdateUser(networkContainerRequestDeserialized);
                     break;
                 case GET_ROLE_ID_BY_NAME:
                     getRoleIdByName(networkContainerRequestDeserialized);
@@ -190,14 +190,14 @@ public class ServerSocketHandler implements Runnable {
      * @throws IOException exceptions produced by failed or
      *                     interrupted I/O operations.
      */
-    private void createUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+    private void createUpdateUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("CREATE_USER start");
         User userDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
         //User pula=new User("Marin","Bilba","marinbilba","marin@.sd","123456",new Role((long) 1,"Student"));
-        User createdUser = userController.createUser(userDeserialized);
+        User createdUser = userController.createUpdateUser(userDeserialized);
         System.out.println("doneeeee");
         objectSerialized = gson.toJson(createdUser);
-        networkContainer = new NetworkContainer(CREATE_USER, objectSerialized);
+        networkContainer = new NetworkContainer(CREATE_UPDATE_USER, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
         System.out.println("CREATE_USER end");
