@@ -10,6 +10,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
        Task CreateUserAsync(User createUser);
        Task<IList<User>> FindByFirstName(string name);
        Task<User> FindByUsername(string username);
-       Task<string> DeleteUser(string username);
+       Task DeleteUser(string username);
+       Task UpdateUser(User user);
     }
 }

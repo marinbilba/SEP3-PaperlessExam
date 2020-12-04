@@ -27,8 +27,11 @@ namespace SEP3.PaperlessExam.Model
             this.Password = password;
         }
         
-        public User(string firstName, string lastName, string username, string password, string confirmPassword, Role role) {
+        public User(string firstName, string lastName, string username, string password, string confirmPassword, Role role, string email)
+        {
 
+            this.FirstName = firstName;
+            this.LastName = lastName;
             this.Username = username;
             this.Password = password;
             this.ConfirmPassword = confirmPassword;
