@@ -113,14 +113,14 @@
         Email = user.Email;
     }
 
-    private void EditUser()
+    private async Task EditUser()
     {
         errorMessage = "";
         Role userRole=new Role(roleName);
         _updatedUser.Role = userRole;
         try
         {
-            PaperlessExamService.UpdateUser(user);
+            await PaperlessExamService.UpdateUser(user);
             Console.WriteLine(user.ToString());
             NavigationManager.NavigateTo("/EX");
         }

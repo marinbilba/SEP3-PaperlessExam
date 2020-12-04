@@ -141,13 +141,13 @@ else
     
     
     
-    private void DeleteUser(string username)
+    private async Task DeleteUser(string username)
     {
         errorMessage = "";
         try
         {
             User userToDelete = _allUsers.First(u => u.Username == username);
-            PaperlessExamService.DeleteUser(username);
+            await PaperlessExamService.DeleteUser(username);
             _allUsers.Remove(userToDelete);
         }
         catch (Exception e)

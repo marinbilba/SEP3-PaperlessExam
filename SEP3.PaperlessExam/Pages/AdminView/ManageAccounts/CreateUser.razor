@@ -89,14 +89,14 @@
     private string roleName;
     private string errorMessage;
 
-    private void CreateNewUser()
+    private async Task CreateNewUser()
     {
         errorMessage = "";
         Role userRole=new Role(roleName);
         _createUser.Role = userRole;
         try
         {
-            PaperlessExamService.CreateUserAsync(_createUser);
+            await PaperlessExamService.CreateUserAsync(_createUser);
             Console.WriteLine(_createUser.ToString());
             NavigationManager.NavigateTo("/EX");
         }
