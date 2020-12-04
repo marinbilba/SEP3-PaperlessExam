@@ -22,13 +22,13 @@ public class UserController {
         return userRepository.getUserByUsername(username);
     }
     /**
-     * Method handles the create user request.
+     * Create/update user.
      *
      * @param user
-     * @return the create user object
+     * @return the created/updated user object
      */
 
-    public User createUser(User user) {
+    public User createUpdateUser(User user) {
         System.out.println(user.getFirstName());
         System.out.println(user.getRole().getName());
         User user2= userRepository.save(user);
