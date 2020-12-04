@@ -36,6 +36,7 @@ public class UserServiceImpl implements IUserService {
      * @throws PasswordException   if credentials are incorrect.
      */
     @Override
+    //todo Check user by username can be done using class private method checkUserExistsByUsername()
     public User logInUser(User user) throws ServiceNotAvailable, PasswordException, UsernameNotFoundException {
         //        Get the user object by username for further validation
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
@@ -152,6 +153,18 @@ public class UserServiceImpl implements IUserService {
         throw new UnexpectedError("Something went wrong");
 
     }
+
+    @Override
+    public User deleteUser(User user) throws ServiceNotAvailable, UsernameNotFoundException {
+        User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
+        //        Check user by username
+        if (requestedUserFromTheDatabase == null) {
+            throw new UsernameNotFoundException("Username is incorrect");
+        }
+        return userRequest.deleteUser(requestedUserFromTheDatabase);
+    }
+
+
 
     /**
      * Method check if user fields are not null, except id.

@@ -1,5 +1,6 @@
 package com.group10.databaselayer.controller;
 
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,9 @@ public class UserController {
 
     public List<User> getUsersListByFirstName(String firstNameDeserialized) {
        return userRepository.findByFirstNameIgnoreCaseContaining(firstNameDeserialized);
+    }
+
+    public void deleteUser(User userToDelete) {
+         userRepository.delete(userToDelete);
     }
 }

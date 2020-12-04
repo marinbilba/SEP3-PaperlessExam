@@ -157,6 +157,30 @@ public class UserRequestsImpl implements IUserRequests {
     }
 
     @Override
+    public User deleteUser(User userToDelete) throws ServiceNotAvailable {
+        User deletedUser = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String userSerialized = gson.toJson(userToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(userSerialized,  DELETE_USER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedUser = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedUser;
+    }
+
+    @Override
     public List<User> getAllUsersList() {
         return null;
     }

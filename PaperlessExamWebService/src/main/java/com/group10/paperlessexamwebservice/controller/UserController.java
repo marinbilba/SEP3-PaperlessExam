@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -223,5 +222,49 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
+    /**
+     * Delete user. Method processed as a POST request requiring a <i>User object</i> in format of JSON
+     * as an argument that should be deleted.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/user/deleteUser
+     *
+     * <b>BODY</b>:
+     * {
+     * <p>
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "username":"silvmandrila",
+     * "email":"silvmandrila@va.cs",
+     * "password":"111111",
+     * "confirmPassword":"111111",
+     * "role":{
+     * "name":"Student"
+     * }
+     * }
+     * </p>
+     *
+     * @param user User object in JSON format
+     * @return <i>HTTP 200 - OK</i> code if the updated user passes validation process
+     * <i>HTTP 409 - CONFLICT</i> code if the username was not found in the system
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteUser(@RequestBody User user) {
+        User temp = null;
+        try {
+           temp= userService.deleteUser(user);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (UsernameNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(temp);
+    }
+
+
 }
 
