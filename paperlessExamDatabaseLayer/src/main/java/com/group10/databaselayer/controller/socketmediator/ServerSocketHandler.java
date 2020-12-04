@@ -12,6 +12,7 @@ import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceS
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
+import com.group10.databaselayer.exception.user.UserWasNotDeleted;
 import org.springframework.context.annotation.Scope;
 
 import java.io.*;
@@ -99,6 +100,7 @@ public class ServerSocketHandler implements Runnable {
             RequestOperation requestOperation = networkContainerRequestDeserialized.getRequestOperation();
 
             switch (requestOperation) {
+                // User requests
                 case GET_USER_BY_USERNAME:
                     getUserByUsername(networkContainerRequestDeserialized);
                     break;
@@ -110,14 +112,40 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_USERS_BY_FIRST_NAME:
                     getUsersListByFirstName(networkContainerRequestDeserialized);
+                case DELETE_USER:
+                    deleteUser(networkContainerRequestDeserialized);
+//                    Questions request
                 case MULTIPLE_CHOICE_SET_EXISTS:
                     existsMultipleChoiceSet(networkContainerRequestDeserialized);
                 case CREATE_MULTIPLE_CHOICE_SET:
                     createMultipleChoiceSet(networkContainerRequestDeserialized);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("DELETE_USER start");
+        User userToDelete = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
+        User deletedUser = null;
+//        delete user
+        userController.deleteUser(userToDelete);
+//        check if user was deleted
+        deletedUser= userController.getUserByUsername(userToDelete.getUsername());
+        if(deletedUser!=null){
+            try {
+                throw new UserWasNotDeleted("User could not be deleted");
+            } catch (UserWasNotDeleted userWasNotDeleted) {
+                userWasNotDeleted.printStackTrace();
+            }
+        }
+        objectSerialized = gson.toJson(userToDelete);
+        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("DELETE_USER end");
     }
 
     private void createMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
