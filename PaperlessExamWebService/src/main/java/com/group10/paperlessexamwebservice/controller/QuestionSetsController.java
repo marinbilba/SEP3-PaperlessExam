@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  */
 @RestController
-@RequestMapping("/questionSets")
+@RequestMapping("/questionsets")
 public class QuestionSetsController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class QuestionSetsController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/login
+     * http://{host}:8080/questionsets/validateMultipleChoiceSet
      *
      * <b>BODY</b>:
      * {
