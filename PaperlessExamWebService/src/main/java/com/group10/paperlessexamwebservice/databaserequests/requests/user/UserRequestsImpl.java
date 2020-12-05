@@ -80,7 +80,6 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             // Serialize the object
             String userSerialized = gson.toJson(user);
             //            Send request
@@ -117,7 +116,6 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
 //            Send request
             requestSharedMethods.sendRequest(username, GET_USER_BY_USERNAME);
             //            Read response
@@ -139,7 +137,6 @@ public class UserRequestsImpl implements IUserRequests {
         try {
 
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             //            Send request
             requestSharedMethods.sendRequest(firstName, GET_USERS_BY_FIRST_NAME);
             //            Read response
@@ -162,7 +159,6 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             // Serialize the object
             String userSerialized = gson.toJson(userToDelete);
             //            Send request
@@ -203,7 +199,7 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
+
 //            Send request
             requestSharedMethods.sendRequest(name, GET_ROLE_ID_BY_NAME);
             //            Read response
