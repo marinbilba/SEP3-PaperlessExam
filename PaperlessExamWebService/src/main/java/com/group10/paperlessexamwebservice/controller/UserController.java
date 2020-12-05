@@ -31,7 +31,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/login
+     * http://{host}:8080/user/login
      *
      * <b>BODY</b>:
      * {
@@ -45,7 +45,7 @@ public class UserController {
      * @throws PasswordException     the password exception
      * @throws HttpResponseException the http response exception
      */
-    @RequestMapping(value = "/user/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> loginUser(@RequestBody User user) throws PasswordException, HttpResponseException {
         User temp;
         try {
@@ -65,7 +65,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/createUser
+     * http://{host}:8080/user/createUser
      *
      * <b>BODY</b>:
      * {
@@ -88,12 +88,13 @@ public class UserController {
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 401 - UNAUTHORIZED</i> code if the password does not match with the confirm password field
      */
-    @RequestMapping(value = "/user/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody User user) {
         User temp = null;
+        System.out.println(user.getConfirmPassword());
         try {
             temp = userService.createUser(user);
-        } catch (UsernameFoundException | UsernameNotMatchEmail | EmailException e) {
+        } catch (UsernameFoundException | UsernameNotMatchEmail | EmailException | UnexpectedError e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (ServiceNotAvailable e) {
@@ -111,7 +112,7 @@ public class UserController {
      *
      * @return the list of all users
      */
-    @RequestMapping(value = "/user/getUsersList", method = RequestMethod.GET)
+    @RequestMapping(value = "/getUsersList", method = RequestMethod.GET)
     public List<User> getAllUsersList() {
         System.out.println("Call post");
         return userService.getAllUsersList();
@@ -123,7 +124,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/getUsersByFirstName/test123
+     * http://{host}:8080/user/getUsersByFirstName/test123
      * </p>
      *
      * @param firstName users firstname that should be filtered from the database
@@ -131,8 +132,9 @@ public class UserController {
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
      */
-    @RequestMapping(value = "/user/getUsersByFirstName/{firstName}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getUsersByFirstName/{firstName}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsersByFirstName(@PathVariable String firstName) {
+
         List<User> userList = null;
         try {
             userList = userService.getUsersByFirstName(firstName);
@@ -151,7 +153,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/getUserByUsername/test123
+     * http://{host}:8080/user/getUserByUsername/test123
      * </p>
      *
      * @param username the username that should be found
@@ -159,7 +161,7 @@ public class UserController {
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
      */
-    @RequestMapping(value = "/user/getUserByUsername/{username}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
         User user = null;
         try {
@@ -213,10 +215,13 @@ public class UserController {
         try {
             temp = userService.updateUser(user);
         } catch (UnexpectedError | NullFieldUser | com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
+           serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (UsernameNotMatchEmail | PasswordException | EmailException e) {
+        } catch (UsernameNotMatchEmail | PasswordException | EmailException|UserNotFound e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
