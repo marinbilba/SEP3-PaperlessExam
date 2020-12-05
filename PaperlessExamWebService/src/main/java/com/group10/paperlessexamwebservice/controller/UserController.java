@@ -1,6 +1,7 @@
 package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.user.User;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.user.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * @version 1.1
  */
 @RestController
-@RequestMapping("/userController")
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private IUserService userService;
@@ -31,7 +31,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/login
+     * http://{host}:8080/user/login
      *
      * <b>BODY</b>:
      * {
@@ -50,7 +50,7 @@ public class UserController {
         User temp;
         try {
             temp = userService.logInUser(user);
-        } catch (UsernameNotFoundException | PasswordException e) {
+        } catch (com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException | PasswordException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (ServiceNotAvailable e) {
@@ -65,11 +65,11 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/createUser
+     * http://{host}:8080/user/createUser
      *
      * <b>BODY</b>:
      * {
-     * "id":10,
+     * <p>
      * "firstName":"Silvestru",
      * "lastName":"Mandrila",
      * "username":"silvmandrila",
@@ -77,11 +77,9 @@ public class UserController {
      * "password":"111111",
      * "confirmPassword":"111111",
      * "role":{
-     * "id":1,
      * "name":"Student"
      * }
      * }
-     * </p>
      *
      * @param user User object in JSON format
      * @return <i>HTTP 200 - OK</i> code if the created user passes validation process
@@ -93,9 +91,10 @@ public class UserController {
     @RequestMapping(value = "/createUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody User user) {
         User temp = null;
+        System.out.println(user.getConfirmPassword());
         try {
             temp = userService.createUser(user);
-        } catch (UsernameFoundException | UsernameNotMatchEmail | EmailException e) {
+        } catch (UsernameFoundException | UsernameNotMatchEmail | EmailException | UnexpectedError e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (ServiceNotAvailable e) {
@@ -105,7 +104,7 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-            return ResponseEntity.status(HttpStatus.OK).body(temp);
+        return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
 
     /**
@@ -125,16 +124,17 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/getUsersByFirstName/test123
+     * http://{host}:8080/user/getUsersByFirstName/test123
      * </p>
      *
      * @param firstName users firstname that should be filtered from the database
-     * @return <i>HTTP 200 - OK</i> with the found list of users 
+     * @return <i>HTTP 200 - OK</i> with the found list of users
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
      */
-    @RequestMapping(value = "/getUsersByFirstName/{firstName}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getUsersByFirstName/{firstName}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsersByFirstName(@PathVariable String firstName) {
+
         List<User> userList = null;
         try {
             userList = userService.getUsersByFirstName(firstName);
@@ -153,7 +153,7 @@ public class UserController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/getUserByUsername/test123
+     * http://{host}:8080/user/getUserByUsername/test123
      * </p>
      *
      * @param username the username that should be found
@@ -161,7 +161,7 @@ public class UserController {
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
      */
-    @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getUserByUsername/{username}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUserByUsername(@PathVariable String username) {
         User user = null;
         try {
@@ -178,15 +178,98 @@ public class UserController {
 
 
     /**
-     * Update user user.
+     * Update user. Method processed as a POST request requiring a <i>User object</i> in format of JSON
+     * as an argument that should be updated.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/user/updateUser
      *
-     * @param user the user
-     * @return the user
+     * <b>BODY</b>:
+     * {
+     * <p>
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "username":"silvmandrila",
+     * "email":"silvmandrila@va.cs",
+     * "password":"111111",
+     * "confirmPassword":"111111",
+     * "role":{
+     * "name":"Student"
+     * }
+     * }
+     * </p>
+     *
+     * @param user User object in JSON format
+     * @return <i>HTTP 200 - OK</i> code if the updated user passes validation process
+     * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system, user object fields are null
+     * or any kind of unexpected error.
+     * <i>HTTP 409 - CONFLICT</i> code if the username was not found in the system, the username
+     * does not match the substring of the email until the '@' char or email does not contain character '@'
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public User updateUser(@RequestBody User user) {
-        return null;
+    public ResponseEntity<Object> updateUser(@RequestBody User user) {
+        User temp = null;
 
+        try {
+            temp = userService.updateUser(user);
+        } catch (UnexpectedError | NullFieldUser | com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+           serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (UsernameNotMatchEmail | PasswordException | EmailException|UserNotFound e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(temp);
+    }
+    /**
+     * Delete user. Method processed as a POST request requiring a <i>User object</i> in format of JSON
+     * as an argument that should be deleted.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/user/deleteUser
+     *
+     * <b>BODY</b>:
+     * {
+     * <p>
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "username":"silvmandrila",
+     * "email":"silvmandrila@va.cs",
+     * "password":"111111",
+     * "confirmPassword":"111111",
+     * "role":{
+     * "name":"Student"
+     * }
+     * }
+     * </p>
+     *
+     * @param user User object in JSON format
+     * @return <i>HTTP 200 - OK</i> code if the updated user passes validation process
+     * <i>HTTP 409 - CONFLICT</i> code if the username was not found in the system
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteUser(@RequestBody User user) {
+        User temp = null;
+        try {
+           temp= userService.deleteUser(user);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (UsernameNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
 
+
 }
+

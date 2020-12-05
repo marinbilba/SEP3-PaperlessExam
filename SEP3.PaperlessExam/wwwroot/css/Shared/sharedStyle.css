@@ -1,0 +1,7 @@
+﻿/* Loading spinner */
+
+#spinner{
+    float: right;
+    display: inline-block;
+    margin: 0 auto;
+}

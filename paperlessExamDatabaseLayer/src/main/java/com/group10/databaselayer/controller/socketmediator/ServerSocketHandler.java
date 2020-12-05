@@ -12,6 +12,7 @@ import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceS
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
+import com.group10.databaselayer.exception.user.UserWasNotDeleted;
 import org.springframework.context.annotation.Scope;
 
 import java.io.*;
@@ -99,25 +100,56 @@ public class ServerSocketHandler implements Runnable {
             RequestOperation requestOperation = networkContainerRequestDeserialized.getRequestOperation();
 
             switch (requestOperation) {
+                // User requests
                 case GET_USER_BY_USERNAME:
                     getUserByUsername(networkContainerRequestDeserialized);
                     break;
-                case CREATE_USER:
-                    createUser(networkContainerRequestDeserialized);
+                case CREATE_UPDATE_USER:
+                    createUpdateUser(networkContainerRequestDeserialized);
                     break;
                 case GET_ROLE_ID_BY_NAME:
                     getRoleIdByName(networkContainerRequestDeserialized);
                     break;
                 case GET_USERS_BY_FIRST_NAME:
                     getUsersListByFirstName(networkContainerRequestDeserialized);
+               break;
+                case DELETE_USER:
+                    deleteUser(networkContainerRequestDeserialized);
+                    break;
+//                    Questions request
                 case MULTIPLE_CHOICE_SET_EXISTS:
                     existsMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
                 case CREATE_MULTIPLE_CHOICE_SET:
                     createMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("DELETE_USER start");
+        User userToDelete = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
+        User deletedUser = null;
+//        delete user
+        userController.deleteUser(userToDelete);
+//        check if user was deleted
+        deletedUser= userController.getUserByUsername(userToDelete.getUsername());
+        if(deletedUser!=null){
+            try {
+                throw new UserWasNotDeleted("User could not be deleted");
+            } catch (UserWasNotDeleted userWasNotDeleted) {
+                userWasNotDeleted.printStackTrace();
+            }
+        }
+        objectSerialized = gson.toJson(userToDelete);
+        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("DELETE_USER end");
     }
 
     private void createMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
@@ -190,14 +222,14 @@ public class ServerSocketHandler implements Runnable {
      * @throws IOException exceptions produced by failed or
      *                     interrupted I/O operations.
      */
-    private void createUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+    private void createUpdateUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("CREATE_USER start");
         User userDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
         //User pula=new User("Marin","Bilba","marinbilba","marin@.sd","123456",new Role((long) 1,"Student"));
-        User createdUser = userController.createUser(userDeserialized);
+        User createdUser = userController.createUpdateUser(userDeserialized);
         System.out.println("doneeeee");
         objectSerialized = gson.toJson(createdUser);
-        networkContainer = new NetworkContainer(CREATE_USER, objectSerialized);
+        networkContainer = new NetworkContainer(CREATE_UPDATE_USER, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
         System.out.println("CREATE_USER end");

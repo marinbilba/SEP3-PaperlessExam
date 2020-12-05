@@ -3,17 +3,13 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.user;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
-import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.user.Role;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
@@ -79,16 +75,15 @@ public class UserRequestsImpl implements IUserRequests {
      * @return a user object. <i>The object might be null if was not found in the database</>
      */
     @Override
-    public User createUser(User user) throws ServiceNotAvailable {
+    public User createUpdateUser(User user) throws ServiceNotAvailable {
         User tempUser = null;
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             // Serialize the object
             String userSerialized = gson.toJson(user);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized, CREATE_USER);
+            requestSharedMethods.sendRequest(userSerialized, CREATE_UPDATE_USER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -121,7 +116,6 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
 //            Send request
             requestSharedMethods.sendRequest(username, GET_USER_BY_USERNAME);
             //            Read response
@@ -143,7 +137,6 @@ public class UserRequestsImpl implements IUserRequests {
         try {
 
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             //            Send request
             requestSharedMethods.sendRequest(firstName, GET_USERS_BY_FIRST_NAME);
             //            Read response
@@ -158,6 +151,29 @@ public class UserRequestsImpl implements IUserRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return userList;
+    }
+
+    @Override
+    public User deleteUser(User userToDelete) throws ServiceNotAvailable {
+        User deletedUser = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String userSerialized = gson.toJson(userToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(userSerialized,  DELETE_USER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedUser = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedUser;
     }
 
     @Override
@@ -183,7 +199,7 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
+
 //            Send request
             requestSharedMethods.sendRequest(name, GET_ROLE_ID_BY_NAME);
             //            Read response

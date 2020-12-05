@@ -57,33 +57,34 @@ public class Server {
 
     @PostConstruct
     public void init() {
-        gson = new GsonBuilder();
-        // gson.setExclusionStrategies( new HiddenAnnotationExclusionStrategy() );
-
-        gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
-        Gson gson2 = gson.setPrettyPrinting().create();
-
-
         controllersSet.add(roleController);
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
+        //        gson = new GsonBuilder();
+//        // gson.setExclusionStrategies( new HiddenAnnotationExclusionStrategy() );
+//
+//        gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
+//        Gson gson2 = gson.setPrettyPrinting().create();
+//
+//
 
-        User user = userRepository.getUserByUsername("silvmandrila");
-        System.out.println(user.getFirstName());
+//
+//        User user = userRepository.getUserByUsername("silvmandrila");
+//        System.out.println(user.getFirstName());
 //WrittenSet writtenSet=new WrittenSet("ads","dssd",user);
 //        WrittenQuestion writtenQuestion=new WrittenQuestion("dsfa2",20,1);
 //        writtenSet.addQuestion(writtenQuestion);
 
-
-        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Geography", "Capitals", user);
-
-        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20);
-        multipleChoiceQuestion.addQuestionOption(new QuestionOption(true, "Buenos Aires"));
-        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false, "Berlin"));
-        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
-
-        String multipleChoiceSetSerialized = gson2.toJson(multipleChoiceSet);
-        System.out.println(multipleChoiceSetSerialized);
+//
+//        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Geography", "Capitals", user);
+//
+//        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20);
+//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(true, "Buenos Aires"));
+//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false, "Berlin"));
+//        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
+//
+//        String multipleChoiceSetSerialized = gson2.toJson(multipleChoiceSet);
+//        System.out.println(multipleChoiceSetSerialized);
 //          writtenQuestionsController.createUpdateWrittenSet(multipleChoiceSet);
 
         runServer();
@@ -96,6 +97,7 @@ public class Server {
             while (true) {
                 System.out.println("[SERVER] Waiting for client connection on port " + SERVER_PORT);
                 Socket socket = server.accept();
+                System.out.println("[SERVER] Connected to client");
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
                 serverSocketHandler.run();
                 // executorService.execute(serverSocketHandler);
@@ -108,7 +110,7 @@ public class Server {
                 //     serverSocketHandler.run();
 //                Thread thread=new Thread(new ServerSocketHandler(socket, controllersSet));
 //                thread.start();
-                System.out.println("[SERVER] Connected to client");
+                System.out.println("[SERVER] Disconnected from client");
 
             }
 

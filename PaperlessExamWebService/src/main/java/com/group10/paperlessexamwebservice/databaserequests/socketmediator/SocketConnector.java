@@ -24,12 +24,14 @@ public class SocketConnector implements ISocketConnector {
         socket = new Socket(SERVER_IP, SERVER_PORT);
         outputStream = socket.getOutputStream();
         inputStream = socket.getInputStream();
+        System.out.println("[CLIENT] Connected to server");
 
     }
 
     @Override
     public void disconnect() throws IOException {
         socket.close();
+        System.out.println("[CLIENT] Disconnected from server");
     }
 
     @Override

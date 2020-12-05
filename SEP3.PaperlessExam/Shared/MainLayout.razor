@@ -1,4 +1,4 @@
-﻿
+﻿@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 
@@ -15,19 +15,23 @@
         @Body
     </div>
 </div>
+@* Toast Notifications *@
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="4"
+                ShowProgressBar="true" RemoveToastsOnNavigation="true"/>
 
 @code
 {
-  // [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+    // [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
 
-  // protected async override Task OnInitializedAsync()
-  // {
-  //     base.OnInitialized();
-  //     var user = (await AuthStat).User;
-  //     if(!user.Identity.IsAuthenticated)
-  //     {
-  //         Navigation.NavigateTo("/login");
-  //     }
-  //  }
-   
+    // protected async override Task OnInitializedAsync()
+    // {
+    //     base.OnInitialized();
+    //     var user = (await AuthStat).User;
+    //     if(!user.Identity.IsAuthenticated)
+    //     {
+    //         Navigation.NavigateTo("/login");
+    //     }
+    //  }
+
 }

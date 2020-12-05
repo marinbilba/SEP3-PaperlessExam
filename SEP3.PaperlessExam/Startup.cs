@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blazored.Modal;
+using Blazored.Toast;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -34,7 +34,8 @@ namespace SEP3.PaperlessExam
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddScoped<IPaperlessExamService, PaperlessExamServiceImpl>();
+            services.AddScoped<IUserService, UserServiceImpl>();
+            services.AddBlazoredToast();
             
           services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
           

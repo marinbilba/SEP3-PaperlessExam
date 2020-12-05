@@ -13,11 +13,11 @@ namespace SEP3.PaperlessExam.Authentication
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IJSRuntime jsRuntime;
-        private readonly IPaperlessExamService userService;
+        private readonly IUserService userService;
 
         public User cachedUser;
 
-        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, IPaperlessExamService userService)
+        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, IUserService userService)
         {
             this.jsRuntime = jsRuntime;
             this.userService = userService;
@@ -55,7 +55,6 @@ namespace SEP3.PaperlessExam.Authentication
                 string serialisedData = JsonSerializer.Serialize(user);
                 await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
                 cachedUser = user;
-                Console.WriteLine("Fin");
             } catch (Exception e) {
                 throw e;
             }

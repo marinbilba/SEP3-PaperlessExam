@@ -1,34 +1,52 @@
 @page "/FindEditDelete"
 @using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Pages.SharedComponents.ConfirmComponent
+
 @using System.Text
+@using BlazorComponentUtilities
 @using Microsoft.AspNetCore.Http.Features
 @using Blazored.Typeahead
-@inject IPaperlessExamService PaperlessExamService
+@inject IUserService UserService
 @inject NavigationManager NavigationManager
-<h3>FindEditDelete</h3>
 
+<link rel="stylesheet" href="css/Shared/sharedStyle.css">
 <div class="row">
     <div class="col-md-4">
         @* <p> *@
-        <input type="text" placeholder="Type first name" bind-value="@searchedFirstName"/>
+        <input type="text" placeholder="Type first first name" @bind-value="_searchedFirstName"/>
     </div>
-    
-    <div class="col-md-2">
-        <input @onclick="@(() => SearchByFirstName(searchedFirstName))" class="btn btn-success btn-send pt-2 btn-block " value="Search">
+
+    @if (_loadingShow)
+    {
+        <div class="col-md-2">
+            <button class="btn btn-success" @onclick="@(SearchByFirstNameOrUsername)">
+                <div id="spinner">
+                    <Chase Color="#4a6ac8" Size="20px"/>
+                </div>
+                Search
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-2">
+            <button class="btn btn-success btn-lg" @onclick="@(SearchByFirstNameOrUsername)">
+                Search
+            </button>
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-md-4">
+        @* <p> *@
+        <input type="text" placeholder="Type username" @bind-value="_searchedUsername"/>
     </div>
 </div>
-
-
 <div class="row">
-    <div class="col-md-4">
-        @* <p> *@
-        <input type="text" placeholder="Type username" bind-value="@searchedUsername"/>
+    <div class="col-md">
+        <div style="color:red;padding:5px">@_errorMessage</div>
     </div>
-    
-    <div class="col-md-2">
-            <input @onclick="@(() => SearchByUsername(_selectedUser.Username))" class="btn btn-success btn-send pt-2 btn-block " value="Search">
-        </div>
 </div>
 <br/>
 
@@ -39,11 +57,12 @@
     _usersToShow = temp;
     _selectedUser = null;
 }
+
 @* Users Table *@
 @if (_usersToShow == null)
 {
     <p>
-        <em>Loading...</em>
+        <em>Use the filter to find users</em>
     </p>
 }
 else
@@ -62,23 +81,23 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in _usersToShow)
+        @foreach (var item in _allUsers)
         {
             <tr>
                 <td>@item.FirstName</td>
                 <td>@item.LastName</td>
                 <td>@item.Username</td>
                 <td>@item.Password</td>
-                <td>@item.Role</td>
+                <td>@item.Role.Name</td>
                 <td>@item.Email</td>
                 <td>
-                    <button @onclick="@(() => DeleteUser(item.Username))">
-                        <i class="oi oi-trash" style = "color:red"/>
+                    <button @onclick="@(() => DeleteUser(item))">
+                        <i class="oi oi-trash" style="color:red"/>
                     </button>
                 </td>
                 <td>
                     <button @onclick="@(() => ToEditUser(item))">
-                        <i class="oi oi-pencil" style = "color:green"/>
+                        <i class="oi oi-pencil" style="color:green"/>
                     </button>
                 </td>
             </tr>
@@ -86,75 +105,105 @@ else
 
         </tbody>
     </table>
-    <div style="color:red">@_errorMessage</div>
+    <Confirm ConfirmationChanged="ConfirmDelete" @ref="DeleteConfirmation"
+             ConfirmationTitle="Delete Confirmation" ConfirmationMessage=@($"Are you sure you want to delete user: {_userToDelete.Username} ?")>
+
+    </Confirm>
 }
-@*     <button @onclick="@(()=>DeleteTodo())"></button> *@
-@* <div class="container"> *@
-@*     <div class="row"> *@
-@*         <div class="col-md-2 red"  @onclick="@()=>EditUser(" > *@
-@*             <h6><b>Delete</b></h6></div> *@
-@*         <div class="col-md-8"></div> *@
-@*         <div class="col-md-2 red" @onclick="@DeleteUser"> *@
-@*             <h6><b>Edit</b></h6> *@
-@*         </div> *@
-@*         </div> *@
-@* </div> *@
 
 @code {
-    private IList<User> _allUsers;
-    private IList<User> _usersToShow;
-    private string searchedFirstName;
-    private string searchedUsername;
-    private User _selectedUser;
+
+    private bool _loadingShow;
     private string _errorMessage;
 
-    private async Task<IEnumerable<User>> FilterUserByFirstName(string name)
-    {
-        return await Task.FromResult(_allUsers.Where(x => x.FirstName.ToLower().Contains(name.ToLower())).ToList());
-    }
+    private User _userToDelete = new User();
+    private IList<User> _allUsers = new List<User>();
 
-    private async Task<IEnumerable<User>> FilterUserByUsername(string username)
-    {
-        return await Task.FromResult(_allUsers.Where(x => x.FirstName.ToLower().Contains(username.ToLower())).ToList());
-    }
-    
-    private async Task SearchByFirstName(string name)
-    {
-      _usersToShow= await PaperlessExamService.FindByFirstName(name);
-        // Console.WriteLine(_usersToShow.ToString());
-    }
 
-    private void SearchByUsername(string username)
+    private string _searchedFirstName;
+    private string _searchedUsername;
+
+    private IList<User> _usersToShow = new List<User>();
+    private User _selectedUser;
+
+
+    protected ConfirmBase DeleteConfirmation { get; set; }
+
+    private async Task SearchByFirstNameOrUsername()
     {
-        PaperlessExamService.FindByUsername(username);
-        Console.WriteLine(_usersToShow.ToString());
-    }
-    
-    private void ShowAllAdults()
-    {
-        _usersToShow = _allUsers;
+        _errorMessage = String.Empty;
+        _loadingShow = true;
+        if (String.IsNullOrEmpty(_searchedUsername) && String.IsNullOrEmpty(_searchedFirstName))
+        {
+            _errorMessage = "You must enter the username or first name";
+            _loadingShow = false;
+            
+        }else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
+        {
+            _errorMessage = "Only one search criteria is allowed";
+            _loadingShow = false;
+        }
+        else if (!String.IsNullOrEmpty(_searchedFirstName))
+        {
+            try
+            {
+
+                _allUsers = await UserService.FindByFirstName(_searchedFirstName);
+                _loadingShow = false;
+
+            }
+            catch (Exception e)
+            {
+                _loadingShow = false;
+                Console.WriteLine(e);
+                _errorMessage = e.Message;
+            }
+        }else if (!String.IsNullOrEmpty(_searchedUsername))
+        {
+            try
+            {
+                User tempUser = await UserService.FindByUsername(_searchedUsername);
+                _allUsers.Add(tempUser);
+                _loadingShow = false;
+            }
+            catch (Exception e)
+            {
+                _loadingShow = false;
+                Console.WriteLine(e);
+                _errorMessage = e.Message;
+            }
+        }
     }
 
     private void ToEditUser(User user)
     {
         NavigationManager.NavigateTo($"/UpdateUser/{user.Username}");
     }
-    
-    
-    
-    private async Task DeleteUser(string username)
+
+
+    private async Task DeleteUser(User user)
     {
+        _userToDelete = user;
+        DeleteConfirmation.Show();
         _errorMessage = "";
-        try
+    }
+
+    protected async Task ConfirmDelete(bool deleteConfirm)
+    {
+        if (deleteConfirm)
         {
-            User userToDelete = _allUsers.First(u => u.Username == username);
-            await PaperlessExamService.DeleteUser(username);
-            _allUsers.Remove(userToDelete);
-        }
-        catch (Exception e)
-        {
-            _errorMessage = e.Message;
-            Console.WriteLine(e);
+            _errorMessage = "";
+            try
+            {
+                await UserService.DeleteUser(_userToDelete);
+                _allUsers.Remove(_userToDelete);
+            }
+            catch (Exception e)
+            {
+                _errorMessage = e.Message;
+                Console.WriteLine(e);
+            }
         }
     }
+
 }
