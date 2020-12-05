@@ -1,91 +1,100 @@
 ﻿@page "/asdffads"
 @using System.Reflection.Metadata
 @using Microsoft.AspNetCore.Razor.TagHelpers
+@using SEP3.PaperlessExam.Model.Questions.Multiplechoice
 @inject IJSRuntime JsRuntime;
 <h3 xmlns="">MultipleChoiceQuestions</h3>
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 
-<h3>Multiple-choice Questions Builder</h3>
-<div class="container-fluid questionContainer">
-    @* Type question  *@
-    <div class="row">
-        <div class="col-md-1">
-            <div class="questionNumberBox d-flex">
-                <div class="questionNumber">@_questionNumber</div>
+<h3>Multiple-choice Questions Builder</h3>    
+
+<EditForm Model="_multipleChoiceSet" OnValidSubmit="OnValidSubmit">
+    @for (var index1 = 0; index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; index1++)
+    {
+        var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[index1];
+        
+        
+    <div class="container-fluid questionContainer">
+        @* Type question  *@
+        <div class="row">
+            <div class="col-md-1">
+                <div class="questionNumberBox d-flex">
+                    <div class="questionNumber d-flex justify-content-center">@_questionNumber</div>
+                </div>
+            </div>
+            <div class="col-md-11">
+                <input type="text" class="form-control" placeholder="Type your question"/>
             </div>
         </div>
-        <div class="col-md-11">
-
-            <input type="text" class="form-control" placeholder="Type your question"/>
+        @* Type number of points *@
+        <div class="row top-buffer">
+            <div class="col-md-1 offset-1  padding-right0 " >
+                <input type="number" class="form-control"  placeholder="Score"/>
+            </div>
+            <div class="col-md-1 padding-left0">
+                <label>points</label>
+            </div>
         </div>
-    </div>
-    @* Type number of points *@
-    <div class="row top-buffer">
-        <div class="col-md-1 offset-1  padding-right0 " >
-            <input type="number" class="form-control" placeholder="Score"/>
-        </div>
-        <div class="col-md-1 padding-left0">
-            <label>points</label>
-        </div>
-    </div>
 
 
-    <div class="row top-buffer justify-content-center">
-        <div class="col-md-2">
-            <RadzenLabel Text="Check the correct question answer">
-            </RadzenLabel>
-
-        </div>
-        <div class="col-md-1">
-
-            <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
-            </RadzenCheckBox>
-
-        </div>
-        <div class="col-md-7">
-            <input type="text" class="form-control" placeholder="Answer"/>
-        </div>
-        <div class="col-md-1">
-            <RadzenButton Icon="delete" style="width: 37px">
-            </RadzenButton>
-        </div>
-    </div>
-    @* Third row *@
-    <div id="myDiv" class="row top-buffer justify-content-center">
-        <div class="col-md-1 offset-2">
-            <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
-            </RadzenCheckBox>
-
-        </div>
-        <div class="col-md-7">
-            <input type="text" class="form-control" placeholder="Answer"/>
-        </div>
-        <div class="col-md-1">
-            <RadzenButton Icon="delete" style="width: 37px" Click="@DeleteAnswerRowAsync">
-            </RadzenButton>
-        </div>
-    </div>
+        
+       
+            <div class="row top-buffer justify-content-center">
+                <div class="col-md-1 offset-2">
+                </div>
+                <div class="col-md-7">
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            @for (var i = 0; i < multipleChoiceQuestion.QuestionOptions.Count; i++)
+            {
+                var index = i;
+                var questionOption = multipleChoiceQuestion.QuestionOptions[i]; 
+                Console.WriteLine(i);
+                <div class="form-group row top-buffer justify-content-center">
+                    <div class="col-md-1 offset-2">
+                        <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
+                        </RadzenCheckBox>
+                
+                    </div>
+                    <div class="col-md-7">
+                        <InputText type="text" class="form-control" @bind-Value="@questionOption.Answer" placeholder="Answer"/>
+                    </div>
+                    <div class="col-md-1">
+                        <RadzenButton Icon="delete" style="width: 37px" Click=@(() => multipleChoiceQuestion.RemoveQuestionOption(questionOption)) >
+                        </RadzenButton>
+                    </div>
+                </div>
+            }
+        
     
-    <div id="divContainer"> asdasdas dasd asd asd asd asd</div>
+        <div class="row top-buffer justify-content-center">
+            <div class="col-md-1 offset-2">
+                <div class="additionalQuestionSelectBox">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <button id="addButton" type="button" class="additionalQuestionButton" 
+                        @onclick="@(() => multipleChoiceQuestion.QuestionOptions.Add(new QuestionOption()))"
+                >
+                    <span style="color: blue"> Add more</span>
+                </button>
+            </div>
+        </div>
+    
     
         @* Add additional option *@
-    <div class="row top-buffer justify-content-center">
-        <div class="col-md-1 offset-2">
-            <div class="additionalQuestionSelectBox">
-            </div>
-        </div>
-        <div class="col-md-8">
-            <button onclick="addMoreAnswers()" id="addButton" type="button" class="additionalQuestionButton">
-                <span style="color: blue"> Add more</span>
-            </button>
-        </div>
+    
     </div>
-</div>
+    
+    }
+    
+
 @* Add new question && Finish buttons *@
 <div class="row top-buffer justify-content-between">
     <div class="col-md-3 offset-9">
-        <RadzenButton Icon="" Text="Add question"> </RadzenButton>
+        <RadzenButton Icon="" Text="Add question" Click=@(() => _multipleChoiceSet.AddQuestion( new MultipleChoiceQuestion()))></RadzenButton>
         <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
         </RadzenButton>
     </div>
@@ -93,9 +102,11 @@
     @*    *@
     @* </div> *@
 </div>
-
+</EditForm>
 @code {
     
+    MultipleChoiceQuestion _multipleChoiceQuestion = new MultipleChoiceQuestion();
+    MultipleChoiceSet _multipleChoiceSet = new MultipleChoiceSet();
     
     bool _correctAnswerValue;
 
@@ -113,7 +124,7 @@
     {
         await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
     }
-
+    public EventCallback OnValidSubmit { get; set; }
+    public EventCallback OnValidSubmit2 { get; set; }
     
-
 }
