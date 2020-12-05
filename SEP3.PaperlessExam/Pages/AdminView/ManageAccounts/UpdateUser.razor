@@ -1,10 +1,12 @@
 @page "/UpdateUser/{username}"
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Model
-@inject IPaperlessExamService PaperlessExamService
+@using Blazored.Toast.Configuration
+@inject IUserService UserService
 @inject NavigationManager NavigationManager
+@inject IToastService toastService
 
-
+<link rel="stylesheet" href="css/Shared/sharedStyle.css">
 <EditForm Model="@_updatedUser" OnValidSubmit="@EditUser">
     <div class="container" id="tableStyle">
         <div class=" text-center mt-1 ">
@@ -22,59 +24,71 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_name">First Name *</label>
-                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.FirstName" type="text" name="name" class="form-control" required="required" data-error="Firstname is required." placeholder="@FirstName"></InputTextArea>
+                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.FirstName" type="text" name="name" class="form-control" required="required" data-error="Firstname is required." placeholder=""></InputTextArea>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_name">Last Name *</label>
-                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.LastName" type="text" name="name" class="form-control" required="required" data-error="Lastname is required." placeholder="@LastName"></InputTextArea>
+                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.LastName" type="text" name="name" class="form-control" required="required" data-error="Lastname is required." placeholder=""></InputTextArea>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_name">Username *</label>
-                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.Username" type="text" name="name" class="form-control"required="required" data-error="Username is required." placeholder="@Username" readonly></InputTextArea>
+                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.Username" type="text" name="name" class="form-control"required="required" data-error="Username is required." placeholder="@_updatedUser.Username" readonly></InputTextArea>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_need"> Password *</label>
-                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.Password" type="text" name="name" class="form-control" required="required" data-error="Password is required." placeholder="@Password"></InputTextArea>
+                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.Password" type="text" name="name" class="form-control" required="required" data-error="Password is required." placeholder=""></InputTextArea>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                                                            <div class="form-group">
-                                                                                <label for="form_need"> Confirm Password *</label>
-                                                                                <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.ConfirmPassword" type="text" name="name" class="form-control" required="required" data-error="Confirm Password is required." placeholder="@ConfirmPassword"></InputTextArea>
-                                                                            </div>
-                                                                        </div>
+                                        <div class="form-group">
+                                            <label for="form_need"> Confirm Password *</label>
+                                            <InputTextArea rows="1" id="form_name" @bind-Value="_updatedUser.ConfirmPassword" type="text" name="name" class="form-control" required="required" data-error="Confirm Password is required." placeholder=""></InputTextArea>
+
+                                        </div>
+                                    </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_need"> Role *</label>
-                                            <select id="form_need" @bind="@roleName" name="need" class="form-control" required="required" data-error="Please specify role." placeholder="@Role">
-                                                <option value="" selected disabled>Select Role</option>
-                                                <option>Teacher</option>
-                                                <option>Student</option>
-                                            </select>
+                                            <InputTextArea @bind-Value="_roleName" rows="1" id="form_name" type="text" name="name" class="form-control" readonly></InputTextArea>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="form_email">Email *</label>
-                                            <InputTextArea id="form_text" rows="1" @bind-Value="_updatedUser.Email" type="text" name="email" class="form-control" required="required" data-error="Valid email is required." placeholder="@Email"></InputTextArea>
+                                            <InputTextArea id="form_text" rows="1" @bind-Value="_updatedUser.Email" type="text" name="email" class="form-control" required="required" data-error="Valid email is required."></InputTextArea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <input type="submit" class="btn btn-success btn-send pt-2 btn-block " @onclick="EditUser" value="Save information">
+                                
+                                        @if (_loadingShow)
+                                        {
+                                            <button type="button" class="btn btn-success btn-lg btn-block"@onclick="EditUser">
+                                                Save information
+                                                <div id="spinner">
+                                                    <Chase Color="#4a6ac8" Size="20px"/>
+                                                </div>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-success btn-lg btn-block"@onclick="EditUser">
+                                                Save information
+                                            </button>
+                                        }
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div style="color:red;padding:5px">@_errorMessage</div>
                                     </div>
                                 </div>
-
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -82,54 +96,62 @@
         </div>
     </div>
 </EditForm>
+@if (_confirmUpdateNotification)
+{  
+    toastService.ShowSuccess($"User: {Username} was updated successfully", "User updated!");
+  
+}
 
 @code {
+    // Loading spinner
+    private bool _loadingShow;
+    // ConfirmNotification
+    private bool _confirmUpdateNotification;
 
     [Parameter]
     public string Username { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Password { get; set; }
-    public string ConfirmPassword { get; set; }
-    public Role Role { get; set; }
-    public string Email { get; set; }
 
+    private string _roleName;
     private User _updatedUser = new User();
-    private string roleName;
-    private User user;
-    private string errorMessage;
-    
+
+    private string _errorMessage;
+
     protected override async Task OnInitializedAsync()
     {
-        // user = await PaperlessExamService.FindByUsername(Username);
-        // user = new User("HEJ", "tyuiop", "fgjukil", "dfgnhjmk", "tgyhuj", new Role("teacher"), "haha@haha");
+        User user = await UserService.FindByUsername(Username);
 
-        Username = user.Username;
-        FirstName = user.FirstName;
-        LastName = user.LastName;
-        Password = user.Password;
-        ConfirmPassword = user.ConfirmPassword;
-        Role = user.Role;
-        Email = user.Email;
+
+        _updatedUser.Username = user.Username;
+        _updatedUser.FirstName = user.FirstName;
+        _updatedUser.LastName = user.LastName;
+        _updatedUser.Password = user.Password;
+        _updatedUser.ConfirmPassword = user.ConfirmPassword;
+        _updatedUser.Role = user.Role;
+        _updatedUser.Email = user.Email;
+
+        _roleName = user.Role.Name;
     }
 
-    private void EditUser()
+    private async Task EditUser()
     {
-        errorMessage = "";
-        Role userRole=new Role(roleName);
-        _updatedUser.Role = userRole;
+        _confirmUpdateNotification = false;
+        _loadingShow = true;
+        _errorMessage = "";
         try
         {
-            PaperlessExamService.UpdateUser(user);
-            Console.WriteLine(user.ToString());
-            NavigationManager.NavigateTo("/EX");
+            User tempUser = await UserService.UpdateUser(_updatedUser);
+            if (tempUser != null)
+            {
+                _confirmUpdateNotification = true;
+                _loadingShow = false;
+            }
         }
         catch (Exception e)
         {
-            errorMessage = e.Message;
+            _loadingShow = false;
+            _errorMessage = e.Message;
             Console.WriteLine(e);
         }
-        
     }
-    
+
 }
