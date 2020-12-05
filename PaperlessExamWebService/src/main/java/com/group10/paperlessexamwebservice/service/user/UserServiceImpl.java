@@ -68,7 +68,10 @@ public class UserServiceImpl implements IUserService {
      * @throws UsernameFoundException the username already exists in the database
      */
     @Override
-    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException, EmailException {
+    public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException, EmailException, UnexpectedError {
+    if(user==null){
+        throw new UnexpectedError("Something went wrong");
+    }
         // Check if the username exists in the database
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
         if (requestedUserFromTheDatabase != null) {
@@ -127,13 +130,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     //  todo, check if current user.equals with the one from the database
-    public User updateUser(User user) throws NullFieldUser, ServiceNotAvailable, UnexpectedError, EmailException, UsernameNotMatchEmail, PasswordException, UsernameNotFoundException {
+    // todo, user already comes with role id, not necessary to find it again in db
+    public User updateUser(User user) throws NullFieldUser, ServiceNotAvailable, UnexpectedError, EmailException, UsernameNotMatchEmail, PasswordException, UsernameNotFoundException, UserNotFound {
         boolean validatedSuccessful = checkNullUserFields(user);
         if (validatedSuccessful) {
-            User fetchedUser = userRequest.getUserByUsername(user.getUsername());
-            if (fetchedUser == null) {
-                throw new UsernameNotFoundException("Username was not found in the system");
-            }
+            User fetchedUser = getUsersByUsername(user.getUsername());
             String subtractedString = getEmailSubstring(user.getEmail());
             if (!user.getUsername().equals(subtractedString)) {
                 throw new UsernameNotMatchEmail("Username must match the email until the '@' sign ");
