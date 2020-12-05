@@ -112,13 +112,17 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_USERS_BY_FIRST_NAME:
                     getUsersListByFirstName(networkContainerRequestDeserialized);
+               break;
                 case DELETE_USER:
                     deleteUser(networkContainerRequestDeserialized);
+                    break;
 //                    Questions request
                 case MULTIPLE_CHOICE_SET_EXISTS:
                     existsMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
                 case CREATE_MULTIPLE_CHOICE_SET:
                     createMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
 
             }
         } catch (IOException e) {
