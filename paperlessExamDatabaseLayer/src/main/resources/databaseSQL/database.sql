@@ -37,5 +37,7 @@ INSERT INTO roles VALUES (2, 'Teacher');
 
 INSERT INTO users(id,firstName,lastName,username,email,password,fk_role_id) VALUES (10,'Silvestru','Mandrila','silvmandrila','silvmandr@va.cs','111111',1);
 
-
-INSERT INTO user_roles VALUES (1, 2);
+-- On update cascade
+-- Multiple choice set
+alter table multiple_choice_set drop foreign key FKlnw4kp4xd6wp8om4w9rnlpj1h;
+alter table multiple_choice_set add foreign key (fk_user_id) references users(id) on DELETE CASCADE;
