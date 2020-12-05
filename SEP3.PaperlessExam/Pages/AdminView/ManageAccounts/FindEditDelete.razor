@@ -86,6 +86,7 @@ else
 
         </tbody>
     </table>
+    <div style="color:red">@_errorMessage</div>
 }
 @*     <button @onclick="@(()=>DeleteTodo())"></button> *@
 @* <div class="container"> *@
@@ -105,7 +106,7 @@ else
     private string searchedFirstName;
     private string searchedUsername;
     private User _selectedUser;
-    private string errorMessage;
+    private string _errorMessage;
 
     private async Task<IEnumerable<User>> FilterUserByFirstName(string name)
     {
@@ -143,7 +144,7 @@ else
     
     private async Task DeleteUser(string username)
     {
-        errorMessage = "";
+        _errorMessage = "";
         try
         {
             User userToDelete = _allUsers.First(u => u.Username == username);
@@ -152,7 +153,7 @@ else
         }
         catch (Exception e)
         {
-            errorMessage = e.Message;
+            _errorMessage = e.Message;
             Console.WriteLine(e);
         }
     }

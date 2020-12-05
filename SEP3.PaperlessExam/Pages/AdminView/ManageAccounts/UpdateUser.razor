@@ -72,6 +72,7 @@
                                     </div>
                                 </div>
 
+                                <div style="color:red">@_errorMessage</div>
                             </div>
 
 
@@ -97,7 +98,7 @@
     private User _updatedUser = new User();
     private string roleName;
     private User user;
-    private string errorMessage;
+    private string _errorMessage;
     
     protected override async Task OnInitializedAsync()
     {
@@ -115,7 +116,7 @@
 
     private async Task EditUser()
     {
-        errorMessage = "";
+        _errorMessage = "";
         Role userRole=new Role(roleName);
         _updatedUser.Role = userRole;
         try
@@ -126,7 +127,7 @@
         }
         catch (Exception e)
         {
-            errorMessage = e.Message;
+            _errorMessage = e.Message;
             Console.WriteLine(e);
         }
         

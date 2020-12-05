@@ -73,6 +73,7 @@
                                     </div>
                                 </div>
 
+                                <div style="color:red">@_errorMessage</div>
                             </div>
 
 
@@ -87,11 +88,11 @@
 @code {
     private User _createUser = new User();
     private string roleName;
-    private string errorMessage;
+    private string _errorMessage;
 
     private async Task CreateNewUser()
     {
-        errorMessage = "";
+        _errorMessage = "";
         Role userRole=new Role(roleName);
         _createUser.Role = userRole;
         try
@@ -102,7 +103,7 @@
         }
         catch (Exception e)
         {
-            errorMessage = e.Message;
+            _errorMessage = e.Message;
             Console.WriteLine(e);
         }
         
