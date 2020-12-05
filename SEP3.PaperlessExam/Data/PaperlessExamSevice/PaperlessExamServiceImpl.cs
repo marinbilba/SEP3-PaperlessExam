@@ -286,6 +286,14 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
             {
                 throw new Exception(serverMessage);
             }   
+            else if (responseMessage.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new Exception(serverMessage);
+            }   
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }   
            
         }
     }

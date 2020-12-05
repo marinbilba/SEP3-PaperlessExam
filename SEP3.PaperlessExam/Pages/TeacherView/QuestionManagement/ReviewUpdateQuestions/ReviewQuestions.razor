@@ -1,8 +1,89 @@
 ﻿@page "/reviewQuestions"
+@using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Model
+@inject NavigationManager NavigationManager
 <h3>ReviewQuestion</h3>
+<div class="row">
+    <div class="col-md-6">
+        <label for="form_need"> Filter</label>
+        <select id="form_need" @bind="_questionType" name="need" class="form-control" required="required" data-error="Please filter.">
+            <option value="" selected disabled>Filter</option>
+            <option>Written exam</option>
+            <option>"Multiple choice exam"</option>
+        </select>
+    </div>
+    <div class="col-md-6">
+        <button type="button" class="btn btn-success btn-lg">Show</button>
+    </div>
+</div>
 
+
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Topic</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (_questionType == "Written exam")
+    {
+        @foreach (var item in _writtenSet)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Topic></td>
+                <td>
+                    <button @onclick="ToEditWrittenQueston">
+                        <i class="oi oi-pencil" style="color:green"/>
+                    </button>
+                </td>
+                <td>
+                    @* <button @onclick="ToDeleteWrittenQuestion"> *@
+                    @* *@
+                    @* </button> *@
+                </td>
+            </tr>
+        }
+    }
+
+    else if (_questionType == "Multiple choice exam")
+    {
+        @foreach (var item in _multipleChoiceSet)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Topic></td>
+                <td>
+                    <button @onclick="ToEditMultipleChoiceQuestion">
+                        <i class="oi oi-pencil" style="color:green"/>
+                    </button>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
 
 
 @code {
-    
+    private MultipleChoiceSet _multipleChoiceSet;
+    private WrittenSet _writtenSet;
+    private string _questionType;
+
+    private void ToEditWrittenQueston()
+    {
+        NavigationManager.NavigateTo($"EditWrittenQuestion/{_writtenSet.title}");
+    }
+
+    private void ToEditMultipleChoiceQuestion()
+    {
+        NavigationManager.NavigateTo($"EditMultipleChoiceQuestion/{_multipleChoiceSet.title}");
+    }
+
+
+
 }
