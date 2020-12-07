@@ -1,12 +1,8 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,22 +21,27 @@ import java.util.Objects;
 @Entity
 @IdClass(QuestionsSet.class)
 public class MultipleChoiceSet extends QuestionsSet {
-
     @OneToMany(
             mappedBy = "multipleChoiceSet",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
-// Must be PK as well or at least not null. No idea how to implement.
-    @OneToOne()
-    @JoinColumn(name = "fk_user_id")
+
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  //  @JoinColumn(name = "user_id", updatable = false)
+    @Hidden
     private User user;
 
     /**
      * Instantiates a new Multiple choice set.
      */
     public MultipleChoiceSet() {
+    }
+
+    public MultipleChoiceSet(String title, String topic) {
+        super(title, topic);
     }
 
     /**
@@ -121,6 +122,7 @@ public class MultipleChoiceSet extends QuestionsSet {
             }
         }
     }
+
 
     @Override
     public boolean equals(Object o) {
