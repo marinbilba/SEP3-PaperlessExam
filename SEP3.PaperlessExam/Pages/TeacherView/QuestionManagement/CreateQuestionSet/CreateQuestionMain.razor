@@ -1,6 +1,10 @@
-﻿@page "/htr"
+﻿@page "/"
 @page "/createQuestion"
 @using Radzen
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using Microsoft.AspNetCore.Http
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Model
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
@@ -13,7 +17,7 @@
         <RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
             <Steps>
                 @* First step *@
-                <RadzenStepsItem Disabled="false" Selected="false" Text="Question type">
+                <RadzenStepsItem Disabled="_firstStepDisable" Selected="false" Text="Question type">
                     <ChildContent>
                         <div class="row">
                             <div class="col-md-2">
@@ -88,6 +92,29 @@
 </RadzenContent>
 
 @code {
+    
+    [CascadingParameter]
+    private Task<CustomAuthenticationStateProvider> AuthenticationStateTask { get; set; }
+
+    private string _authMessage;
+
+    public User User;
+    
+    private async Task LogUsername()
+    {
+        var authState = await AuthenticationStateTask;
+        User = authState.cachedUser;
+    }
+    
+    public MultipleChoiceSet CreateMultipleChoiceSet(string topic, string title)
+    {
+        
+        return new MultipleChoiceSet(_questionSetTopic, _questionSetTitle, User);
+    }
+    
+    
+    
+    
     // Question type: Written or Multiple-choice
     private string _questionType;
 
@@ -99,6 +126,7 @@
     // Used in first step as value for the radio buttons
     int? nullableValue = null;
 
+    private bool _firstStepDisable = true;
     // Controls the access to second step.
     private bool _secondStepDisable = true;
     // Controls the access to third step.
@@ -137,6 +165,7 @@
         if (value != null)
         {
             _questionSetTopic = value;
+            
             _questionSetTopicIsSet = true;
         }
         EvaluateIfThirdStepIsAvailable();
@@ -163,21 +192,18 @@
 
     protected async Task StepChange(int args)
     {
-        Console.WriteLine(args);
+        
         switch (args)
         {
+            case 0:
+                _firstStepDisable = true;
+                break;
             case 1:
+                _firstStepDisable = true;
                 break;
-            case 2:
-                if (_questionType == "Written")
-                {
-                    Console.WriteLine(_questionType);
-                }
-                else if (_questionType == "Multiple-choice")
-                {
-                    Console.WriteLine(_questionType);
-                }
-                break;
+                case 2:
+                    _secondStepDisable = true;
+                    break;
         }
     }
 
