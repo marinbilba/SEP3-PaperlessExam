@@ -1,4 +1,4 @@
-package com.group10.databaselayer.entity.questions.written;
+package com.group10.databaselayer.annotations.hidden;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
