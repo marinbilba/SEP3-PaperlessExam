@@ -64,6 +64,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\js\bs-init.js" />
       <_ContentIncludedByDefault Remove="wwwroot\js\chart.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\js\jquery.min.js" />
+      <_ContentIncludedByDefault Remove="Pages\SharedComponents\LoadingSpinner\Loading.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\shared\LoadingSpinner\style.css" />
     </ItemGroup>
 
     <ItemGroup>
@@ -78,6 +80,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Blazored.Modal" Version="5.1.0" />
+      <PackageReference Include="Blazored.Toast" Version="3.1.2" />
       <PackageReference Include="BlazorPro.Spinkit" Version="1.2.0" />
       <PackageReference Include="Radzen.Blazor" Version="2.17.10" />
     </ItemGroup>

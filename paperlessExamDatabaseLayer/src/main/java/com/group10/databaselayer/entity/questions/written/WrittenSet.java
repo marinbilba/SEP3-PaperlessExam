@@ -1,5 +1,7 @@
 package com.group10.databaselayer.entity.questions.written;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.gson.annotations.Expose;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.user.User;
 import com.sun.istack.NotNull;

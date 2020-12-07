@@ -2,8 +2,10 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.Question;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
+import com.group10.databaselayer.entity.questions.written.Hidden;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import org.springframework.data.annotation.Transient;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,15 +18,17 @@ import java.util.Objects;
 @Entity
 @IdClass(Question.class)
 public class MultipleChoiceQuestion extends Question {
-
     @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
-    private MultipleChoiceSet multipleChoiceSet;
+ @Hidden
+     private MultipleChoiceSet multipleChoiceSet;
+
+
     @OneToMany(
             mappedBy = "multipleChoiceQuestion",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<QuestionOption> questionOptions = new ArrayList<>();
+   private   List<QuestionOption> questionOptions = new ArrayList<>();
 
 
     /**

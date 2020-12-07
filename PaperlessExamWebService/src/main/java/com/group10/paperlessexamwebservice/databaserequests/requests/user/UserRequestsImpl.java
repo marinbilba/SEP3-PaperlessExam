@@ -1,18 +1,15 @@
-package com.group10.paperlessexamwebservice.databaserequests;
+package com.group10.paperlessexamwebservice.databaserequests.requests.user;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
-import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation;
+import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.user.Role;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
@@ -34,47 +31,23 @@ import java.util.List;
 
 @Service
 public class UserRequestsImpl implements IUserRequests {
-    private static final String DATABASE_TIER_URI = "http://localhost:8091";
-    /**
-     * The Socket connector.
-     */
+
     @Autowired
-    ISocketConnector socketConnector;
+    private RequestSharedMethods requestSharedMethods;
+    @Autowired
+   private ISocketConnector socketConnector;
     //private User cashedUser;
-    private RestTemplate restTemplate;
     private Gson gson;
 
     /**
      * Instantiates a new User requests.
      */
     public UserRequestsImpl() {
-        // create an instance of RestTemplate
-        restTemplate = new RestTemplate();
         gson = new GsonBuilder().setPrettyPrinting().create();
 
     }
 
-    @Override
-    public ResponseEntity<User> login(User user) {
-        User temp;
-        // request body parameters
 
-        // send POST request
-
-        ResponseEntity<User> response = restTemplate.postForEntity(DATABASE_TIER_URI + "/createUser", user, User.class);
-        // check response
-        if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Request Successful");
-            temp = response.getBody();
-            System.out.println(temp.getUsername());
-
-
-        } else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
-            System.out.println("Request Failed");
-        }
-
-        return response;
-    }
 
     @Override
     public boolean checkPassword(String password) {
@@ -102,16 +75,15 @@ public class UserRequestsImpl implements IUserRequests {
      * @return a user object. <i>The object might be null if was not found in the database</>
      */
     @Override
-    public User createUser(User user) throws ServiceNotAvailable {
+    public User createUpdateUser(User user) throws ServiceNotAvailable {
         User tempUser = null;
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             // Serialize the object
             String userSerialized = gson.toJson(user);
             //            Send request
-            sendRequest(userSerialized, CREATE_USER);
+            requestSharedMethods.sendRequest(userSerialized, CREATE_UPDATE_USER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -144,9 +116,8 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
 //            Send request
-            sendRequest(username, GET_USER_BY_USERNAME);
+            requestSharedMethods.sendRequest(username, GET_USER_BY_USERNAME);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -166,9 +137,8 @@ public class UserRequestsImpl implements IUserRequests {
         try {
 
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
             //            Send request
-            sendRequest(firstName, GET_USERS_BY_FIRST_NAME);
+            requestSharedMethods.sendRequest(firstName, GET_USERS_BY_FIRST_NAME);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -181,6 +151,29 @@ public class UserRequestsImpl implements IUserRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return userList;
+    }
+
+    @Override
+    public User deleteUser(User userToDelete) throws ServiceNotAvailable {
+        User deletedUser = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String userSerialized = gson.toJson(userToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(userSerialized,  DELETE_USER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedUser = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedUser;
     }
 
     @Override
@@ -206,9 +199,9 @@ public class UserRequestsImpl implements IUserRequests {
         // Connect
         try {
             socketConnector.connect();
-            System.out.println("[CLIENT] Connected to server");
+
 //            Send request
-            sendRequest(name, GET_ROLE_ID_BY_NAME);
+            requestSharedMethods.sendRequest(name, GET_ROLE_ID_BY_NAME);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -222,21 +215,21 @@ public class UserRequestsImpl implements IUserRequests {
         return role;
     }
 
-    /**
-     * Sends a request through the socket connection.
-     * 1. Create the NetworkContainer with the received parameters{@param objectSerialized},{@param requestOperation}.
-     * 2. Serialize the Network Container.
-     * 3. Send the Network Container as input stream
-     *
-     * @param name used as the second argument in the NetworkContainer <i>MUST be serialized</>
-     * @param requestOperation operation that should be performed.
-     * @throws IOException exceptions produced by failed or interrupted I/O operations
-     */
-    private void sendRequest(String name, RequestOperation requestOperation) throws IOException {
-        NetworkContainer networkContainer = new NetworkContainer(requestOperation, name);
-        String networkContainerSerialized = gson.toJson(networkContainer);
-        socketConnector.sendToServer(networkContainerSerialized);
-    }
-
+//    /**
+//     * Sends a request through the socket connection.
+//     * 1. Create the NetworkContainer with the received parameters{@param objectSerialized},{@param requestOperation}.
+//     * 2. Serialize the Network Container.
+//     * 3. Send the Network Container as input stream
+//     *
+//     * @param serializedObject used as the second argument in the NetworkContainer <i>MUST be serialized</>
+//     * @param requestOperation operation that should be performed.
+//     * @throws IOException exceptions produced by failed or interrupted I/O operations
+//     */
+//    private void sendRequest(String serializedObject, RequestOperation requestOperation) throws IOException {
+//        NetworkContainer networkContainer = new NetworkContainer(requestOperation, serializedObject);
+//        String networkContainerSerialized = gson.toJson(networkContainer);
+//        socketConnector.sendToServer(networkContainerSerialized);
+//    }
+//
 
 }

@@ -1,12 +1,10 @@
-﻿@page "/sfgd"
+﻿@page "/sadsda"
 @page "/login"
 
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Authentication
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@using SEP3.PaperlessExam.Model
-@using SEP3.PaperlessExam.Authentication
-@inject IPaperlessExamService PaperlessExamService;
+@inject IUserService UserService;
 @layout LoginLayout
 @inject NavigationManager NavigationManager
 
@@ -29,10 +27,10 @@
                     {
                         <button type="button" @onclick="@SubmitLogin">
                             <div id="spinner">
-                                   <Chase Color="#4a6ac8"Size="20px" />
+                                <Chase Color="#4a6ac8"Size="20px"/>
                             </div>
-                             
-                           Login
+
+                            Login
                         </button>
                     }
                     <div style="color:red">@_errorMessage</div>
