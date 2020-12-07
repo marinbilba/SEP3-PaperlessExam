@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SEP3.PaperlessExam.Model.Questions.Multiplechoice
+namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 {
     public class MultipleChoiceSet : QuestionsSet
     {

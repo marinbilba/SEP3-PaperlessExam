@@ -1,4 +1,4 @@
-﻿namespace SEP3.PaperlessExam.Model.Questions.Multiplechoice
+﻿namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 {
     public class QuestionOption
     {

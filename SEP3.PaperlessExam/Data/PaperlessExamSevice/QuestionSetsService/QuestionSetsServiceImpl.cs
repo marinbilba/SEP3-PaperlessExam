@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SEP3.PaperlessExam.Model.Questions.Multiplechoice;
+using SEP3.PaperlessExam.Model.Questions.MultipleChoice;
 
 namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 {

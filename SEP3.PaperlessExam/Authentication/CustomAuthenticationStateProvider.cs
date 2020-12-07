@@ -22,6 +22,7 @@ namespace SEP3.PaperlessExam.Authentication
             this.jsRuntime = jsRuntime;
             this.userService = userService;
         }
+
         
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {

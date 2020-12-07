@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SEP3.PaperlessExam.Model.Questions.Multiplechoice
+namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 {
     public class MultipleChoiceQuestion : Question
     {

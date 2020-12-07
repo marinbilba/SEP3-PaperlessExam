@@ -1,6 +1,10 @@
 ﻿@page "/"
 @page "/createQuestion"
 @using Radzen
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using Microsoft.AspNetCore.Http
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Model
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
@@ -88,6 +92,29 @@
 </RadzenContent>
 
 @code {
+    
+    [CascadingParameter]
+    private Task<CustomAuthenticationStateProvider> AuthenticationStateTask { get; set; }
+
+    private string _authMessage;
+
+    public User User;
+    
+    private async Task LogUsername()
+    {
+        var authState = await AuthenticationStateTask;
+        User = authState.cachedUser;
+    }
+    
+    public MultipleChoiceSet CreateMultipleChoiceSet(string topic, string title)
+    {
+        
+        return new MultipleChoiceSet(_questionSetTopic, _questionSetTitle, User);
+    }
+    
+    
+    
+    
     // Question type: Written or Multiple-choice
     private string _questionType;
 
