@@ -1,7 +1,6 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.Hidden;
+import com.group10.databaselayer.annotations.hidden.Hidden;
 
 import javax.persistence.*;
 
@@ -19,7 +18,12 @@ public class QuestionOption {
     private String answer;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumns({
+            @JoinColumn(name = "multiple_choice_question_number"),
+            @JoinColumn(name = "multiple_choice_question_question"),
+            @JoinColumn(name = "multiple_choice_set_question_score")
+    })
     @Hidden
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
@@ -35,9 +39,10 @@ public class QuestionOption {
      * @param isCorrectAnswer the is correct answer
      * @param answer          the answer
      */
-    public QuestionOption(boolean isCorrectAnswer, String answer) {
+    public QuestionOption(boolean isCorrectAnswer, String answer,MultipleChoiceQuestion multipleChoiceQuestion) {
         this.isCorrectAnswer = isCorrectAnswer;
         this.answer = answer;
+        this.multipleChoiceQuestion=multipleChoiceQuestion;
     }
 
     /**
