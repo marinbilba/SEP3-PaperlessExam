@@ -1,11 +1,7 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.Question;
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.Hidden;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import org.springframework.data.annotation.Transient;
+import com.group10.databaselayer.annotations.hidden.Hidden;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,9 +14,14 @@ import java.util.Objects;
 @Entity
 @IdClass(Question.class)
 public class MultipleChoiceQuestion extends Question {
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
- @Hidden
-     private MultipleChoiceSet multipleChoiceSet;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumns({
+//            @JoinColumn(name = "multiple_choice_set_id"),
+//            @JoinColumn(name = "multiple_choice_set_title"),
+//            @JoinColumn(name = "multiple_choice_set_topic"),
+//    })
+    @Hidden
+    private MultipleChoiceSet multipleChoiceSet;
 
 
     @OneToMany(
@@ -28,7 +29,7 @@ public class MultipleChoiceQuestion extends Question {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-   private   List<QuestionOption> questionOptions = new ArrayList<>();
+    private List<QuestionOption> questionOptions = new ArrayList<>();
 
 
     /**
@@ -44,8 +45,9 @@ public class MultipleChoiceQuestion extends Question {
      * @param question the question
      * @param score    the score
      */
-    public MultipleChoiceQuestion(int questionNumber,String question, double score) {
-        super(question, score,questionNumber);
+    public MultipleChoiceQuestion(int questionNumber, String question, double score,MultipleChoiceSet multipleChoiceSet) {
+        super(question, score, questionNumber);
+        this.multipleChoiceSet=multipleChoiceSet;
     }
 
     /**
@@ -90,7 +92,7 @@ public class MultipleChoiceQuestion extends Question {
         questionOption.setMultipleChoiceQuestion(null);
     }
 
-    public String getQuestion(){
+    public String getQuestion() {
         return super.getQuestion();
     }
 
@@ -99,9 +101,10 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @return the double
      */
-    public double getQuestionScore(){
+    public double getQuestionScore() {
         return super.getScore();
     }
+
     /**
      * Sets question.
      *
@@ -110,6 +113,7 @@ public class MultipleChoiceQuestion extends Question {
     public void setQuestion(String question) {
         super.setQuestion(question);
     }
+
     /**
      * Sets score.
      *
