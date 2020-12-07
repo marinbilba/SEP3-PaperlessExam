@@ -6,5 +6,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
     public interface IQuestionSetsService
     {
         Task<bool> ValidateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
+        
     }
 }

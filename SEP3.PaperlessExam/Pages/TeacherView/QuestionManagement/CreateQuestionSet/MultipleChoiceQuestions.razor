@@ -15,13 +15,14 @@
     {
         var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[index1];
 
-        var count = 1;
+        int count = index1+1;
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex">
-                        <div class="questionNumber d-flex justify-content-center">@_questionNumber</div>
+                        <div class="questionNumber d-flex justify-content-center">@count
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-11">
@@ -111,7 +112,7 @@
 </EditForm>
 @code {
     
-    MultipleChoiceQuestion _multipleChoiceQuestion = new MultipleChoiceQuestion();
+    
     MultipleChoiceSet _multipleChoiceSet = new MultipleChoiceSet();
     
     bool _correctAnswerValue;
@@ -131,6 +132,8 @@
         await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
     }
     public EventCallback OnValidSubmit { get; set; }
+    
+    
     
     
 }

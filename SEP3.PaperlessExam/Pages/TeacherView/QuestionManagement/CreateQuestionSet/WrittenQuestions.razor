@@ -7,13 +7,14 @@
 <EditForm Model="_writtenSet" OnValidSubmit="OnValidSubmit">
     @for (var i = 0; i < _writtenSet.GetWrittenQuestions().Count; i++)
     {
+        int count = i + 1;
         var writtenQuestion = _writtenSet.GetWrittenQuestions()[i];
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex justify-content-center">
-                        <p class="questionNumber">@questionNumber</p>
+                        @count
                     </div>
                 </div>
                 <div class="col-md-11">
