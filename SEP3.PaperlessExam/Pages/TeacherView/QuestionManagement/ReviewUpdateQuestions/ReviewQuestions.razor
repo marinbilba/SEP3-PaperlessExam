@@ -1,8 +1,13 @@
 ﻿@page "/reviewQuestions"
 @using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 @using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Model.Questions
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using SEP3.PaperlessExam.Model.Questions.written
 @inject NavigationManager NavigationManager
+@inject IQuestionSetsService QuestionSetsService
 <h3>ReviewQuestion</h3>
 <div class="row">
     <div class="col-md-6">
@@ -31,11 +36,11 @@
     <tbody>
     @if (_questionType == "Written exam")
     {
-        @foreach (var item in _writtenSet)
+        @foreach (var item in _writtenSet.GetWrittenQuestions())
         {
             <tr>
-                <td>@item.Title</td>
-                <td>@item.Topic></td>
+                <td>@item.WrittenSet.Title</td>
+                 <td>@item.WrittenSet.Topic</td>
                 <td>
                     <button @onclick="ToEditWrittenQueston">
                         <i class="oi oi-pencil" style="color:green"/>
@@ -52,11 +57,10 @@
 
     else if (_questionType == "Multiple choice exam")
     {
-        @foreach (var item in _multipleChoiceSet)
+        @foreach (var item in _multipleChoiceSet.GetAllMultipleChoiceQuestions())
         {
             <tr>
-                <td>@item.Title</td>
-                <td>@item.Topic></td>
+                <td>@item.MultipleChoiceSet</td>
                 <td>
                     <button @onclick="ToEditMultipleChoiceQuestion">
                         <i class="oi oi-pencil" style="color:green"/>
@@ -74,14 +78,44 @@
     private WrittenSet _writtenSet;
     private string _questionType;
 
+    private bool _loadingShow;
+    private string _errorMessage;
+
+    private QuestionsSet _questionsSet;
+    
     private void ToEditWrittenQueston()
     {
-        NavigationManager.NavigateTo($"EditWrittenQuestion/{_writtenSet.title}");
+        NavigationManager.NavigateTo($"EditWrittenQuestion/{_writtenSet.Title}");
     }
 
     private void ToEditMultipleChoiceQuestion()
     {
-        NavigationManager.NavigateTo($"EditMultipleChoiceQuestion/{_multipleChoiceSet.title}");
+        NavigationManager.NavigateTo($"EditMultipleChoiceQuestion/{_multipleChoiceSet.Title}");
+    }
+    
+    private async Task FindQuestionType()
+    {
+        _loadingShow = true;
+        _errorMessage = "";
+        if (String.IsNullOrEmpty(_questionType))
+        {
+            _errorMessage = "You must enter the username or first name";
+            _loadingShow = false;
+        }
+        else if (!String.IsNullOrEmpty(_questionType))
+        {
+            try
+            {
+                _questionsSet = await QuestionSetsService.FindTypeOfQuestion(_questionType);
+                _loadingShow = false;
+            }
+            catch (Exception e)
+            {
+                _loadingShow = false;
+                Console.WriteLine(e);
+                _errorMessage = e.Message;
+            }
+        }
     }
 
 

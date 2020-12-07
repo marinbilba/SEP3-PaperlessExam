@@ -4,8 +4,8 @@ namespace SEP3.PaperlessExam.Model.Questions
 {
     public class QuestionsSet
     {
-        [JsonPropertyName("title")]private string Title { get; set; }
-        [JsonPropertyName("topic")]private string Topic { get; set; } 
+        [JsonPropertyName("title")]public string Title { get; set; }
+        [JsonPropertyName("topic")]public string Topic { get; set; } 
         
         public QuestionsSet(){}
 
