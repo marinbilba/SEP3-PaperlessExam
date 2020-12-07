@@ -16,6 +16,7 @@ using SEP3.PaperlessExam.Data;
 
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
 
+
 namespace SEP3.PaperlessExam
 {
     public class Startup
@@ -35,6 +36,7 @@ namespace SEP3.PaperlessExam
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IUserService, UserServiceImpl>();
+           // services.AddScoped<IQuestionSetsService, QuestionSetsServiceImpl>();
             services.AddBlazoredToast();
             
           services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

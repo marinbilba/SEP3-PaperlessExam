@@ -50,21 +50,7 @@
 </div>
 <br/>
 
-@if (_selectedUser != null)
-{
-    var temp = new List<User>();
-    temp.Add(_selectedUser);
-    _usersToShow = temp;
-    _selectedUser = null;
-}
 
-@* Users Table *@
-@if (_usersToShow == null)
-{
-    <p>
-        <em>Use the filter to find users</em>
-    </p>
-}
 else
 {
     <table class="table">
@@ -123,7 +109,7 @@ else
     private string _searchedFirstName;
     private string _searchedUsername;
 
-    private IList<User> _usersToShow = new List<User>();
+    // private IList<User> _usersToShow = new List<User>();
     private User _selectedUser;
 
 
