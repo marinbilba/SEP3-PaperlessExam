@@ -5,11 +5,12 @@ import com.group10.paperlessexamwebservice.model.questions.multiplechoice.Multip
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 
 public interface IQuestionSetsService {
     boolean validateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws EmptyQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable;
 
     boolean validateMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws EmptyQuestionSetQuestions, MultipleChoiceQuestionOptionError;
 
-    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError;
+    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound;
 }
