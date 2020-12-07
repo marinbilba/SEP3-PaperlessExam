@@ -76,6 +76,7 @@
     <ItemGroup>
       <Content Remove="Pages\Counter.razor" />
       <Content Remove="Pages\FetchData.razor" />
+      <Content Remove="Pages\TeacherView\QuestionManagement\CreateQuestionSet\QuestionManagement.razor" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,8 @@
 ﻿@page "/asdffads"
+@using System.Reflection.Metadata
+@using Microsoft.AspNetCore.Razor.TagHelpers
 @inject IJSRuntime JsRuntime;
-<h3 xmlns="http://www.w3.org/1999/html">MultipleChoiceQuestions</h3>
+<h3 xmlns="">MultipleChoiceQuestions</h3>
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 
@@ -9,8 +11,8 @@
     @* Type question  *@
     <div class="row">
         <div class="col-md-1">
-            <div class="questionNumberBox">
-                <p class="questionNumber">@questionNumber</p>
+            <div class="questionNumberBox d-flex">
+                <div class="questionNumber">@_questionNumber</div>
             </div>
         </div>
         <div class="col-md-11">
@@ -50,7 +52,7 @@
         </div>
     </div>
     @* Third row *@
-    <div class="row top-buffer justify-content-center">
+    <div id="myDiv" class="row top-buffer justify-content-center">
         <div class="col-md-1 offset-2">
             <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
             </RadzenCheckBox>
@@ -64,14 +66,17 @@
             </RadzenButton>
         </div>
     </div>
-    @* Add additional option *@
+    
+    <div id="divContainer"> asdasdas dasd asd asd asd asd</div>
+    
+        @* Add additional option *@
     <div class="row top-buffer justify-content-center">
         <div class="col-md-1 offset-2">
             <div class="additionalQuestionSelectBox">
             </div>
         </div>
         <div class="col-md-8">
-            <button type="button" class="additionalQuestionButton">
+            <button onclick="addMoreAnswers()" id="addButton" type="button" class="additionalQuestionButton">
                 <span style="color: blue"> Add more</span>
             </button>
         </div>
@@ -90,21 +95,25 @@
 </div>
 
 @code {
-    bool correctAnswerValue;
+    
+    
+    bool _correctAnswerValue;
 
-    int questionNumber;
+    int _questionNumber;
 
-    bool? correctAnswer;
+    bool? _correctAnswer;
 
     private void SetCorrectAnswer(bool? value)
     {
-        correctAnswer = value;
-        Console.WriteLine(correctAnswer);
+        _correctAnswer = value;
+        Console.WriteLine(_correctAnswer);
     }
 
     private async Task DeleteAnswerRowAsync()
     {
         await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
     }
+
+    
 
 }
