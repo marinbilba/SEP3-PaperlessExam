@@ -1,8 +1,13 @@
 package com.group10.databaselayer.entity.user;
 
+import com.group10.databaselayer.annotations.hidden.Hidden;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple JavaBean domain object that represents a User
@@ -35,6 +40,7 @@ public class User {
     @NotNull
     @JoinColumn(name="fk_role_id")
     private Role role;
+
 
     /**
      * Instantiates a new User.
@@ -72,6 +78,7 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
 
 
     /**

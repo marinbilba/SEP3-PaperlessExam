@@ -32,9 +32,7 @@ public class UserController {
     public User createUpdateUser(User user) {
         System.out.println(user.getFirstName());
         System.out.println(user.getRole().getName());
-        User user2= userRepository.save(user);
-        System.out.println("suca");
-        return user2;
+        return userRepository.save(user);
     }
 
     public List<User> getUsersListByFirstName(String firstNameDeserialized) {

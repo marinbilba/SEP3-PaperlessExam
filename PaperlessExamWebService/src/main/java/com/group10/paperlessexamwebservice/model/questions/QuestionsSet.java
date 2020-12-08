@@ -4,6 +4,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -14,8 +15,10 @@ import java.util.Objects;
  */
 
 public class QuestionsSet {
+    private Long id;
     private String title;
     private String topic;
+
 
     /**
      * Instantiates a new Questions set.
@@ -35,6 +38,13 @@ public class QuestionsSet {
 
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * Gets title.

@@ -1,11 +1,7 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.entity.questions.Question;
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.Hidden;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import org.springframework.data.annotation.Transient;
+import com.group10.databaselayer.annotations.hidden.Hidden;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,17 +14,15 @@ import java.util.Objects;
 @Entity
 @IdClass(Question.class)
 public class MultipleChoiceQuestion extends Question {
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
- @Hidden
-     private MultipleChoiceSet multipleChoiceSet;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumns({
+//            @JoinColumn(name = "multiple_choice_set_id"),
+//            @JoinColumn(name = "multiple_choice_set_title"),
+//            @JoinColumn(name = "multiple_choice_set_topic"),
+//    })
 
+    private MultipleChoiceSet multipleChoiceSet;
 
-    @OneToMany(
-            mappedBy = "multipleChoiceQuestion",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-   private   List<QuestionOption> questionOptions = new ArrayList<>();
 
 
     /**
@@ -38,14 +32,18 @@ public class MultipleChoiceQuestion extends Question {
 
     }
 
+    public MultipleChoiceQuestion( double score,String question, int questionNumber) {
+        super(question, score, questionNumber);
+    }
+
     /**
      * Instantiates a new Multiple choice question.
      *
      * @param question the question
      * @param score    the score
-     */
-    public MultipleChoiceQuestion(int questionNumber,String question, double score) {
-        super(question, score,questionNumber);
+     */public MultipleChoiceQuestion(int questionNumber, String question, double score,MultipleChoiceSet multipleChoiceSet) {
+        super(question, score, questionNumber);
+        this.multipleChoiceSet=multipleChoiceSet;
     }
 
     /**
@@ -66,31 +64,8 @@ public class MultipleChoiceQuestion extends Question {
         this.multipleChoiceSet = multipleChoiceSet;
     }
 
-    /**
-     * Add question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param questionOption the question option
-     */
-    public void addQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.add(questionOption);
-        questionOption.setMultipleChoiceQuestion(this);
-    }
 
-    /**
-     * Remove question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param questionOption the question option
-     */
-    public void removeQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.remove(questionOption);
-        questionOption.setMultipleChoiceQuestion(null);
-    }
-
-    public String getQuestion(){
+    public String getQuestion() {
         return super.getQuestion();
     }
 
@@ -99,9 +74,10 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @return the double
      */
-    public double getQuestionScore(){
+    public double getQuestionScore() {
         return super.getScore();
     }
+
     /**
      * Sets question.
      *
@@ -110,6 +86,7 @@ public class MultipleChoiceQuestion extends Question {
     public void setQuestion(String question) {
         super.setQuestion(question);
     }
+
     /**
      * Sets score.
      *
@@ -119,23 +96,6 @@ public class MultipleChoiceQuestion extends Question {
         super.setScore(score);
     }
 
-    /**
-     * Gets question options.
-     *
-     * @return the question options
-     */
-    public List<QuestionOption> getQuestionOptions() {
-        return questionOptions;
-    }
-
-    /**
-     * Sets question options.
-     *
-     * @param questionOptions the question options
-     */
-    public void setQuestionOptions(List<QuestionOption> questionOptions) {
-        this.questionOptions = questionOptions;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -148,12 +108,12 @@ public class MultipleChoiceQuestion extends Question {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceQuestion other = (MultipleChoiceQuestion) o;
-            return multipleChoiceSet.equals(other.multipleChoiceSet) && questionOptions.equals(other.questionOptions);
+            return multipleChoiceSet.equals(other.multipleChoiceSet);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceSet, questionOptions);
+        return Objects.hash(super.hashCode(), multipleChoiceSet);
     }
 }

@@ -1,4 +1,4 @@
-package com.group10.paperlessexamwebservice.service.exceptions.questionsets;
+package com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice;
 
 
 /**

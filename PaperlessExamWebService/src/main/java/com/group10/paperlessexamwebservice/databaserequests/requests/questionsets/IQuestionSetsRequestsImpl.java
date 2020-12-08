@@ -2,10 +2,13 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.questionse
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.group10.paperlessexamwebservice.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,13 +34,13 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
      * Instantiates a new User requests.
      */
     public IQuestionSetsRequestsImpl() {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();;
 
     }
 
     @Override
-    public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
-        boolean multipleChoiceExists;
+    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
+        MultipleChoiceSet fetchedMultipleChoiceSet=null;
         // Connect
         try {
             socketConnector.connect();
@@ -45,18 +48,18 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             // Serialize the object
             String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSet);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, MULTIPLE_CHOICE_SET_EXISTS);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, GET_MULTIPLE_CHOICE_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
-            multipleChoiceExists = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), Boolean.class);
+            fetchedMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet.class);
             //            Disconnect
             socketConnector.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
-        return multipleChoiceExists;
+        return fetchedMultipleChoiceSet;
     }
 
     @Override
@@ -81,5 +84,77 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return createdMultipleChoiceSet;
+    }
+
+    @Override
+    public MultipleChoiceQuestion createMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws ServiceNotAvailable {
+        MultipleChoiceQuestion createdMultipleChoiceSet;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String multipleChoiceSetSerialized = gson.toJson(multipleChoiceQuestion);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, CREATE_MULTIPLE_CHOICE_SET_QUESTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            createdMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return createdMultipleChoiceSet;
+    }
+
+    @Override
+    public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws ServiceNotAvailable {
+        MultipleChoiceQuestion fetchedMultipleChoiceSet=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSetQuestion);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, GET_MULTIPLE_CHOICE_SET_QUESTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            fetchedMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedMultipleChoiceSet;
+    }
+
+    @Override
+    public QuestionOption createMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws ServiceNotAvailable {
+        QuestionOption createdMultipleChoiceQuestionOption=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            System.out.println("[CLIENT] Connected to server");
+            // Serialize the object
+            String multipleChoiceSetSerialized = gson.toJson(multipleChoiceQuestionOption);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,     CREATE_MULTIPLE_CHOICE_SET_QUESTION_OPTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            multipleChoiceQuestionOption = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), QuestionOption.class);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return createdMultipleChoiceQuestionOption;
     }
 }

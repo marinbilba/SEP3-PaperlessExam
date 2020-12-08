@@ -19,6 +19,9 @@ import java.util.Objects;
 @Embeddable
 public class QuestionsSet implements Serializable {
     @Id
+    @GeneratedValue
+    private Long id;
+    @Id
     private String title;
     @Id
     private String topic;
@@ -42,6 +45,13 @@ public class QuestionsSet implements Serializable {
 
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * Gets title.
@@ -85,11 +95,11 @@ public class QuestionsSet implements Serializable {
             return false;
         }
         QuestionsSet other = (QuestionsSet) o;
-        return title.equals(other.title) && topic.equals(other.topic);
+        return title.equals(other.title) && topic.equals(other.topic)&&id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, topic);
+        return Objects.hash(title, topic,id);
     }
 }
