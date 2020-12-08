@@ -5,17 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.group10.databaselayer.controller.*;
 import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
 import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+
+import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.databaselayer.entity.questions.Question;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
-
-import com.group10.databaselayer.entity.questions.written.HiddenAnnotationExclusionStrategy;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.User;
-import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
-import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.repositories.user.IUserRepository;
@@ -24,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
@@ -49,7 +44,6 @@ public class Server {
     @Autowired
     private IUserRepository userRepository;
 
-
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
     private static final HashSet<Object> controllersSet = new HashSet<>();
@@ -60,28 +54,63 @@ public class Server {
         controllersSet.add(roleController);
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
-        //        gson = new GsonBuilder();
-//        // gson.setExclusionStrategies( new HiddenAnnotationExclusionStrategy() );
+
+        gson = new GsonBuilder();
+        gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
+
+        gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
+        Gson gson2 = gson.setPrettyPrinting().create();
+
+
+        User user = userRepository.getUserByUsername("silvmandrila");
+        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java", "Capitals");
+        multipleChoiceSet.setUser(user);
+        multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+
+//        User user2 = userRepository.getUserByUsername("marinbilba");
 //
-//        gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
-//        Gson gson2 = gson.setPrettyPrinting().create();
-//
+////        !!!!!!!!!!!!!! Multiple choice
+//       MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java", "Capitals",user2);
+//        MultipleChoiceQuestion multipleChoiceQuestion=new MultipleChoiceQuestion(1,"What is OOP?",30);
+//       multipleChoiceQuestion.addQuestionOption(new QuestionOption(true,"Object oriented programing"));
+//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false,"Hz"));
+//        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
+//        System.out.println(gson2.toJson(multipleChoiceSet));
+        //multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+
+//        !!!!!!!!!!!!!! Multiple choice
+
+//        MultipleChoiceSet multipleChoiceSet2 = new MultipleChoiceSet("Geography", "Capitals",user2);
+//       multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+//        multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet2);
+
+
+        // user.addMultipleChoiceSet(multipleChoiceSet);
+        //  userController.deleteUser(user);
+
+        //multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+
+        ///MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20,multipleChoiceSet);
+
+        //    MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20);
+//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(true, "Buenos Aires"));
+//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false, "Berlin"));
+        //     multipleChoiceSet.addQuestion(multipleChoiceQuestion);
+
+        //   user.addMultipleChoiceSet(multipleChoiceSet);
+
+
 //
 
 //
-//        User user = userRepository.getUserByUsername("silvmandrila");
+
 //        System.out.println(user.getFirstName());
 //WrittenSet writtenSet=new WrittenSet("ads","dssd",user);
 //        WrittenQuestion writtenQuestion=new WrittenQuestion("dsfa2",20,1);
 //        writtenSet.addQuestion(writtenQuestion);
 
 //
-//        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Geography", "Capitals", user);
-//
-//        MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion(1, "Capital of Argentina?", 20);
-//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(true, "Buenos Aires"));
-//        multipleChoiceQuestion.addQuestionOption(new QuestionOption(false, "Berlin"));
-//        multipleChoiceSet.addQuestion(multipleChoiceQuestion);
+
 //
 //        String multipleChoiceSetSerialized = gson2.toJson(multipleChoiceSet);
 //        System.out.println(multipleChoiceSetSerialized);

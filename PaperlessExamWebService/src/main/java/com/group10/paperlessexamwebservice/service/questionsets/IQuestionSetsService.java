@@ -8,9 +8,9 @@ import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
 import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 
 public interface IQuestionSetsService {
-    boolean validateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws EmptyQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable;
+    MultipleChoiceQuestion addMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws EmptyQuestionSetQuestions, MultipleChoiceQuestionOptionError;
 
-    boolean validateMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws EmptyQuestionSetQuestions, MultipleChoiceQuestionOptionError;
+    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, NullQuestionSet, QuestionSetAlreadyExists;
 
-    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound;
+    MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, QuestionSetAlreadyExists, EmptyQuestionSetTitleOrTopic, UnexpectedError;
 }

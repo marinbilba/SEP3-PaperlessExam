@@ -1,6 +1,7 @@
 package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
 
+import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.Question;
 
 import javax.persistence.*;
@@ -36,6 +37,11 @@ public class MultipleChoiceQuestion extends Question {
         super(question, score,questionNumber);
     }
 
+    public MultipleChoiceQuestion(String question, double score, int questionNumber, MultipleChoiceSet multipleChoiceSet) {
+        super(question, score, questionNumber);
+        this.multipleChoiceSet = multipleChoiceSet;
+    }
+
     /**
      * Gets multiple choice set.
      *
@@ -61,7 +67,7 @@ public class MultipleChoiceQuestion extends Question {
      */
     public void addQuestionOption(QuestionOption questionOption) {
         this.questionOptions.add(questionOption);
-        questionOption.setMultipleChoiceQuestion(this);
+
     }
 
     /**
@@ -71,7 +77,6 @@ public class MultipleChoiceQuestion extends Question {
      */
     public void removeQuestionOption(QuestionOption questionOption) {
         this.questionOptions.remove(questionOption);
-        questionOption.setMultipleChoiceQuestion(null);
     }
 
     public String getQuestion(){

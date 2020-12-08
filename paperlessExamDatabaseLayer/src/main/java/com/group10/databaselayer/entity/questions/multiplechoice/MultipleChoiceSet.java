@@ -3,9 +3,12 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.user.User;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +23,7 @@ import java.util.Objects;
  */
 @Entity
 @IdClass(QuestionsSet.class)
+
 public class MultipleChoiceSet extends QuestionsSet {
     @OneToMany(
             mappedBy = "multipleChoiceSet",
@@ -28,10 +32,11 @@ public class MultipleChoiceSet extends QuestionsSet {
     )
     private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
+    @UpdateTimestamp
+    private Date updatedTimestamp;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  //  @JoinColumn(name = "user_id", updatable = false)
-    @Hidden
+    @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
     /**
@@ -40,6 +45,12 @@ public class MultipleChoiceSet extends QuestionsSet {
     public MultipleChoiceSet() {
     }
 
+    /**
+     * Instantiates a new Multiple choice set.
+     *
+     * @param title the title
+     * @param topic the topic
+     */
     public MultipleChoiceSet(String title, String topic) {
         super(title, topic);
     }
@@ -49,16 +60,27 @@ public class MultipleChoiceSet extends QuestionsSet {
      *
      * @param title the title
      * @param topic the topic
+     * @param user  the user
      */
     public MultipleChoiceSet(String title, String topic, User user) {
         super(title, topic);
         this.user = user;
     }
 
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
     public void setUser(User user) {
         this.user = user;
     }
@@ -123,6 +145,30 @@ public class MultipleChoiceSet extends QuestionsSet {
         }
     }
 
+
+    /**
+     * Gets updated timestamp.
+     *
+     * @return the updated timestamp
+     */
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
+    }
+
+    /**
+     * Sets updated timestamp.
+     *
+     * @param updatedTimestamp the updated timestamp
+     */
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
+    }
+    public Long getId(){
+        return super.getId();
+    }
+    public void setId(Long id){
+         super.setId(id);
+    }
 
     @Override
     public boolean equals(Object o) {

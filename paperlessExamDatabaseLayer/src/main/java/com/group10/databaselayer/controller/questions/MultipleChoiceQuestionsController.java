@@ -88,20 +88,22 @@ public class MultipleChoiceQuestionsController {
     public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
         Optional<MultipleChoiceSet> queriedMultipleChoiceSet = Optional.empty();
         if (writtenMultipleChoiceQuestionsSharedMethods.checkTitleTopicNotNull(multipleChoiceSet)) {
-            queriedMultipleChoiceSet = multipleChoiceSetRepository.findById(multipleChoiceSet);
+            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId()));
         }
         return queriedMultipleChoiceSet.isPresent();
     }
 
     /**
      * Add question to existing multiple choice set. Method checks if the passed MultipleChoiceSet exists, otherwise exception is thrown.
-     *     If set exists, the passed MultipleChoice question is check if such exists. If the passed question does not exist it will
-     *     be added to the database.
+     * If set exists, the passed MultipleChoice question is check if such exists. If the passed question does not exist it will
+     * be added to the database.
      *
      * @param multipleChoiceSet      the multiple choice set
      * @param multipleChoiceQuestion the multiple choice question
      * @return the multiple choice question
-     * @throws QuestionSetNotFound the question set not found
+     * @throws QuestionSetNotFound   the question set not found
+     * @throws TitleOrTopicAreNull   the title or topic are null
+     * @throws QuestionAlreadyExists the question already exists
      */
     public MultipleChoiceQuestion addQuestionToExistingMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet,
                                                                          MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionSetNotFound, TitleOrTopicAreNull, QuestionAlreadyExists {
@@ -129,9 +131,9 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
 
     /**
      * Find question in multiple choice set. Method checks if the passed MultipleChoiceSet exists,
-     *  otherwise exception is thrown. The list of multiple choice question are retrieved from the
-     *  database based on the passed  multiple choice set.
-     *  The passed written question is searched in the list and if it is found it will be returned.
+     * otherwise exception is thrown. The list of multiple choice question are retrieved from the
+     * database based on the passed  multiple choice set.
+     * The passed written question is searched in the list and if it is found it will be returned.
      *
      * @param multipleChoiceSet      the multiple choice set
      * @param multipleChoiceQuestion the multiple choice question
@@ -180,4 +182,13 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
         throw new QuestionSetNotFound("Multiple choice set with given title and topic was not found");
     }
 
+    /**
+     * Gets multiple choice set from the database.
+     *
+     * @param multipleChoiceSet the multiple choice set
+     * @return the multiple choice set or null if not found
+     */
+    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
+      return multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(),multipleChoiceSet.getTopic(),multipleChoiceSet.getUser().getId());
+    }
 }

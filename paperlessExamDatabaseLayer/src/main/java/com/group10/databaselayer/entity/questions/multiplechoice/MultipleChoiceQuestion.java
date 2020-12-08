@@ -20,7 +20,7 @@ public class MultipleChoiceQuestion extends Question {
 //            @JoinColumn(name = "multiple_choice_set_title"),
 //            @JoinColumn(name = "multiple_choice_set_topic"),
 //    })
-    @Hidden
+
     private MultipleChoiceSet multipleChoiceSet;
 
 
@@ -39,13 +39,16 @@ public class MultipleChoiceQuestion extends Question {
 
     }
 
+    public MultipleChoiceQuestion( double score,String question, int questionNumber) {
+        super(question, score, questionNumber);
+    }
+
     /**
      * Instantiates a new Multiple choice question.
      *
      * @param question the question
      * @param score    the score
-     */
-    public MultipleChoiceQuestion(int questionNumber, String question, double score,MultipleChoiceSet multipleChoiceSet) {
+     */public MultipleChoiceQuestion(int questionNumber, String question, double score,MultipleChoiceSet multipleChoiceSet) {
         super(question, score, questionNumber);
         this.multipleChoiceSet=multipleChoiceSet;
     }

@@ -2,6 +2,7 @@ package com.group10.databaselayer.entity.questions.written;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.Expose;
+import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.user.User;
 import com.sun.istack.NotNull;
@@ -24,16 +25,15 @@ import java.util.Objects;
 @Entity
 @IdClass(QuestionsSet.class)
 public class WrittenSet extends QuestionsSet {
-
     @OneToMany(
             mappedBy = "writtenSet",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
-    @OneToOne
-    @NotNull
-    @JoinColumn(name="fk_user_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", updatable = false)
+    @Hidden
     private User user;
 
     /**

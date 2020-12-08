@@ -2,6 +2,7 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.user;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.group10.paperlessexamwebservice.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
@@ -43,7 +44,7 @@ public class UserRequestsImpl implements IUserRequests {
      * Instantiates a new User requests.
      */
     public UserRequestsImpl() {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();
 
     }
 

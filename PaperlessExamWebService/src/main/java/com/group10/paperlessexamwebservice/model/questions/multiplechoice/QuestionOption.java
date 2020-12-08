@@ -1,5 +1,7 @@
 package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
+import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
+
 import javax.persistence.*;
 
 
@@ -12,7 +14,7 @@ public class QuestionOption {
     private Long id;
     private boolean isCorrectAnswer;
     private String answer;
-
+@Hidden
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**

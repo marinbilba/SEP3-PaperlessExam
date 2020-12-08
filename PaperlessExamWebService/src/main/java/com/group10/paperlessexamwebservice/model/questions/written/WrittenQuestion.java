@@ -2,6 +2,7 @@ package com.group10.paperlessexamwebservice.model.questions.written;
 
 
 
+import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.Question;
 
 import javax.persistence.*;

@@ -2,6 +2,7 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.questionse
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.group10.paperlessexamwebservice.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
@@ -31,13 +32,13 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
      * Instantiates a new User requests.
      */
     public IQuestionSetsRequestsImpl() {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();;
 
     }
 
     @Override
-    public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
-        boolean multipleChoiceExists;
+    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
+        MultipleChoiceSet fetchedMultipleChoiceSet=null;
         // Connect
         try {
             socketConnector.connect();
@@ -45,18 +46,18 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             // Serialize the object
             String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSet);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, MULTIPLE_CHOICE_SET_EXISTS);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, GET_MULTIPLE_CHOICE_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
-            multipleChoiceExists = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), Boolean.class);
+            fetchedMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet.class);
             //            Disconnect
             socketConnector.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
-        return multipleChoiceExists;
+        return fetchedMultipleChoiceSet;
     }
 
     @Override

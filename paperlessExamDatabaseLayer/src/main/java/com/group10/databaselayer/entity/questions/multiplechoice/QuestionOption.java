@@ -24,7 +24,7 @@ public class QuestionOption {
             @JoinColumn(name = "multiple_choice_question_question"),
             @JoinColumn(name = "multiple_choice_set_question_score")
     })
-    @Hidden
+
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**
@@ -36,8 +36,21 @@ public class QuestionOption {
     /**
      * Instantiates a new Question option.
      *
+
      * @param isCorrectAnswer the is correct answer
      * @param answer          the answer
+     */
+    public QuestionOption( boolean isCorrectAnswer, String answer) {
+        this.isCorrectAnswer = isCorrectAnswer;
+        this.answer = answer;
+    }
+
+    /**
+     * Instantiates a new Question option.
+     *
+     * @param isCorrectAnswer        the is correct answer
+     * @param answer                 the answer
+     * @param multipleChoiceQuestion the multiple choice question
      */
     public QuestionOption(boolean isCorrectAnswer, String answer,MultipleChoiceQuestion multipleChoiceQuestion) {
         this.isCorrectAnswer = isCorrectAnswer;

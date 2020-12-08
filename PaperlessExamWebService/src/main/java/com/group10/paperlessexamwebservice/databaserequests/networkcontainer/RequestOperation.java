@@ -22,7 +22,7 @@ public enum RequestOperation {
     DELETE_USER,
 
 //    Question sets
-    MULTIPLE_CHOICE_SET_EXISTS,
+    GET_MULTIPLE_CHOICE_SET,
     CREATE_MULTIPLE_CHOICE_SET
 
 }
