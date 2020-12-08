@@ -9,6 +9,7 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
         public User User;
         
         public MultipleChoiceSet() {}
+        
 
         public MultipleChoiceSet(string title, string topic, User user) : base(title, topic)
         {
@@ -17,8 +18,9 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 
         public void AddQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
         {
+            
             MultipleChoiceQuestions.Add(multipleChoiceQuestion);
-            multipleChoiceQuestion.MultipleChoiceSet = this;
+
         }
 
         public void RemoveQuestion(MultipleChoiceQuestion multipleChoiceQuestion)

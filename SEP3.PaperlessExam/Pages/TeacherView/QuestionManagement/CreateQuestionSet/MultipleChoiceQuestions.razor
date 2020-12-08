@@ -1,38 +1,47 @@
-﻿@page "/asdffads"
+﻿@page "/MultipleChoiceQuestions"
+@page "/asdffads"
 @using System.Reflection.Metadata
 @using Microsoft.AspNetCore.Razor.TagHelpers
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
+@using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
-@inject IJSRuntime JsRuntime;
+@inject IJSRuntime JsRuntime
+@inject IUserService UserService
+@inject IQuestionSetsService QuestionSetsService
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
 <h3 xmlns="">MultipleChoiceQuestions</h3>
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 
 <h3>Multiple-choice Questions Builder</h3>    
 
-<EditForm Model="_multipleChoiceSet" OnValidSubmit="OnValidSubmit">
+<EditForm Model="_multipleChoiceSet">
     
     @for (var index1 = 0; index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; index1++)
     {
         var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[index1];
 
-        int count = index1+1;
+        counter = index1+1;
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex">
-                        <div class="questionNumber d-flex justify-content-center">@count
+                        <div class="d-flex">
+                            <label class="counterDiv d-flex justify-content-center">@counter</label>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-11">
-                    <input type="text" class="form-control" placeholder="Type your question"/>
+                    <input type="text" class="form-control" placeholder="Type your question" @bind="@multipleChoiceQuestion.question"/>
                 </div>
             </div>
             @* Type number of points *@
             <div class="row top-buffer">
                 <div class="col-md-1 offset-1  padding-right0 ">
-                    <input type="number" class="form-control" placeholder="Score"/>
+                    <input type="number" class="form-control" @bind="@multipleChoiceQuestion.Score" placeholder="Score"/>
                 </div>
                 <div class="col-md-1 padding-left0">
                     <label>points</label>
@@ -56,7 +65,7 @@
                 Console.WriteLine(i);
                 <div class="form-group row top-buffer justify-content-center">
                     <div class="col-md-1 offset-2">
-                        <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" Change=@(args => SetCorrectAnswer(args))>
+                        <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.IsCorrectAnswer" Change=@(args => SetCorrectAnswer(args))>
                         </RadzenCheckBox>
 
                     </div>
@@ -83,7 +92,7 @@
                     </button>
                 </div>
             </div>
-
+    
 
             @* Add additional option *@
             <div class="row top-buffer justify-content-end">
@@ -98,11 +107,9 @@
     @* Add new question && Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-3 offset-9">
-            <RadzenButton Icon="" Text="Add question" Click=@(() => _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion()))></RadzenButton>
+            <RadzenButton Icon="" Text="Add question" Click=@(() =>done() )></RadzenButton>
             
-            
-                
-            <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
+            <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Click="@(() => GetPprint())" Text="Finish">
                         </RadzenButton>
         </div>
         @* <div class="col-md-3"> *@
@@ -112,8 +119,41 @@
 </EditForm>
 @code {
     
+    [Parameter]
+    public string Username { get; set; }
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Topic { get; set; }
+
+    private User _updatedUser;
+
+    private string _roleName;
     
-    MultipleChoiceSet _multipleChoiceSet = new MultipleChoiceSet();
+    private string score;
+
+    private string question;
+
+    private int counter;
+
+
+
+    public MultipleChoiceSet _multipleChoiceSet;
+
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        
+        User user = await UserService.FindByUsername(Username);
+
+
+        _updatedUser = user;
+        Console.WriteLine(_updatedUser.Username+"  "+Title);
+        _multipleChoiceSet = new MultipleChoiceSet(Title, Topic, _updatedUser);
+    }
+
+    
     
     bool _correctAnswerValue;
 
@@ -131,9 +171,33 @@
     {
         await JsRuntime.InvokeVoidAsync("deleteAnswerRow");
     }
-    public EventCallback OnValidSubmit { get; set; }
-    
-    
-    
-    
+
+    private string GetPprint()
+    {
+        return _multipleChoiceSet.MultipleChoiceQuestions.ToString();
+    }
+
+
+    private void done()
+    { 
+        _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
+        if (counter == 0)
+        {
+            Console.WriteLine("pidaras");
+        }
+        else
+        {
+           MultipleChoiceQuestion multipleChoiceQuestion= _multipleChoiceSet.MultipleChoiceQuestions[counter-1];
+           //Request to add MultipleChoiceQuestion
+            foreach (var option in multipleChoiceQuestion.QuestionOptions)
+            {
+            // Request to add question option
+                Console.WriteLine();
+            }
+            Console.WriteLine(multipleChoiceQuestion.question);
+    // MultipleChoiceQuestion multipleChoiceQuestion = new MultipleChoiceQuestion();
+        }
+       
+    }
+
 }

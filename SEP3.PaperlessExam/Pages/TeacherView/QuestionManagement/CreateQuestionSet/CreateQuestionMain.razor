@@ -4,7 +4,11 @@
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
 @using Microsoft.AspNetCore.Http
 @using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Model
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
@@ -76,10 +80,12 @@
                     @if (_displayWrittenQuestionBuilder)
                     {
                         <WrittenQuestions></WrittenQuestions>
+                        
                     }
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
-                        <MultipleChoiceQuestions></MultipleChoiceQuestions>
+                        LogUsername();
+                        <MultipleChoiceQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
                     }
                     else
                     {
@@ -93,32 +99,25 @@
 
 @code {
     
-    [CascadingParameter]
-    private Task<CustomAuthenticationStateProvider> AuthenticationStateTask { get; set; }
-
     private string _authMessage;
-
-    public User User;
+    
+    private string username;
+    
+    private MultipleChoiceSet _multipleChoiceSet;
     
     private async Task LogUsername()
     {
-        var authState = await AuthenticationStateTask;
-        User = authState.cachedUser;
+        UserService.LoginUser(new User());
+        var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        username = authState.Username;
     }
     
-    public MultipleChoiceSet CreateMultipleChoiceSet(string topic, string title)
-    {
-        
-        return new MultipleChoiceSet(_questionSetTopic, _questionSetTitle, User);
-    }
-    
-    
-    
+    // After second step send multiplechoiceset with 3 args;
     
     // Question type: Written or Multiple-choice
     private string _questionType;
 
-    private string _errorMessage;
+    private string _errorMessage;    
 
     private bool _displayMultipleChoiceQuestionBuilder;
     private bool _displayWrittenQuestionBuilder;

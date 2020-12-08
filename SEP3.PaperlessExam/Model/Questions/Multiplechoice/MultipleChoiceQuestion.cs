@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet;
 
 namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 {
     public class MultipleChoiceQuestion : Question
     {
+        
         public MultipleChoiceSet MultipleChoiceSet { get; set; }
         public List<QuestionOption> QuestionOptions = new List<QuestionOption>();
 
@@ -12,9 +14,14 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
            
         }
 
-        public MultipleChoiceQuestion(int questionNumber, string question, double score) : base(question, score, questionNumber)
+        public MultipleChoiceQuestion(int questionNumber, string question, double score, MultipleChoiceSet multipleChoiceSet) : base(question, score, questionNumber)
         {
-                
+            MultipleChoiceSet = multipleChoiceSet;
+        }
+
+        public MultipleChoiceQuestion(MultipleChoiceSet multipleChoiceSet)
+        {
+            MultipleChoiceSet = multipleChoiceSet;
         }
 
         public void AddQuestionOption(QuestionOption questionOption)
@@ -38,5 +45,6 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
         {
             return QuestionOptions;
         }
+        
     }
 }

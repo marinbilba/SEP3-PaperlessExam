@@ -23,6 +23,11 @@ namespace SEP3.PaperlessExam.Authentication
             this.userService = userService;
         }
 
+        public User GetCachedUser()
+        {
+            return cachedUser;    
+        }
+
         
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
