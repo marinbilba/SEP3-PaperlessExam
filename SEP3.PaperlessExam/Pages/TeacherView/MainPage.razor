@@ -1,0 +1,43 @@
+@page "/teacherMainPage"
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" type="text/css" href="css/View/view.css">
+<div class="container">
+    <div class="row">
+       
+        <div class="col-md-3 red" @onclick="@ToCreateQuestions">
+            <img src="images/plus.png" style=" height: 120px;  align-content: center"/>
+            <h3><b>Create Questions</b></h3>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-3 red" @onclick="@ToReviewUpdateQuestions">
+            <img src="images/bad-review.png" style="height: 120px; align-content: center"/>
+            <h3><b>Review Questions</b></h3>
+            <h3><b>Update Questions</b></h3>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-3 red" @onclick="@ToCreateExamEvent">
+            <h3>Create exam</h3>
+        </div>
+    </div>
+</div>
+
+
+@code{
+
+    public void ToCreateQuestions()
+    {
+        NavigationManager.NavigateTo("/createQuestion");
+    }
+
+    public void ToReviewUpdateQuestions()
+    {
+        NavigationManager.NavigateTo("/reviewQuestions");
+    }
+
+    public void ToCreateExamEvent()
+    {
+        NavigationManager.NavigateTo("/CreateExamEvent");
+    }
+
+}

@@ -12,6 +12,9 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
         Task<bool> ValidateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
         Task<IList<WrittenSet>> FindWrittenQuestion(string type);
         Task<IList<MultipleChoiceSet>> FindMultipleChoiceQuestion(string type);
-        
+
+        Task<WrittenSet> DeleteWritten(WrittenSet set);
+        Task<MultipleChoiceSet> DeleteMultipleChoice(MultipleChoiceSet set);
+
     }
 }
