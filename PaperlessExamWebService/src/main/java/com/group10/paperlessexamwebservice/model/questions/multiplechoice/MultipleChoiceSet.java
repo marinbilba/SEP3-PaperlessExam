@@ -68,6 +68,10 @@ private Date updatedTimestamp;
         this.user = user;
     }
 
+    private boolean sameAsFormer(User newUser) {
+        return Objects.equals(user, newUser);
+    }
+
     public Date getUpdatedTimestamp() {
         return updatedTimestamp;
     }

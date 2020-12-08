@@ -24,13 +24,6 @@ public class MultipleChoiceQuestion extends Question {
     private MultipleChoiceSet multipleChoiceSet;
 
 
-    @OneToMany(
-            mappedBy = "multipleChoiceQuestion",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<QuestionOption> questionOptions = new ArrayList<>();
-
 
     /**
      * Instantiates a new Multiple choice question.
@@ -71,29 +64,6 @@ public class MultipleChoiceQuestion extends Question {
         this.multipleChoiceSet = multipleChoiceSet;
     }
 
-    /**
-     * Add question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param questionOption the question option
-     */
-    public void addQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.add(questionOption);
-        questionOption.setMultipleChoiceQuestion(this);
-    }
-
-    /**
-     * Remove question option. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceQuestion} and QuestionOption {@link QuestionOption}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param questionOption the question option
-     */
-    public void removeQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.remove(questionOption);
-        questionOption.setMultipleChoiceQuestion(null);
-    }
 
     public String getQuestion() {
         return super.getQuestion();
@@ -126,23 +96,6 @@ public class MultipleChoiceQuestion extends Question {
         super.setScore(score);
     }
 
-    /**
-     * Gets question options.
-     *
-     * @return the question options
-     */
-    public List<QuestionOption> getQuestionOptions() {
-        return questionOptions;
-    }
-
-    /**
-     * Sets question options.
-     *
-     * @param questionOptions the question options
-     */
-    public void setQuestionOptions(List<QuestionOption> questionOptions) {
-        this.questionOptions = questionOptions;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -155,12 +108,12 @@ public class MultipleChoiceQuestion extends Question {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceQuestion other = (MultipleChoiceQuestion) o;
-            return multipleChoiceSet.equals(other.multipleChoiceSet) && questionOptions.equals(other.questionOptions);
+            return multipleChoiceSet.equals(other.multipleChoiceSet);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceSet, questionOptions);
+        return Objects.hash(super.hashCode(), multipleChoiceSet);
     }
 }

@@ -41,13 +41,6 @@ public class User {
     @JoinColumn(name="fk_role_id")
     private Role role;
 
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @Hidden
-    private List<MultipleChoiceSet> multipleChoiceSets = new ArrayList<>();
 
     /**
      * Instantiates a new User.
@@ -86,31 +79,7 @@ public class User {
         this.role = role;
     }
 
-    public List<MultipleChoiceSet> getMultipleChoiceSets() {
-        return multipleChoiceSets;
-    }
 
-    public void setMultipleChoiceSets(List<MultipleChoiceSet> multipleChoiceSets) {
-        this.multipleChoiceSets = multipleChoiceSets;
-    }
-    public void addMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
-
-        multipleChoiceSet.setUser(this);
-        this.multipleChoiceSets.add(multipleChoiceSet);
-    }
-
-
-    /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param multipleChoiceSets the multiple choice questions
-     */
-    public void removeMultipleChoiceSet(MultipleChoiceSet multipleChoiceSets) {
-        this.multipleChoiceSets.remove(multipleChoiceSets);
-        multipleChoiceSets.setUser(null);
-    }
 
     /**
      * Gets first name.

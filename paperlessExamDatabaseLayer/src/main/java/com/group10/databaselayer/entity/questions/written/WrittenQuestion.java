@@ -11,13 +11,12 @@ import java.util.Objects;
 @IdClass(Question.class)
 public class WrittenQuestion extends Question {
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne()
 //    @JoinColumns({
 //            @JoinColumn(name = "written_set_id"),
 //            @JoinColumn(name = "written_set_title"),
 //            @JoinColumn(name = "written_set_topic"),
 //    })
-    @Hidden
     private WrittenSet writtenSet;
 
 

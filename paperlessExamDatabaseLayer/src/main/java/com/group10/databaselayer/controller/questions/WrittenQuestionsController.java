@@ -133,26 +133,7 @@ public class WrittenQuestionsController {
         throw new QuestionSetNotFound("Written set with given title and topic was not found");
     }
 
-    /**
-     * Remove a question from the written set. Method checks if the passed WrittenSet exists, otherwise exception is thrown.
-     * The passed written question will be check if it exists. If it does exist it will be removed from the written set
-     *
-     * @param writtenSet      the written set that should be queried
-     * @param writtenQuestion the written question that should be deleted
-     * @return a confirmation String containing question title of the removed question
-     * @throws TitleOrTopicAreNull in case the title or topic are null
-     * @throws QuestionSetNotFound in case the written set not found
-     * @throws QuestionNotFound    in case the question not found
-     */
-    public String removeQuestionWrittenSet(WrittenSet writtenSet, WrittenQuestion writtenQuestion) throws TitleOrTopicAreNull, QuestionSetNotFound, QuestionNotFound {
-        if (existsTitleAndTopicWrittenSet(writtenSet)) {
-            findQuestionInWrittenSet(writtenSet, writtenQuestion);
-            writtenSet.removeQuestion(writtenQuestion);
-            writtenSetRepository.save(writtenSet);
-            return "Question " + writtenQuestion.getQuestion() + " was REMOVED";
-        }
-        throw new QuestionSetNotFound("Written set with given title and topic was not found");
-    }
+
 
     /**
      * Find question in written set. Method checks if the passed WrittenSet exists, otherwise exception is thrown.

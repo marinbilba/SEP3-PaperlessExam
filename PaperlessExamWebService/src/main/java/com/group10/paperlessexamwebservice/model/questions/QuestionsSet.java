@@ -15,6 +15,7 @@ import java.util.Objects;
  */
 
 public class QuestionsSet {
+    private Long id;
     private String title;
     private String topic;
 
@@ -37,6 +38,13 @@ public class QuestionsSet {
 
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * Gets title.

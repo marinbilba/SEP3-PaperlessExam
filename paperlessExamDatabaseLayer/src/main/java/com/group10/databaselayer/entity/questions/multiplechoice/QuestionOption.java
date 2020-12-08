@@ -18,7 +18,7 @@ public class QuestionOption {
     private String answer;
 
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "multiple_choice_question_number"),
             @JoinColumn(name = "multiple_choice_question_question"),

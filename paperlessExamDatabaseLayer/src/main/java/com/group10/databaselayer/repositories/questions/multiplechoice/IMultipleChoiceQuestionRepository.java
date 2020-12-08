@@ -10,4 +10,8 @@ import java.util.List;
 
 public interface IMultipleChoiceQuestionRepository extends JpaRepository<MultipleChoiceQuestion, Question> {
     List<MultipleChoiceQuestion> findByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
+
+
+    MultipleChoiceQuestion findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndQuestionNumberAndQuestionAndScore(String topic, String title, Long id, int questionNumber, String question, double questionScore);
+
 }

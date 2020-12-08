@@ -62,10 +62,11 @@ public class Server {
         Gson gson2 = gson.setPrettyPrinting().create();
 
 
-        User user = userRepository.getUserByUsername("silvmandrila");
-        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java", "Capitals");
-        multipleChoiceSet.setUser(user);
-        multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
+//        User user = userRepository.getUserByUsername("silvmandrila");
+//        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java2", "Capitals");
+//        multipleChoiceSet.setUser(user);
+//        System.out.println(gson2.toJson(multipleChoiceSet));
+        //multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
 
 //        User user2 = userRepository.getUserByUsername("marinbilba");
 //

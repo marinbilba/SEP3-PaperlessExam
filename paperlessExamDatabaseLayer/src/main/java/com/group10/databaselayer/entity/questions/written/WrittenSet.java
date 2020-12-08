@@ -25,15 +25,8 @@ import java.util.Objects;
 @Entity
 @IdClass(QuestionsSet.class)
 public class WrittenSet extends QuestionsSet {
-    @OneToMany(
-            mappedBy = "writtenSet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id", updatable = false)
-    @Hidden
     private User user;
 
     /**
@@ -53,29 +46,6 @@ public class WrittenSet extends QuestionsSet {
         this.user=user;
     }
 
-    /**
-     * Add question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param writtenQuestion the written question
-     */
-    public void addQuestion(WrittenQuestion writtenQuestion) {
-        this.writtenQuestions.add(writtenQuestion);
-        writtenQuestion.setWrittenSet(this);
-    }
-
-    /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link WrittenSet} and WrittenSet {@link WrittenSet}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param writtenQuestion the written question
-     */
-    public void removeQuestion(WrittenQuestion writtenQuestion) {
-        this.writtenQuestions.remove(writtenQuestion);
-        writtenQuestion.setWrittenSet(null);
-    }
 
     public String getTitle() {
        return super.getTitle();
@@ -85,10 +55,6 @@ public class WrittenSet extends QuestionsSet {
     }
 
 
-
-    public List<WrittenQuestion> getWrittenQuestions() {
-        return writtenQuestions;
-    }
 
 
     @Override
@@ -102,12 +68,12 @@ public class WrittenSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             WrittenSet other = (WrittenSet) o;
-            return writtenQuestions.equals(other.writtenQuestions)&&user.equals(other.user);
+            return user.equals(other.user);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), writtenQuestions);
+        return Objects.hash(super.hashCode());
     }
 }

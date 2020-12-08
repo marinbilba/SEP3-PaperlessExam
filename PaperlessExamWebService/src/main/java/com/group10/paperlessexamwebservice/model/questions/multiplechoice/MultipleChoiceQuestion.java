@@ -16,7 +16,7 @@ public class MultipleChoiceQuestion extends Question {
 
     private MultipleChoiceSet multipleChoiceSet;
 
-    private List<QuestionOption> questionOptions = new ArrayList<>();
+
 
 
     /**
@@ -24,17 +24,6 @@ public class MultipleChoiceQuestion extends Question {
      */
     public MultipleChoiceQuestion() {
 
-    }
-
-    /**
-     * Instantiates a new Multiple choice question.
-     *
-     * @param questionNumber the question number
-     * @param question       the question
-     * @param score          the score
-     */
-    public MultipleChoiceQuestion(int questionNumber,String question, double score) {
-        super(question, score,questionNumber);
     }
 
     public MultipleChoiceQuestion(String question, double score, int questionNumber, MultipleChoiceSet multipleChoiceSet) {
@@ -60,24 +49,7 @@ public class MultipleChoiceQuestion extends Question {
         this.multipleChoiceSet = multipleChoiceSet;
     }
 
-    /**
-     * Add question option.
-     *
-     * @param questionOption the question option
-     */
-    public void addQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.add(questionOption);
 
-    }
-
-    /**
-     * Remove question option.
-     *
-     * @param questionOption the question option
-     */
-    public void removeQuestionOption(QuestionOption questionOption) {
-        this.questionOptions.remove(questionOption);
-    }
 
     public String getQuestion(){
         return super.getQuestion();
@@ -113,18 +85,6 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @return the question options
      */
-    public List<QuestionOption> getQuestionOptions() {
-        return questionOptions;
-    }
-
-    /**
-     * Sets question options.
-     *
-     * @param questionOptions the question options
-     */
-    public void setQuestionOptions(List<QuestionOption> questionOptions) {
-        this.questionOptions = questionOptions;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -137,12 +97,12 @@ public class MultipleChoiceQuestion extends Question {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceQuestion other = (MultipleChoiceQuestion) o;
-            return multipleChoiceSet.equals(other.multipleChoiceSet) && questionOptions.equals(other.questionOptions);
+            return multipleChoiceSet.equals(other.multipleChoiceSet);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceSet, questionOptions);
+        return Objects.hash(super.hashCode(), multipleChoiceSet);
     }
 }

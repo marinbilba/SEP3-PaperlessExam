@@ -25,17 +25,11 @@ import java.util.Objects;
 @IdClass(QuestionsSet.class)
 
 public class MultipleChoiceSet extends QuestionsSet {
-    @OneToMany(
-            mappedBy = "multipleChoiceSet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
 
     @UpdateTimestamp
     private Date updatedTimestamp;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
@@ -85,43 +79,7 @@ public class MultipleChoiceSet extends QuestionsSet {
         this.user = user;
     }
 
-    /**
-     * Add question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     */
-    public void addQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
-        this.multipleChoiceQuestions.add(multipleChoiceQuestion);
-        multipleChoiceQuestion.setMultipleChoiceSet(this);
-    }
 
-    /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
-     *
-     * @param multipleChoiceQuestions the multiple choice questions
-     */
-    public void removeQuestion(MultipleChoiceQuestion multipleChoiceQuestions) {
-        this.multipleChoiceQuestions.remove(multipleChoiceQuestions);
-        multipleChoiceQuestions.setMultipleChoiceSet(null);
-    }
-
-    /**
-     * Add question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void addQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.addQuestionOption(questionOption);
-            }
-        }
-    }
 
     public String getTitle() {
         return super.getTitle();
@@ -131,19 +89,6 @@ public class MultipleChoiceSet extends QuestionsSet {
         return super.getTopic();
     }
 
-    /**
-     * Remove question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void removeQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.removeQuestionOption(questionOption);
-            }
-        }
-    }
 
 
     /**
@@ -181,12 +126,12 @@ public class MultipleChoiceSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions) && user.equals(other.user);
+            return user.equals(other.user);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceQuestions);
+        return Objects.hash(super.hashCode());
     }
 }
