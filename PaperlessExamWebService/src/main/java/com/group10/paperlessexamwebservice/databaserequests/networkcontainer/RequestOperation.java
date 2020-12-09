@@ -43,6 +43,11 @@ public enum RequestOperation {
 
     //   GET ALL QuestionSets
     GET_ALL_MULTIPLE_CHOICE_SETS,
-    GET_ALL_WRITTEN_SETS
+    GET_ALL_WRITTEN_SETS,
+
+// [Examination event]
+
+    CREATE_EXAMINATION_EVENT
+
 }
 

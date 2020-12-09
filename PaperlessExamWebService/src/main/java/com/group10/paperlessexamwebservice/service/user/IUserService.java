@@ -23,4 +23,8 @@ public interface IUserService {
     User updateUser(User user) throws UsernameNotFoundException, NullFieldUser, ServiceNotAvailable, UnexpectedError, EmailException, UsernameNotMatchEmail, PasswordException, com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException, UserNotFound;
 
     User deleteUser(User user) throws ServiceNotAvailable, com.group10.paperlessexamwebservice.service.exceptions.user.UsernameNotFoundException;
+
+    User getUserStudentByUsername(String username) throws ServiceNotAvailable, UserNotFound;
+
+    List<User> getUsersStudentsByFirstName(String firstName) throws ServiceNotAvailable, UserNotFound;
 }

@@ -7,10 +7,7 @@ import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsCon
 import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
 
 import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
-import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import com.group10.databaselayer.entity.user.User;
-import com.group10.databaselayer.repositories.examinationevent.IExaminationEvent;
+import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +17,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,6 +34,8 @@ public class Server {
 
     @Autowired
     private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
+@Autowired
+private ExaminationEventDAO examinationEventDAO;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
@@ -48,7 +45,7 @@ public class Server {
     private IUserRepository userRepository;
 
     @Autowired
-    IExaminationEvent examinationEvent;
+    IExaminationEventRepository examinationEvent;
 
     private GsonBuilder gson;
 
@@ -58,6 +55,7 @@ public class Server {
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
         controllersSet.add(writtenQuestionsController);
+        controllersSet.add(examinationEventDAO);
 
         gson = new GsonBuilder();
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());

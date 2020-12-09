@@ -4,12 +4,14 @@ package com.group10.databaselayer.controller.socketmediator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
+import com.group10.databaselayer.controller.ExaminationEventDAO;
 import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
 import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
 import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
 import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
@@ -51,6 +53,7 @@ public class ServerSocketHandler implements Runnable {
     private UserController userController;
     private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
     private WrittenQuestionsController writtenQuestionsController;
+    private ExaminationEventDAO examinationEventDAO;
 
     private final Gson gson;
 
@@ -89,6 +92,8 @@ public class ServerSocketHandler implements Runnable {
                 this.multipleChoiceQuestionsController = (MultipleChoiceQuestionsController) controller;
             } else if (controller instanceof WrittenQuestionsController) {
                 this.writtenQuestionsController = (WrittenQuestionsController) controller;
+            }else if (controller instanceof ExaminationEventDAO) {
+                this.examinationEventDAO = (ExaminationEventDAO) controller;
             }
 
         }
@@ -159,10 +164,25 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_ALL_WRITTEN_SETS:
                     getAllUsersWrittenSet(networkContainerRequestDeserialized);
+                    break;
+                    //Examination Event
+                case CREATE_EXAMINATION_EVENT:
+                    createExaminationEvent(networkContainerRequestDeserialized);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createExaminationEvent(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_EXAMINATION_EVENT start");
+        ExaminationEvent examinationEventDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), ExaminationEvent.class);
+        ExaminationEvent createdExaminationEvent = examinationEventDAO.createUpdate(examinationEventDeserialized);
+        objectSerialized = gson.toJson(createdExaminationEvent);
+        networkContainer = new NetworkContainer(CREATE_EXAMINATION_EVENT, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_EXAMINATION_EVENT end");
     }
 
     private void getAllUsersWrittenSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
