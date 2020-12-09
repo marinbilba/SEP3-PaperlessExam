@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
+using SEP3.PaperlessExam.Model.ExamEvent;
 using SEP3.PaperlessExam.Model.Questions.MultipleChoice;
 using SEP3.PaperlessExam.Model.Questions.written;
 
@@ -98,5 +99,50 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 
             return multipleChoiceSetDeserialize;
         }
+
+        public async Task<IList<ExaminationEvent>> GetExaminationEvents(User user)
+        {
+            IList<ExaminationEvent> examEventsDeserialize = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/exam/getExaminationEvent{user}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running 
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection could be made because the server is not responding");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                examEventsDeserialize = JsonSerializer.Deserialize<IList<ExaminationEvent>>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return examEventsDeserialize;
+            // List<User> users = new List<User>();
+            // users.Add(new User("HEJ", "tyuiop", "fgjukil", "dfgnhjmk", "tgyhuj", new Role("teacher"), ""));
+            // return users;
+        }
+        
     }
 }
