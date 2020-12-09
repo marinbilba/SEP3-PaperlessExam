@@ -21,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -64,13 +65,14 @@ public class Server {
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
         Gson gson2 = gson.setPrettyPrinting().create();
 
-        User user = userRepository.getUserByUsername("silvmandrila");
-
-        List<WrittenSet> writtenSet=writtenQuestionsController.getAllWrittenSet(user);
-
-  //    ExaminationEvent examinationEvent=new ExaminationEvent("Tuls",writtenSet);
-//examinationEvent.save()
-
+//        User user = userRepository.getUserByUsername("silvmandrila");
+//
+//        List<WrittenSet> writtenSet = writtenQuestionsController.getAllWrittenSet(user);
+//        Set<WrittenSet> writtenSetSet = new HashSet<>();
+//        writtenSetSet.addAll(writtenSet);
+//        ExaminationEvent examinationEvent2 = new ExaminationEvent("Tuls", writtenSetSet);
+//        examinationEvent.save(examinationEvent2);
+//
 
 //        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java2", "Capitals");
 //        multipleChoiceSet.setUser(user);

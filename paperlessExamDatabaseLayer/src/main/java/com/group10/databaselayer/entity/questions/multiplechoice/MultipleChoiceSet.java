@@ -35,7 +35,7 @@ public class MultipleChoiceSet {
     private User user;
 
     @ManyToMany(mappedBy = "multipleChoiceSets")
-    private Set<ExaminationEvent> examinationEvents = new HashSet<>();
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
     /**
      * Instantiates a new Multiple choice set.
@@ -49,11 +49,11 @@ public class MultipleChoiceSet {
         this.user = user;
     }
 
-    public Set<ExaminationEvent> getExaminationEvents() {
+    public List<ExaminationEvent> getExaminationEvents() {
         return examinationEvents;
     }
 
-    public void setExaminationEvents(Set<ExaminationEvent> examinationEvents) {
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
     }
 

@@ -218,23 +218,23 @@ public class QuestionSetsController {
 //            questionSetAlreadyExists.printStackTrace();
 //        }
 
-        WrittenQuestion writtenQuestion=null;
-
-        try {
-          writtenQuestion=  questionSetsService.addWrittenQuestion(new WrittenQuestion("What is 2?",122,4,writtenSet));
-        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
-            emptyMultipleChoiceQuestion.printStackTrace();
-        } catch (NullQuestionSet nullQuestionSet) {
-            nullQuestionSet.printStackTrace();
-        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
-            emptyQuestionSetTitleOrTopic.printStackTrace();
-        } catch (UnexpectedError unexpectedError) {
-            unexpectedError.printStackTrace();
-        } catch (ServiceNotAvailable serviceNotAvailable) {
-            serviceNotAvailable.printStackTrace();
-        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
-            questionSetAlreadyExists.printStackTrace();
-        }
+//        WrittenQuestion writtenQuestion=null;
+//
+//        try {
+//          writtenQuestion=  questionSetsService.addWrittenQuestion(new WrittenQuestion("What is 2?",122,4,writtenSet));
+//        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
+//            emptyMultipleChoiceQuestion.printStackTrace();
+//        } catch (NullQuestionSet nullQuestionSet) {
+//            nullQuestionSet.printStackTrace();
+//        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
+//            emptyQuestionSetTitleOrTopic.printStackTrace();
+//        } catch (UnexpectedError unexpectedError) {
+//            unexpectedError.printStackTrace();
+//        } catch (ServiceNotAvailable serviceNotAvailable) {
+//            serviceNotAvailable.printStackTrace();
+//        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
+//            questionSetAlreadyExists.printStackTrace();
+//        }
 
 //        try {
 //            writtenQuestion=questionSetsService.getWrittenQuestion(new WrittenQuestion("What is lif?",12,4,writtenSet));

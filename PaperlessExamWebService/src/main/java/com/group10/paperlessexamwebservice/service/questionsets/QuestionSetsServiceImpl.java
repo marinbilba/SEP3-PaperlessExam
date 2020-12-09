@@ -31,7 +31,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     private IQuestionSetsRequests questionSetsRequests;
 
     @Autowired
-    private IUserRequests iUserRequests;
+    private IUserRequests userRequests;
 
 
     private boolean validateMultipleChoiceSetFields(MultipleChoiceSet multipleChoiceSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic {
@@ -91,7 +91,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     public WrittenSet createWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UserNotFound, UnexpectedError, QuestionSetAlreadyExists {
         WrittenSet createdWrittenSet = null;
         validateWrittenSetFields(writtenSet);
-        User fetchedUser = iUserRequests.getUserByUsername(writtenSet.getUser().getUsername());
+        User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
         if (fetchedUser == null) {
             throw new UserNotFound("User that is trying to create the question set is not authorized");
         }
@@ -114,7 +114,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public WrittenSet getWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UnexpectedError {
         if (validateWrittenSetFields(writtenSet)) {
-            User fetchedUser = iUserRequests.getUserByUsername(writtenSet.getUser().getUsername());
+            User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
             writtenSet.setUser(fetchedUser);
             WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSet(writtenSet);
             if (fetchedWrittenSet == null) {
@@ -163,7 +163,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
 
     public List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(String username) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet, ServiceNotAvailable, UnexpectedError, UsersMultipleChoiceSetNotFound, UserNotFound {
-        User fetchedUser = iUserRequests.getUserByUsername(username);
+        User fetchedUser = userRequests.getUserByUsername(username);
         if(fetchedUser==null){
             throw new UserNotFound("User with give username was not found");
         }
@@ -176,7 +176,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
 
     @Override
     public List<WrittenSet> getUsersAllWrittenSet(String username) throws ServiceNotAvailable, UsersWrittenSetNotFound, UserNotFound {
-        User fetchedUser = iUserRequests.getUserByUsername(username);
+        User fetchedUser = userRequests.getUserByUsername(username);
         if(fetchedUser==null){
             throw new UserNotFound("User with give username was not found");
         }
@@ -200,7 +200,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet {
         MultipleChoiceSet createdMultipleChoiceSet;
         validateMultipleChoiceSetFields(multipleChoiceSet);
-        User fetchedUser = iUserRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
+        User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
         if (fetchedUser == null) {
             throw new UserNotFound("User that is trying to create the question set is not authorized");
         }
@@ -223,7 +223,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         if (validateMultipleChoiceSetFields(multipleChoiceSet)) {
-            User fetchedUser = iUserRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
+            User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
             multipleChoiceSet.setUser(fetchedUser);
             MultipleChoiceSet fetchedMultipleChoice = questionSetsRequests.getMultipleChoiceSet(multipleChoiceSet);
             if (fetchedMultipleChoice == null) {

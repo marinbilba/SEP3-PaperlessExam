@@ -33,7 +33,7 @@ public class WrittenSet {
     private Date updatedTimestamp;
 
     @ManyToMany(mappedBy = "writtenSets")
-    private Set<ExaminationEvent> examinationEvents = new HashSet<>();
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
 
 
@@ -49,11 +49,11 @@ public class WrittenSet {
         this.user = user;
     }
 
-    public Set<ExaminationEvent> getExaminationEvents() {
+    public List<ExaminationEvent> getExaminationEvents() {
         return examinationEvents;
     }
 
-    public void setExaminationEvents(Set<ExaminationEvent> examinationEvents) {
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
     }
 

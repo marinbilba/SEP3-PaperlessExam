@@ -42,7 +42,7 @@ public class User {
     private Role role;
 
     @ManyToMany(mappedBy = "usersAssigned")
-    transient private Set<ExaminationEvent> examinationEvents = new HashSet<>();
+    transient private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
 
     /**
@@ -83,11 +83,19 @@ public class User {
     }
 
 
-    public Set<ExaminationEvent> getExaminationEvents() {
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public List<ExaminationEvent> getExaminationEvents() {
         return examinationEvents;
     }
 
-    public void setExaminationEvents(Set<ExaminationEvent> examinationEvents) {
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
     }
 
