@@ -163,19 +163,20 @@ public class QuestionSetsController {
      */
     @PostConstruct
     public void init() {
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        User user = null;
-        try {
-            user = userController.getUsersByUsername("silvmandrila");
-        } catch (ServiceNotAvailable serviceNotAvailable) {
-            serviceNotAvailable.printStackTrace();
-        } catch (UserNotFound userNotFound) {
-            userNotFound.printStackTrace();
-        }
-        WrittenSet writtenSet = null;
+//
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        User user = null;
 //        try {
-//            writtenSet = questionSetsService.createWrittenSet(new WrittenSet("Romana", "Eseu", user));
+//            user = userController.getUsersByUsername("silvmandrila");
+//        } catch (ServiceNotAvailable serviceNotAvailable) {
+//            serviceNotAvailable.printStackTrace();
+//        } catch (UserNotFound userNotFound) {
+//            userNotFound.printStackTrace();
+//        }
+//
+//       WrittenSet writtenSet = null;
+//        try {
+//            writtenSet=questionSetsService.createWrittenSet(new WrittenSet("Geo","Ner",user));
 //        } catch (NullQuestionSet nullQuestionSet) {
 //            nullQuestionSet.printStackTrace();
 //        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
@@ -190,7 +191,7 @@ public class QuestionSetsController {
 //            questionSetAlreadyExists.printStackTrace();
 //        }
 //        try {
-//           writtenSet= questionSetsService.getWrittenSet(new WrittenSet("Chemist", "Eseu", user));
+//            writtenSet = questionSetsService.getWrittenSet(new WrittenSet("Romana", "Eseu", user));
 //        } catch (NullQuestionSet nullQuestionSet) {
 //            nullQuestionSet.printStackTrace();
 //        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
@@ -200,22 +201,40 @@ public class QuestionSetsController {
 //        } catch (UnexpectedError unexpectedError) {
 //            unexpectedError.printStackTrace();
 //        }
-
-WrittenQuestion writtenQuestion=null;
-
+//
 //        try {
-//          writtenQuestion=  questionSetsService.addWrittenQuestion(new WrittenQuestion("What is life232?",12,4,writtenSet));
-//        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
-//            emptyMultipleChoiceQuestion.printStackTrace();
+//           writtenSet= questionSetsService.createWrittenSet(new WrittenSet("Chemist", "Eseu", user));
 //        } catch (NullQuestionSet nullQuestionSet) {
 //            nullQuestionSet.printStackTrace();
 //        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
 //            emptyQuestionSetTitleOrTopic.printStackTrace();
-//        } catch (UnexpectedError unexpectedError) {
-//            unexpectedError.printStackTrace();
 //        } catch (ServiceNotAvailable serviceNotAvailable) {
 //            serviceNotAvailable.printStackTrace();
+//        } catch (UnexpectedError unexpectedError) {
+//            unexpectedError.printStackTrace();
+//        } catch (UserNotFound userNotFound) {
+//            userNotFound.printStackTrace();
+//        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
+//            questionSetAlreadyExists.printStackTrace();
 //        }
+
+        WrittenQuestion writtenQuestion=null;
+
+        try {
+          writtenQuestion=  questionSetsService.addWrittenQuestion(new WrittenQuestion("What is 2?",122,4,writtenSet));
+        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
+            emptyMultipleChoiceQuestion.printStackTrace();
+        } catch (NullQuestionSet nullQuestionSet) {
+            nullQuestionSet.printStackTrace();
+        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
+            emptyQuestionSetTitleOrTopic.printStackTrace();
+        } catch (UnexpectedError unexpectedError) {
+            unexpectedError.printStackTrace();
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
+            questionSetAlreadyExists.printStackTrace();
+        }
 
 //        try {
 //            writtenQuestion=questionSetsService.getWrittenQuestion(new WrittenQuestion("What is lif?",12,4,writtenSet));
@@ -235,9 +254,9 @@ WrittenQuestion writtenQuestion=null;
 
 
 //
-//        MultipleChoiceSet ms = null;
-//        try {
-//            ms = questionSetsService.getMultipleChoiceSet(new MultipleChoiceSet("Java", "Core", user));
+//      MultipleChoiceSet ms = null;
+//       try {
+//            ms = questionSetsService.getMultipleChoiceSet(new MultipleChoiceSet("Java21e1", "Capitals", user));
 //        } catch (ServiceNotAvailable serviceNotAvailable) {
 //            serviceNotAvailable.printStackTrace();
 //        } catch (NullQuestionSet nullQuestionSet) {
@@ -274,7 +293,7 @@ WrittenQuestion writtenQuestion=null;
 //
 //
 //        try {
-//            QuestionOption qo = questionSetsService.getMultipleChoiceSetQuestionOption(new QuestionOption(true, "yessadsad", mq));
+//            QuestionOption qo = questionSetsService.addMultipleChoiceQuestionOption(new QuestionOption(true, "yessadsad", mq));
 //            System.out.println(qo.getAnswer());
 //        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
 //            emptyMultipleChoiceQuestion.printStackTrace();
@@ -290,6 +309,8 @@ WrittenQuestion writtenQuestion=null;
 //            unexpectedError.printStackTrace();
 //        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
 //            emptyQuestionSetTitleOrTopic.printStackTrace();
+//        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
+//            questionSetAlreadyExists.printStackTrace();
 //        }
 
 //        QuestionOption questionOption =new QuestionOption(true,"Yes",mq);

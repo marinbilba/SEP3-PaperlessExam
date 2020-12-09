@@ -317,7 +317,7 @@ public class ServerSocketHandler implements Runnable {
 
         User user = userController.getUserByUsername("silvmandrila");
 
-        //   multipleChoiceSet.setUser(user);
+        multipleChoiceSet.setUser(user);
 
 
         createdMultipleChoiceSet = multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);

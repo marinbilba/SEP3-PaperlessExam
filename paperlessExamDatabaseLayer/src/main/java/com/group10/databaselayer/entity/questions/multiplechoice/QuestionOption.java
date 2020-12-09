@@ -20,7 +20,7 @@ public class QuestionOption {
     private String answer;
 
     @Fetch(FetchMode.SELECT)
-    @ManyToOne()
+    @ManyToOne(cascade=CascadeType.ALL)
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**

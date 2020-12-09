@@ -1,13 +1,9 @@
 package com.group10.databaselayer.entity.questions.written;
 
-import com.group10.databaselayer.annotations.hidden.Hidden;
-import com.group10.databaselayer.entity.questions.Question;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
@@ -15,9 +11,17 @@ import java.util.Objects;
  * The type Written question.
  */
 @Entity
-@IdClass(Question.class)
-public class WrittenQuestion extends Question {
 
+public class WrittenQuestion {
+    @GeneratedValue
+    @Id
+    private Long id;
+
+    private int questionNumber;
+
+    private String question;
+
+    private double score;
     @ManyToOne()
 //    @JoinColumns({
 //            @JoinColumn(name = "multiple_choice_set_id"),
@@ -33,17 +37,10 @@ public class WrittenQuestion extends Question {
 
     }
 
-
-    /**
-     * Instantiates a new Written question.
-     *
-     * @param question       the question
-     * @param score          the score
-     * @param questionNumber the question number
-     * @param writtenSet     the written set
-     */
-    public WrittenQuestion(String question, double score, int questionNumber, WrittenSet writtenSet) {
-        super(question, score, questionNumber);
+    public WrittenQuestion(int questionNumber, String question, double score, WrittenSet writtenSet) {
+        this.questionNumber = questionNumber;
+        this.question = question;
+        this.score = score;
         this.writtenSet = writtenSet;
     }
 
@@ -65,49 +62,52 @@ public class WrittenQuestion extends Question {
         this.writtenSet = writtenSet;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
+    }
+
     public String getQuestion() {
-        return super.getQuestion();
+        return question;
     }
 
-    /**
-     * Get question score double.
-     *
-     * @return the double
-     */
-    public double getQuestionScore() {
-        return super.getScore();
-    }
-
-    /**
-     * Sets question.
-     *
-     * @param question the question
-     */
     public void setQuestion(String question) {
-        super.setQuestion(question);
+        this.question = question;
     }
 
-    /**
-     * Sets score.
-     *
-     * @param score the question
-     */
+    public double getScore() {
+        return score;
+    }
+
     public void setScore(double score) {
-        super.setScore(score);
+        this.score = score;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof WrittenQuestion)) return false;
-        if (!super.equals(o)) return false;
         WrittenQuestion that = (WrittenQuestion) o;
-        return writtenSet.equals(that.writtenSet);
+        return questionNumber == that.questionNumber &&
+                Double.compare(that.score, score) == 0 &&
+                id.equals(that.id) &&
+                question.equals(that.question) &&
+                writtenSet.equals(that.writtenSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), writtenSet);
+        return Objects.hash(id, questionNumber, question, score, writtenSet);
     }
 }
