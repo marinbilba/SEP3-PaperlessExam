@@ -1,9 +1,8 @@
 package com.group10.databaselayer.controller.questions;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
@@ -27,7 +26,7 @@ public class WrittenQuestionsController {
 
     private IWrittenSetRepository writtenSetRepository;
     private IWrittenQuestionRepository writtenQuestionRepository;
-    private WrittenMultipleChoiceQuestionsSharedMethods writtenMultipleChoiceQuestionsSharedMethods;
+
 
     /**
      * Instantiates a new Written questions controller using Spring Boot dependency injection.
@@ -36,16 +35,16 @@ public class WrittenQuestionsController {
      * @param writtenQuestionRepository the written question repository
      */
     @Autowired
-    public WrittenQuestionsController(IWrittenSetRepository writtenSetRepository, IWrittenQuestionRepository writtenQuestionRepository, WrittenMultipleChoiceQuestionsSharedMethods
-            writtenMultipleChoiceQuestionsSharedMethods) {
+    public WrittenQuestionsController(IWrittenSetRepository writtenSetRepository, IWrittenQuestionRepository writtenQuestionRepository
+            ) {
         this.writtenSetRepository = writtenSetRepository;
         this.writtenQuestionRepository = writtenQuestionRepository;
-        this.writtenMultipleChoiceQuestionsSharedMethods = writtenMultipleChoiceQuestionsSharedMethods;
+
     }
 
     /**
      * Finds if the given written set is defined in the database. The written set must contain both title
-     * and topic of the questions set{@link QuestionsSet}.
+     * and topic of the questions set{@link }.
      *
      * @param writtenSet written set that should be queried
      * @return boolean value true if the set was found and false if it was not.
@@ -53,13 +52,29 @@ public class WrittenQuestionsController {
      */
     public boolean existsTitleAndTopicWrittenSet(WrittenSet writtenSet) throws TitleOrTopicAreNull {
         Optional<WrittenSet> queriedWrittenSet = Optional.empty();
-        if (writtenMultipleChoiceQuestionsSharedMethods.checkTitleTopicNotNull(writtenSet)) {
-            queriedWrittenSet = writtenSetRepository.findById(writtenSet);
+        if (checkTitleTopicNotNull(writtenSet)) {
+            queriedWrittenSet = writtenSetRepository.findById(writtenSet.getId());
         }
         return queriedWrittenSet.isPresent();
     }
 
+    /**
+     * Check if title and topic are not null.
+     *
+     * @param questionsSet the questions set
+     * @return the boolean true if the check title and topic are not null
+     * @throws TitleOrTopicAreNull the title or topic are null
+     */
+    public boolean checkTitleTopicNotNull(WrittenSet questionsSet) throws TitleOrTopicAreNull {
+        String titleToQuery = questionsSet.getTitle();
+        String topicToQuery = questionsSet.getTopic();
+        if (!titleToQuery.isEmpty() && !topicToQuery.isEmpty()) {
+            return true;
+        } else {
+            throw new TitleOrTopicAreNull("Title or topic are not set");
+        }
 
+    }
     /**
      * Create/update written set written set.
      *
@@ -86,7 +101,7 @@ public class WrittenQuestionsController {
     public WrittenQuestion addQuestionToExistingWrittenSet(WrittenSet questionsSet, WrittenQuestion writtenQuestion) throws QuestionSetNotFound, TitleOrTopicAreNull, QuestionAlreadyExists {
 // Check if the passed written set exists
         boolean questionNotFound = false;
-        Optional<WrittenSet> tempQueriedWrittenSet = writtenSetRepository.findById(questionsSet);
+        Optional<WrittenSet> tempQueriedWrittenSet = writtenSetRepository.findById(questionsSet.getId());
         if (tempQueriedWrittenSet.isPresent()) {
             WrittenSet queriedWrittenSet = tempQueriedWrittenSet.get();
 // Check if question already exists
@@ -108,7 +123,7 @@ public class WrittenQuestionsController {
 
     /**
      * Find questions in written set. The written set must contain both title
-     * and topic of the questions set{@link QuestionsSet}.
+     * and topic of the questions set
      *
      * @param writtenSet the written set that should be queried
      * @return the list of written questions retrieved from the written set
@@ -154,7 +169,7 @@ public class WrittenQuestionsController {
             WrittenQuestion foundWrittenQuestion = null;
             for (var question : fetchedWrittenQuestionsList) {
                 if (question.getQuestion().equals(writtenQuestion.getQuestion())
-                        && question.getQuestionScore() == writtenQuestion.getQuestionScore()) {
+                        && question.getScore() == writtenQuestion.getScore()) {
                     foundWrittenQuestion = writtenQuestion;
                 }
             }
@@ -165,4 +180,20 @@ public class WrittenQuestionsController {
         throw new QuestionSetNotFound("Written set with given title and topic was not found");
     }
 
+    public WrittenSet getWrittenSet(WrittenSet writtenSet) {
+        return writtenSetRepository.findByTitleAndTopicAndUserId(writtenSet.getTitle(), writtenSet.getTopic(), writtenSet.getUser().getId());
+
+    }
+
+    public WrittenQuestion createUpdateWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
+        return writtenQuestionRepository.save(writtenSetQuestion);
+    }
+
+    public WrittenQuestion getWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
+        WrittenSet writtenSet=writtenSetQuestion.getWrittenSet();
+        return writtenQuestionRepository.findByWrittenSetTopicAndWrittenSetTitleAndWrittenSetIdAndQuestionNumberAndQuestionAndScore(writtenSet.getTopic(),writtenSet.getTitle(),writtenSet.getId(),writtenSetQuestion.getQuestionNumber(),writtenSetQuestion.getQuestion(),writtenSetQuestion.getScore());
+    }
+    public List<WrittenSet> getAllWrittenSet(User userDeserialized) {
+        return writtenSetRepository.findByUserId(userDeserialized.getId());
+    }
 }

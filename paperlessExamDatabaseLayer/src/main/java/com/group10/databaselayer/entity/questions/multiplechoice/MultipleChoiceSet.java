@@ -1,16 +1,12 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.annotations.hidden.Hidden;
+
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * MultipleChoiceSet entity. Class provides the functionality to add/remove
@@ -22,9 +18,14 @@ import java.util.Objects;
  * @version v1.0
  */
 @Entity
-@IdClass(QuestionsSet.class)
 
-public class MultipleChoiceSet extends QuestionsSet {
+
+public class MultipleChoiceSet {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String title;
+    private String topic;
 
     @UpdateTimestamp
     private Date updatedTimestamp;
@@ -33,32 +34,27 @@ public class MultipleChoiceSet extends QuestionsSet {
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
+    @ManyToMany(mappedBy = "multipleChoiceSets")
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
+
     /**
      * Instantiates a new Multiple choice set.
      */
     public MultipleChoiceSet() {
     }
 
-    /**
-     * Instantiates a new Multiple choice set.
-     *
-     * @param title the title
-     * @param topic the topic
-     */
-    public MultipleChoiceSet(String title, String topic) {
-        super(title, topic);
+    public MultipleChoiceSet(String title, String topic, User user) {
+        this.title = title;
+        this.topic = topic;
+        this.user = user;
     }
 
-    /**
-     * Instantiates a new Multiple choice set.
-     *
-     * @param title the title
-     * @param topic the topic
-     * @param user  the user
-     */
-    public MultipleChoiceSet(String title, String topic, User user) {
-        super(title, topic);
-        this.user = user;
+    public List<ExaminationEvent> getExaminationEvents() {
+        return examinationEvents;
+    }
+
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+        this.examinationEvents = examinationEvents;
     }
 
     /**
@@ -80,16 +76,13 @@ public class MultipleChoiceSet extends QuestionsSet {
     }
 
 
-
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    public String getTopic() {
-        return super.getTopic();
-    }
-
-
+//    public List<ExaminationEvent> getExaminationEvents() {
+//        return examinationEvents;
+//    }
+//
+//    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+//        this.examinationEvents = examinationEvents;
+//    }
 
     /**
      * Gets updated timestamp.
@@ -108,30 +101,46 @@ public class MultipleChoiceSet extends QuestionsSet {
     public void setUpdatedTimestamp(Date updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
     }
-    public Long getId(){
-        return super.getId();
+
+    public Long getId() {
+        return id;
     }
-    public void setId(Long id){
-         super.setId(id);
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) return false;
-        else {
-            MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return user.equals(other.user);
-        }
+        if (this == o) return true;
+        if (!(o instanceof MultipleChoiceSet)) return false;
+        MultipleChoiceSet that = (MultipleChoiceSet) o;
+        return id.equals(that.id) &&
+                title.equals(that.title) &&
+                topic.equals(that.topic) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                user.equals(that.user) &&
+                examinationEvents.equals(that.examinationEvents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode());
+        return Objects.hash(id, title, topic, updatedTimestamp, user, examinationEvents);
     }
 }

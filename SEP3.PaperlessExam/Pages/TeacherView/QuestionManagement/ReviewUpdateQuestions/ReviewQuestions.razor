@@ -1,0 +1,241 @@
+﻿@page "/reviewQuestions"
+@using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Model.Questions
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using SEP3.PaperlessExam.Model.Questions.written
+@using SEP3.PaperlessExam.Pages.SharedComponents.ConfirmComponent
+@using System.Runtime.CompilerServices
+@inject NavigationManager NavigationManager
+@inject IQuestionSetsService QuestionSetsService
+
+<link rel="stylesheet" href="css/Shared/sharedStyle.css">
+<h3>ReviewQuestion</h3>
+<div class="row">
+    <div class="col-md-6">
+
+        <select class="form-control" @bind="_questionType" name="need" required="required" data-error="Please filter.">
+            <option value="" selected disabled>Select Type Of Exam</option>
+            <option>Written</option>
+            <option >Multiple choice</option>
+        </select>
+    </div>
+
+
+    <div class="col-md-2">
+        @if (_loadingShow)
+        {
+            <button type="button" class="btn btn-success btn-md btn-block"@onclick="@(FindQuestionType)">
+                Show
+                <div id="spinner">
+                    <Chase Color="#4a6ac8" Size="20px"/>
+                </div>
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-success btn-lg btn-block"@onclick="@(FindQuestionType)">
+                Show
+            </button>
+        }
+    </div>
+
+
+</div>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ExamTitle</th>
+        <th>Topic</th>
+        <th>Creation date</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (_writtenSets != null)
+    {
+        @foreach (var item in _writtenSets)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Topic</td>
+                <td>@item.UpdatedTimestamp</td>
+                <td>
+                    <button @onclick="ToEditWrittenQuestion">
+                        <i class="oi oi-pencil" style="color:green"/>
+                    </button>
+                </td>
+                <td>
+                    <button @onclick="(() => DeleteWritten(item))">
+                        <i class="oi oi-trash" style="color:red"/>
+                    </button>
+                </td>
+            </tr>
+        }
+    }
+
+    else if (_multipleChoiceSets != null)
+    {
+        @foreach (var item in _multipleChoiceSets)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Topic</td>
+                <td>
+                    <button @onclick="ToEditMultipleChoiceQuestion">
+                        <i class="oi oi-pencil" style="color:green"/>
+                    </button>
+                    <button @onclick="(() => DeleteMultipleChoice(item))">
+                        <i class="oi oi-trash" style="color:red"/>
+                    </button>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+@if (_questionType == "Written")
+{
+    <Confirm ConfirmationChanged="ConfirmDeleteWrittenQuestion" @ref="DeleteConfirmation"
+             ConfirmationTitle="Delete Confirmation" ConfirmationMessage=@($"Are you sure you want to delete set: {_writtenSetToDelete} ?")>
+
+    </Confirm>
+}
+else if(_questionType == "Multiple choice"){
+    <Confirm ConfirmationChanged="ConfirmDeleteMultipleChoiceQuestion" @ref="DeleteConfirmation"
+             ConfirmationTitle="Delete Confirmation" ConfirmationMessage=@($"Are you sure you want to delete set: {_multipleChoiceSetToDelete} ?")>
+
+    </Confirm>
+}
+@code {
+    private IList<MultipleChoiceSet> _multipleChoiceSets;
+    private IList<WrittenSet> _writtenSets;
+    private string _questionType;
+    private WrittenSet _writtenSetToDelete;
+    private MultipleChoiceSet _multipleChoiceSetToDelete;
+
+
+    private bool _loadingShow;
+    private string _errorMessage;
+
+    private IList<QuestionsSet> _questionsSets;
+
+    protected ConfirmBase DeleteConfirmation { get; set; }
+    // protected ConfirmBase DeleteConfirmation2 { get; set; }
+
+    private void ToEditWrittenQuestion()
+    {
+        NavigationManager.NavigateTo($"/UpdateWrittenQuestion/{_writtenSets}");
+    }
+
+    private void ToEditMultipleChoiceQuestion()
+    {
+        NavigationManager.NavigateTo($"/UpdateMultipleChoiceQuestion/{_multipleChoiceSets}");
+    }
+
+    private async Task DeleteWritten(WrittenSet set)
+    {
+        _writtenSetToDelete = set;
+        DeleteConfirmation.Show();
+        _errorMessage = "";
+    }
+
+    private async Task ConfirmDeleteWrittenQuestion(bool deleteConfirm)
+    {
+        if (deleteConfirm)
+        {
+            _errorMessage = "";
+            try
+            {
+                await QuestionSetsService.DeleteWritten(_writtenSetToDelete);
+                _writtenSets.Remove(_writtenSetToDelete);
+            }
+            catch (Exception e)
+            {
+                _errorMessage = e.Message;
+                Console.WriteLine(e);
+            }
+        }
+    }
+
+    private async Task DeleteMultipleChoice(MultipleChoiceSet set)
+    {
+        _multipleChoiceSetToDelete = set;
+        DeleteConfirmation.Show();
+        _errorMessage = "";
+    }
+
+    private async Task ConfirmDeleteMultipleChoiceQuestion(bool deleteConifrm)
+    {
+        if (deleteConifrm)
+        {
+            _errorMessage = "";
+            try
+            {
+                await QuestionSetsService.DeleteMultipleChoice(_multipleChoiceSetToDelete);
+                _multipleChoiceSets.Remove(_multipleChoiceSetToDelete);
+            }
+            catch (Exception e)
+            {
+                _errorMessage = e.Message;
+                Console.WriteLine(e);
+            }
+        }
+    }
+
+    private async Task FindQuestionType()
+    {
+        _loadingShow = true;
+        _writtenSets = null;
+        _multipleChoiceSets = null;
+        _errorMessage = "";
+        if (String.IsNullOrEmpty(_questionType))
+        {
+            _errorMessage = "You must select an option";
+            _loadingShow = false;
+        }
+        switch (_questionType)
+        {
+            case "Written":
+                try
+                {
+                    _writtenSets = await QuestionSetsService.FindWrittenQuestion(_questionType);
+                    if (_writtenSets == null)
+                    {
+                        _errorMessage = "Nothing was found";
+                    }
+                    _loadingShow = false;
+                }
+                catch (Exception e)
+                {
+                    _loadingShow = false;
+                    Console.WriteLine(e);
+                    _errorMessage = e.Message;
+                }
+                break;
+            case "Multiple choice":
+                try
+                {
+                    _multipleChoiceSets = await QuestionSetsService.FindMultipleChoiceQuestion(_questionType);
+                    _loadingShow = false;
+                }
+                catch (Exception e)
+                {
+                    _loadingShow = false;
+                    Console.WriteLine(e);
+                    _errorMessage = e.Message;
+                }
+                break;
+        }
+    }
+
+}
+
+
+
+}

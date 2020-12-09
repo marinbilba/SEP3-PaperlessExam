@@ -7,13 +7,7 @@ import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsCon
 import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
 
 import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
-import com.group10.databaselayer.entity.questions.Question;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
-import com.group10.databaselayer.entity.user.User;
-import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
-import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
+import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,13 +34,19 @@ public class Server {
 
     @Autowired
     private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
-
-    @Autowired
-    private IUserRepository userRepository;
+@Autowired
+private ExaminationEventDAO examinationEventDAO;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
     private static final HashSet<Object> controllersSet = new HashSet<>();
+    // No need
+    @Autowired
+    private IUserRepository userRepository;
+
+    @Autowired
+    IExaminationEventRepository examinationEvent;
+
     private GsonBuilder gson;
 
     @PostConstruct
@@ -54,6 +54,8 @@ public class Server {
         controllersSet.add(roleController);
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
+        controllersSet.add(writtenQuestionsController);
+        controllersSet.add(examinationEventDAO);
 
         gson = new GsonBuilder();
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
@@ -61,8 +63,15 @@ public class Server {
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
         Gson gson2 = gson.setPrettyPrinting().create();
 
-
 //        User user = userRepository.getUserByUsername("silvmandrila");
+//
+//        List<WrittenSet> writtenSet = writtenQuestionsController.getAllWrittenSet(user);
+//        Set<WrittenSet> writtenSetSet = new HashSet<>();
+//        writtenSetSet.addAll(writtenSet);
+//        ExaminationEvent examinationEvent2 = new ExaminationEvent("Tuls", writtenSetSet);
+//        examinationEvent.save(examinationEvent2);
+//
+
 //        MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet("Java2", "Capitals");
 //        multipleChoiceSet.setUser(user);
 //        System.out.println(gson2.toJson(multipleChoiceSet));

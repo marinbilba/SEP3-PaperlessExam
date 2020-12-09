@@ -3,8 +3,10 @@ package com.group10.paperlessexamwebservice.model.questions.written;
 
 import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
 import com.group10.paperlessexamwebservice.model.user.User;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +18,8 @@ import java.util.Objects;
  * @version v1.0
  */
 public class WrittenSet extends QuestionsSet {
-    private List<WrittenQuestion> writtenQuestions = new ArrayList<WrittenQuestion>();
+
+    private Date updatedTimestamp;
     private User user;
 
     /**
@@ -37,24 +40,12 @@ public class WrittenSet extends QuestionsSet {
         this.user=user;
     }
 
-    /**
-     * Add question.
-     *
-     * @param writtenQuestion the written question
-     */
-    public void addQuestion(WrittenQuestion writtenQuestion) {
-        this.writtenQuestions.add(writtenQuestion);
-        writtenQuestion.setWrittenSet(this);
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
     }
 
-    /**
-     * Remove question.
-     *
-     * @param writtenQuestion the written question
-     */
-    public void removeQuestion(WrittenQuestion writtenQuestion) {
-        this.writtenQuestions.remove(writtenQuestion);
-        writtenQuestion.setWrittenSet(null);
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
     }
 
     public String getTitle() {
@@ -65,15 +56,13 @@ public class WrittenSet extends QuestionsSet {
     }
 
 
-    /**
-     * Gets written questions.
-     *
-     * @return the written questions
-     */
-    public List<WrittenQuestion> getWrittenQuestions() {
-        return writtenQuestions;
+    public User getUser() {
+        return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -86,12 +75,12 @@ public class WrittenSet extends QuestionsSet {
         if (!super.equals(o)) return false;
         else {
             WrittenSet other = (WrittenSet) o;
-            return writtenQuestions.equals(other.writtenQuestions)&&user.equals(other.user);
+            return user.equals(other.user);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), writtenQuestions);
+        return Objects.hash(super.hashCode());
     }
 }

@@ -21,7 +21,10 @@ import java.util.Objects;
 public class MultipleChoiceSet extends QuestionsSet {
 
     private User user;
-private Date updatedTimestamp;
+    private Date updatedTimestamp;
+    @Hidden
+    private ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
+
     /**
      * Instantiates a new Multiple choice set.
      */
@@ -37,7 +40,7 @@ private Date updatedTimestamp;
      */
     public MultipleChoiceSet(String title, String topic, User user) {
         super(title, topic);
-        this.user=user;
+        this.user = user;
     }
 
     /**
@@ -68,6 +71,14 @@ private Date updatedTimestamp;
         this.user = user;
     }
 
+    public ArrayList<MultipleChoiceQuestion> getMultipleChoiceQuestionList() {
+        return multipleChoiceQuestionList;
+    }
+
+    public void setMultipleChoiceQuestionList(ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList) {
+        this.multipleChoiceQuestionList = multipleChoiceQuestionList;
+    }
+
     private boolean sameAsFormer(User newUser) {
         return Objects.equals(user, newUser);
     }
@@ -83,6 +94,7 @@ private Date updatedTimestamp;
     public String getTitle() {
         return super.getTitle();
     }
+
     public String getTopic() {
         return super.getTopic();
     }
@@ -90,17 +102,13 @@ private Date updatedTimestamp;
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof MultipleChoiceSet)) return false;
         if (!super.equals(o)) return false;
-        else {
-            MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return user.equals(other.user);
-        }
+        MultipleChoiceSet that = (MultipleChoiceSet) o;
+        return user.equals(that.user) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                multipleChoiceQuestionList.equals(that.multipleChoiceQuestionList);
     }
 
     @Override

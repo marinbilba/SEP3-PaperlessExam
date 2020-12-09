@@ -3,14 +3,18 @@ package com.group10.paperlessexamwebservice.service.questionsets;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenQuestion;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
+import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.MultipleChoiceQuestionOptionError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
+
+import java.util.List;
 
 public interface IQuestionSetsService {
     MultipleChoiceQuestion addMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, UnexpectedError, QuestionSetAlreadyExists;
@@ -18,8 +22,22 @@ public interface IQuestionSetsService {
     MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, NullQuestionSet, QuestionSetAlreadyExists;
 
     MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, QuestionSetAlreadyExists, EmptyQuestionSetTitleOrTopic, UnexpectedError;
-    MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion;
 
-    QuestionOption addMultipleChoiceQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, ServiceNotAvailable, NullQuestionSetQuestion, NegativeNumberException, UnexpectedError;
+    MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion, EmptyQuestionSetTitleOrTopic, UnexpectedError, QuestionSetAlreadyExists;
 
+    QuestionOption addMultipleChoiceQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, ServiceNotAvailable, NullQuestionSetQuestion, NegativeNumberException, UnexpectedError, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists;
+
+    QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, UnexpectedError, NullQuestionSetQuestion, NegativeNumberException, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable;
+
+    WrittenSet createWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UserNotFound, UnexpectedError, QuestionSetAlreadyExists;
+
+    WrittenSet getWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UnexpectedError;
+
+    WrittenQuestion addWrittenQuestion(WrittenQuestion writtenQuestion) throws EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, ServiceNotAvailable, QuestionSetAlreadyExists;
+
+    WrittenQuestion getWrittenQuestion(WrittenQuestion writtenQuestion) throws EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, ServiceNotAvailable, NullQuestionSetQuestion;
+
+    List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(String username) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet, ServiceNotAvailable, UnexpectedError, UsersMultipleChoiceSetNotFound, UserNotFound;
+
+    List<WrittenSet> getUsersAllWrittenSet(String username) throws ServiceNotAvailable, UsersWrittenSetNotFound, UserNotFound;
 }

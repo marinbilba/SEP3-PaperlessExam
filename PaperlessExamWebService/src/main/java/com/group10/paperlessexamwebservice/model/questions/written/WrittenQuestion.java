@@ -12,7 +12,6 @@ import java.util.Objects;
 /**
  * Written question class.
  */
-
 public class WrittenQuestion extends Question {
 
     private WrittenSet writtenSet;
@@ -25,17 +24,19 @@ public class WrittenQuestion extends Question {
 
     }
 
+
     /**
      * Instantiates a new Written question.
      *
-     * @param question the question
-     * @param score    the score
+     * @param question       the question
+     * @param score          the score
+     * @param questionNumber the question number
+     * @param writtenSet     the written set
      */
-    public WrittenQuestion(String question, double score,int questionNumber) {
-        super(question, score,questionNumber);
-
-}
-
+    public WrittenQuestion(String question, double score, int questionNumber, WrittenSet writtenSet) {
+        super(question, score, questionNumber);
+        this.writtenSet = writtenSet;
+    }
 
     /**
      * Gets written set.

@@ -5,18 +5,20 @@ import com.group10.paperlessexamwebservice.databaserequests.requests.user.IUserR
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenQuestion;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.*;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.MultipleChoiceQuestionOptionError;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,10 +31,10 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     private IQuestionSetsRequests questionSetsRequests;
 
     @Autowired
-    private IUserRequests iUserRequests;
+    private IUserRequests userRequests;
 
 
-    private boolean validateMultipleChoiceSetFields(MultipleChoiceSet multipleChoiceSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable {
+    private boolean validateMultipleChoiceSetFields(MultipleChoiceSet multipleChoiceSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic {
         // Validate multiple choice set on null. Check if title and  topic are not empty
         if (Objects.requireNonNull(multipleChoiceSet).getTopic() == null || Objects.requireNonNull(multipleChoiceSet).getTitle() == null || Objects.requireNonNull(multipleChoiceSet).getUser() == null) {
             throw new NullQuestionSet("Multiple choice set or its fields are null");
@@ -86,10 +88,119 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
+    public WrittenSet createWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UserNotFound, UnexpectedError, QuestionSetAlreadyExists {
+        WrittenSet createdWrittenSet = null;
+        validateWrittenSetFields(writtenSet);
+        User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
+        if (fetchedUser == null) {
+            throw new UserNotFound("User that is trying to create the question set is not authorized");
+        }
+        writtenSet.setUser(fetchedUser);
+        try {
+            getWrittenSet(writtenSet);
+            throw new QuestionSetAlreadyExists("Written Set" + "with title: " + writtenSet.getTitle() +
+                    "and topic: " + writtenSet.getTopic() + " ALREADY EXISTS");
+        } catch (NullQuestionSet e) {
+            createdWrittenSet = questionSetsRequests.createWrittenSet(writtenSet);
+            if (createdWrittenSet == null) {
+                throw new UnexpectedError("Something went wrong");
+            }
+        }
+
+
+        return createdWrittenSet;
+    }
+
+    @Override
+    public WrittenSet getWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UnexpectedError {
+        if (validateWrittenSetFields(writtenSet)) {
+            User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
+            writtenSet.setUser(fetchedUser);
+            WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSet(writtenSet);
+            if (fetchedWrittenSet == null) {
+                throw new NullQuestionSet("Multiple Choice Set" + "with title: " + writtenSet.getTitle() +
+                        "and topic: " + writtenSet.getTopic() + " WAS NOT FOUND");
+            } else
+                return fetchedWrittenSet;
+        } else
+            throw new UnexpectedError("Something went wrong");
+    }
+
+    @Override
+    public WrittenQuestion addWrittenQuestion(WrittenQuestion writtenQuestion) throws EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, ServiceNotAvailable, QuestionSetAlreadyExists {
+        WrittenQuestion createdWrittenQuestion = null;
+        validateWrittenQuestionFields(writtenQuestion);
+        WrittenSet fetchedWrittenSet = getWrittenSet(writtenQuestion.getWrittenSet());
+        writtenQuestion.setWrittenSet(fetchedWrittenSet);
+
+        try {
+            getWrittenQuestion(writtenQuestion);
+            throw new QuestionSetAlreadyExists("Written Set Question" + " with question: " + writtenQuestion.getQuestion() +
+                    "and question score: " + writtenQuestion.getQuestionScore() + " WAS FOUND");
+
+        } catch (NullQuestionSetQuestion e) {
+            createdWrittenQuestion = questionSetsRequests.createWrittenQuestion(writtenQuestion);
+            if (createdWrittenQuestion == null) {
+                throw new UnexpectedError("Something went wrong");
+            }
+        }
+        return createdWrittenQuestion;
+    }
+
+    @Override
+    public WrittenQuestion getWrittenQuestion(WrittenQuestion writtenQuestion) throws EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, ServiceNotAvailable, NullQuestionSetQuestion {
+        validateWrittenQuestionFields(writtenQuestion);
+        WrittenSet fetchedWrittenSet = getWrittenSet(writtenQuestion.getWrittenSet());
+        writtenQuestion.setWrittenSet(fetchedWrittenSet);
+        WrittenQuestion fetchedWrittenQuestion = questionSetsRequests.getWrittenQuestion(writtenQuestion);
+        if (fetchedWrittenQuestion == null) {
+            throw new NullQuestionSetQuestion("Written Set Question" + "with question: " + writtenQuestion.getQuestion() +
+                    "and question score: " + writtenQuestion.getQuestionScore() + " WAS NOT FOUND");
+        } else
+            return fetchedWrittenQuestion;
+    }
+
+    @Override
+
+    public List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(String username) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet, ServiceNotAvailable, UnexpectedError, UsersMultipleChoiceSetNotFound, UserNotFound {
+        User fetchedUser = userRequests.getUserByUsername(username);
+        if(fetchedUser==null){
+            throw new UserNotFound("User with give username was not found");
+        }
+        List<MultipleChoiceSet> fetchedMultipleChoiceQuestionList = questionSetsRequests.getUsersAllMultipleChoiceSet(fetchedUser);
+        if (fetchedMultipleChoiceQuestionList == null) {
+            throw new UsersMultipleChoiceSetNotFound("User does not have any Multiple Choice Sets created");
+        }
+        return fetchedMultipleChoiceQuestionList;
+    }
+
+    @Override
+    public List<WrittenSet> getUsersAllWrittenSet(String username) throws ServiceNotAvailable, UsersWrittenSetNotFound, UserNotFound {
+        User fetchedUser = userRequests.getUserByUsername(username);
+        if(fetchedUser==null){
+            throw new UserNotFound("User with give username was not found");
+        }
+        List<WrittenSet> fetchedWrittenSetsList = questionSetsRequests.getUsersAllWrittenSet(fetchedUser);
+        if (fetchedWrittenSetsList == null) {
+            throw new UsersWrittenSetNotFound("User does not have any Written Sets created");
+        }
+        return fetchedWrittenSetsList;
+    }
+
+    private boolean validateWrittenQuestionFields(WrittenQuestion writtenQuestion) throws NullQuestionSet, EmptyMultipleChoiceQuestion {
+        if (Objects.requireNonNull(writtenQuestion).getQuestion() == null || Objects.requireNonNull(writtenQuestion).getWrittenSet() == null) {
+            throw new NullQuestionSet("One or more multiple choice set questions fields are null");
+        } else if (writtenQuestion.getQuestion().isEmpty()) {
+            throw new EmptyMultipleChoiceQuestion("Question is empty");
+        }
+        return true;
+    }
+
+    @Override
     public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet {
         MultipleChoiceSet createdMultipleChoiceSet;
         validateMultipleChoiceSetFields(multipleChoiceSet);
-        User fetchedUser = iUserRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
+        User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
         if (fetchedUser == null) {
             throw new UserNotFound("User that is trying to create the question set is not authorized");
         }
@@ -110,9 +221,9 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, QuestionSetAlreadyExists, EmptyQuestionSetTitleOrTopic, UnexpectedError {
+    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         if (validateMultipleChoiceSetFields(multipleChoiceSet)) {
-            User fetchedUser = iUserRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
+            User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
             multipleChoiceSet.setUser(fetchedUser);
             MultipleChoiceSet fetchedMultipleChoice = questionSetsRequests.getMultipleChoiceSet(multipleChoiceSet);
             if (fetchedMultipleChoice == null) {
@@ -125,9 +236,9 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion {
+    public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         validateMultipleChoiceQuestionSetFields(multipleChoiceSetQuestion);
-        MultipleChoiceSet fetchedMultipleChoiceSet = questionSetsRequests.getMultipleChoiceSet(multipleChoiceSetQuestion.getMultipleChoiceSet());
+        MultipleChoiceSet fetchedMultipleChoiceSet = getMultipleChoiceSet(multipleChoiceSetQuestion.getMultipleChoiceSet());
         multipleChoiceSetQuestion.setMultipleChoiceSet(fetchedMultipleChoiceSet);
 
         MultipleChoiceQuestion fetchedMultipleChoiceQuestion = questionSetsRequests.getMultipleChoiceSetQuestion(multipleChoiceSetQuestion);
@@ -140,7 +251,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public QuestionOption addMultipleChoiceQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, ServiceNotAvailable, NullQuestionSetQuestion, NegativeNumberException, UnexpectedError {
+    public QuestionOption addMultipleChoiceQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, NegativeNumberException, UnexpectedError, NullQuestionSetQuestion, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists {
         QuestionOption createdQuestionOption;
         validateMultipleChoiceQuestionOptionFields(multipleChoiceQuestionOption);
 
@@ -149,17 +260,43 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         MultipleChoiceQuestion fetchedMultipleChoiceQuestion = getMultipleChoiceSetQuestion(multipleChoiceQuestionOption.getMultipleChoiceQuestion());
         multipleChoiceQuestionOption.setMultipleChoiceQuestion(fetchedMultipleChoiceQuestion);
 
-
-//            getMultipleChoiceSetQuestion(multipleChoiceQuestion);
-//            throw new QuestionSetAlreadyExists("Multiple Choice Set Question" + "with question: " + multipleChoiceQuestion.getQuestion() +
-//                    " and score: " + multipleChoiceQuestion.getQuestionScore() + " ALREADY EXISTS");
-
-        createdQuestionOption = questionSetsRequests.createMultipleChoiceSetQuestionOption(multipleChoiceQuestionOption);
+        try {
+            getMultipleChoiceSetQuestionOption(multipleChoiceQuestionOption);
+            throw new QuestionSetAlreadyExists("Multiple Choice Set Question Option" + " with answer: " + multipleChoiceQuestionOption.getAnswer() +
+                    "and question boolean value: " + multipleChoiceQuestionOption.getCorrectAnswer() + " WAS FOUND");
+        } catch (NullQuestionSetQuestion e) {
+            createdQuestionOption = questionSetsRequests.createMultipleChoiceSetQuestionOption(multipleChoiceQuestionOption);
             if (createdQuestionOption == null) {
                 throw new UnexpectedError("Something went wrong");
             }
 
+        }
         return createdQuestionOption;
+    }
+
+    @Override
+    public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, UnexpectedError, NullQuestionSetQuestion, NegativeNumberException, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable {
+        validateMultipleChoiceQuestionOptionFields(multipleChoiceQuestionOption);
+        MultipleChoiceQuestion fetchedMultipleChoiceQuestion = getMultipleChoiceSetQuestion(multipleChoiceQuestionOption.getMultipleChoiceQuestion());
+        multipleChoiceQuestionOption.setMultipleChoiceQuestion(fetchedMultipleChoiceQuestion);
+
+        QuestionOption fetchedMultipleChoiceQuestionOption = questionSetsRequests.getMultipleChoiceSetQuestionOption(multipleChoiceQuestionOption);
+        if (fetchedMultipleChoiceQuestionOption == null) {
+            throw new NullQuestionSetQuestion("Multiple Choice Set Question Option" + " with answer: " + multipleChoiceQuestionOption.getAnswer() +
+                    "and question boolean value: " + multipleChoiceQuestionOption.getCorrectAnswer() + " WAS NOT FOUND");
+        } else
+            return fetchedMultipleChoiceQuestionOption;
+    }
+
+
+    private boolean validateWrittenSetFields(WrittenSet writtenSet) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet {
+        // Validate multiple choice set on null. Check if title and  topic are not empty
+        if (Objects.requireNonNull(writtenSet).getTopic() == null || Objects.requireNonNull(writtenSet).getTitle() == null || Objects.requireNonNull(writtenSet).getUser() == null) {
+            throw new NullQuestionSet("Written set or its fields are null");
+        } else if (writtenSet.getTitle().isEmpty() || writtenSet.getTopic().isEmpty()) {
+            throw new EmptyQuestionSetTitleOrTopic("Title or topic are empty");
+        }
+        return true;
     }
 
     private boolean validateMultipleChoiceQuestionOptionFields(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet {
@@ -171,5 +308,6 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         }
         return true;
     }
+
 }
 

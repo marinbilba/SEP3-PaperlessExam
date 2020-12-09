@@ -1,13 +1,13 @@
 package com.group10.databaselayer.entity.user;
 
 import com.group10.databaselayer.annotations.hidden.Hidden;
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Simple JavaBean domain object that represents a User
@@ -28,24 +28,27 @@ public class User {
     private String firstName;
     @Column(name = "lastname")
     private String lastName;
-    @Column(name = "username",unique = true)
+    @Column(name = "username", unique = true)
     private String username;
-    @Column(name = "email",unique = true)
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "password")
     private String password;
     @Transient
     private String confirmPassword;
-   @OneToOne
+    @OneToOne
     @NotNull
-    @JoinColumn(name="fk_role_id")
+    @JoinColumn(name = "fk_role_id")
     private Role role;
+
+    @ManyToMany(mappedBy = "usersAssigned")
+    transient private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
 
     /**
      * Instantiates a new User.
      */
-    public User(){
+    public User() {
 
     }
 
@@ -80,6 +83,21 @@ public class User {
     }
 
 
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public List<ExaminationEvent> getExaminationEvents() {
+        return examinationEvents;
+    }
+
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+        this.examinationEvents = examinationEvents;
+    }
 
     /**
      * Gets first name.
@@ -193,6 +211,26 @@ public class User {
         this.role = role;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return id.equals(user.id) &&
+                firstName.equals(user.firstName) &&
+                lastName.equals(user.lastName) &&
+                username.equals(user.username) &&
+                email.equals(user.email) &&
+                password.equals(user.password) &&
+                confirmPassword.equals(user.confirmPassword) &&
+                role.equals(user.role) &&
+                examinationEvents.equals(user.examinationEvents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, username, email, password, confirmPassword, role, examinationEvents);
+    }
 //    public String getConfirmPassword() {
 //        return confirmPassword;
 //    }

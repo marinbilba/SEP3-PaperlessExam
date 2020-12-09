@@ -1,18 +1,11 @@
 package com.group10.databaselayer.entity.questions.written;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.gson.annotations.Expose;
-import com.group10.databaselayer.annotations.hidden.Hidden;
-import com.group10.databaselayer.entity.questions.QuestionsSet;
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -23,11 +16,26 @@ import java.util.Objects;
  * @version v1.0
  */
 @Entity
-@IdClass(QuestionsSet.class)
-public class WrittenSet extends QuestionsSet {
-    @ManyToOne
+
+public class WrittenSet {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String title;
+
+    private String topic;
+
+    @ManyToOne()
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
+    @UpdateTimestamp
+    private Date updatedTimestamp;
+
+    @ManyToMany(mappedBy = "writtenSets")
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
+
+
 
     /**
      * Instantiates a new Written set.
@@ -35,45 +43,76 @@ public class WrittenSet extends QuestionsSet {
     public WrittenSet() {
     }
 
-    /**
-     * Instantiates a new Written set.
-     *
-     * @param title the title
-     * @param topic the topic
-     */
-    public WrittenSet(String title, String topic,User user) {
-        super(title, topic);
-        this.user=user;
+    public WrittenSet(String title, String topic, User user) {
+        this.title = title;
+        this.topic = topic;
+        this.user = user;
     }
 
+    public List<ExaminationEvent> getExaminationEvents() {
+        return examinationEvents;
+    }
+
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+        this.examinationEvents = examinationEvents;
+    }
+
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
+    }
+
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
-       return super.getTitle();
+        return title;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getTopic() {
-        return super.getTopic();
+        return topic;
     }
 
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) return false;
-        else {
-            WrittenSet other = (WrittenSet) o;
-            return user.equals(other.user);
-        }
+        if (this == o) return true;
+        if (!(o instanceof WrittenSet)) return false;
+        WrittenSet that = (WrittenSet) o;
+        return id.equals(that.id) &&
+                title.equals(that.title) &&
+                topic.equals(that.topic) &&
+                user.equals(that.user) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                examinationEvents.equals(that.examinationEvents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode());
+        return Objects.hash(id, title, topic, user, updatedTimestamp, examinationEvents);
     }
 }

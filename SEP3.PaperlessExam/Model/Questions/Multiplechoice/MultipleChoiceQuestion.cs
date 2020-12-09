@@ -1,51 +1,23 @@
-﻿using System.Collections.Generic;
-using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 {
     public class MultipleChoiceQuestion : Question
     {
-        
-        public MultipleChoiceSet MultipleChoiceSet { get; set; }
-        public List<QuestionOption> QuestionOptions = new List<QuestionOption>();
+        [JsonPropertyName("multiplechoiceset")] public MultipleChoiceSet MultipleChoiceSet { get; set; }
+       
+       
 
         public MultipleChoiceQuestion()
         {
            
         }
 
-        public MultipleChoiceQuestion(int questionNumber, string question, double score, MultipleChoiceSet multipleChoiceSet) : base(question, score, questionNumber)
+        public MultipleChoiceQuestion(string question, double score, int questionNumber, MultipleChoiceSet multipleChoiceSet) : base(question, score, questionNumber)
         {
             MultipleChoiceSet = multipleChoiceSet;
         }
 
-        public MultipleChoiceQuestion(MultipleChoiceSet multipleChoiceSet)
-        {
-            MultipleChoiceSet = multipleChoiceSet;
-        }
-
-        public void AddQuestionOption(QuestionOption questionOption)
-        {
-            QuestionOptions.Add(questionOption);
-            
-        }
-
-        public void RemoveQuestionOption(QuestionOption questionOption)
-        {
-            QuestionOptions.Remove(questionOption);
-            
-        }
-        
-
-        public void RemoveQuestionOption(int i)
-        {
-            QuestionOptions.RemoveAt(i);
-        }
-        
-        public List<QuestionOption> GetQuestions()
-        {
-            return QuestionOptions;
-        }
-        
     }
 }

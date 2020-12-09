@@ -1,26 +1,24 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.Question;
-import com.group10.databaselayer.annotations.hidden.Hidden;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Entity Multiple choice question.
  */
 @Entity
-@IdClass(Question.class)
-public class MultipleChoiceQuestion extends Question {
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumns({
-//            @JoinColumn(name = "multiple_choice_set_id"),
-//            @JoinColumn(name = "multiple_choice_set_title"),
-//            @JoinColumn(name = "multiple_choice_set_topic"),
-//    })
 
+public class MultipleChoiceQuestion  {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private int questionNumber;
+
+    private String question;
+
+    private double score;
+    @ManyToOne(fetch = FetchType.EAGER)
     private MultipleChoiceSet multipleChoiceSet;
 
 
@@ -32,18 +30,11 @@ public class MultipleChoiceQuestion extends Question {
 
     }
 
-    public MultipleChoiceQuestion( double score,String question, int questionNumber) {
-        super(question, score, questionNumber);
-    }
-
-    /**
-     * Instantiates a new Multiple choice question.
-     *
-     * @param question the question
-     * @param score    the score
-     */public MultipleChoiceQuestion(int questionNumber, String question, double score,MultipleChoiceSet multipleChoiceSet) {
-        super(question, score, questionNumber);
-        this.multipleChoiceSet=multipleChoiceSet;
+    public MultipleChoiceQuestion(int questionNumber, String question, double score, MultipleChoiceSet multipleChoiceSet) {
+        this.questionNumber = questionNumber;
+        this.question = question;
+        this.score = score;
+        this.multipleChoiceSet = multipleChoiceSet;
     }
 
     /**
@@ -64,56 +55,52 @@ public class MultipleChoiceQuestion extends Question {
         this.multipleChoiceSet = multipleChoiceSet;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
+    }
 
     public String getQuestion() {
-        return super.getQuestion();
+        return question;
     }
 
-    /**
-     * Get question score double.
-     *
-     * @return the double
-     */
-    public double getQuestionScore() {
-        return super.getScore();
-    }
-
-    /**
-     * Sets question.
-     *
-     * @param question the question
-     */
     public void setQuestion(String question) {
-        super.setQuestion(question);
+        this.question = question;
     }
 
-    /**
-     * Sets score.
-     *
-     * @param score the question
-     */
+    public double getScore() {
+        return score;
+    }
+
     public void setScore(double score) {
-        super.setScore(score);
+        this.score = score;
     }
-
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) return false;
-        else {
-            MultipleChoiceQuestion other = (MultipleChoiceQuestion) o;
-            return multipleChoiceSet.equals(other.multipleChoiceSet);
-        }
+        if (this == o) return true;
+        if (!(o instanceof MultipleChoiceQuestion)) return false;
+        MultipleChoiceQuestion that = (MultipleChoiceQuestion) o;
+        return questionNumber == that.questionNumber &&
+                Double.compare(that.score, score) == 0 &&
+                id.equals(that.id) &&
+                question.equals(that.question) &&
+                multipleChoiceSet.equals(that.multipleChoiceSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceSet);
+        return Objects.hash(id, questionNumber, question, score, multipleChoiceSet);
     }
 }

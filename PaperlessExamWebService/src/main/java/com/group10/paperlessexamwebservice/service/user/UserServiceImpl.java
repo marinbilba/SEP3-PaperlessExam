@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -165,6 +166,34 @@ public class UserServiceImpl implements IUserService {
         return userRequest.deleteUser(requestedUserFromTheDatabase);
     }
 
+    @Override
+    public User getUserStudentByUsername(String username) throws ServiceNotAvailable, UserNotFound {
+        User user = userRequest.getUserByUsername(username);
+        if (user != null) {
+            if(user.getRole().getName().equals("Teacher")){
+                throw new UserNotFound("This user is a teacher");
+            }
+            return user;
+        } else throw new UserNotFound("Username was not found in the system");
+    }
+
+    @Override
+    public List<User> getUsersStudentsByFirstName(String firstName) throws ServiceNotAvailable, UserNotFound {
+        List<User> onlyStudentsList=new ArrayList<>();
+        List<User> usersList = userRequest.getUsersByFirstName(firstName);
+        if (!usersList.isEmpty()) {
+            for (var user:usersList  ) {
+                if(user.getRole().getName().equals("Student")){
+                    onlyStudentsList.add(user);
+                }
+            }
+            if(onlyStudentsList.isEmpty()){
+                throw new UserNotFound("Students by given first name were not found");
+            }
+            return usersList;
+        }
+        throw new UserNotFound("Students by given first name were not found");
+    }
 
 
     /**

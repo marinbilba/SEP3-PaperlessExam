@@ -1,9 +1,5 @@
 package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
-import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
-
-import javax.persistence.*;
-
 
 /**
  * Question option class.
@@ -11,7 +7,7 @@ import javax.persistence.*;
 public class QuestionOption {
 
     private Long id;
-    private boolean isCorrectAnswer;
+    private boolean correctAnswer;
     private String answer;
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
@@ -24,39 +20,24 @@ public class QuestionOption {
     /**
      * Instantiates a new Question option.
      *
-     * @param isCorrectAnswer        the is correct answer
+     * @param correctAnswer        the is correct answer
      * @param answer                 the answer
      * @param multipleChoiceQuestion the multiple choice question
      */
-    public QuestionOption(boolean isCorrectAnswer, String answer,MultipleChoiceQuestion multipleChoiceQuestion) {
-        this.isCorrectAnswer = isCorrectAnswer;
+    public QuestionOption(boolean correctAnswer, String answer, MultipleChoiceQuestion multipleChoiceQuestion) {
+        this.correctAnswer = correctAnswer;
         this.answer = answer;
         this.multipleChoiceQuestion=multipleChoiceQuestion;
     }
 
-    /**
-     * Is correct answer boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isCorrectAnswer() {
-        return isCorrectAnswer;
+    public boolean getCorrectAnswer() {
+        return correctAnswer;
     }
 
-    /**
-     * Sets correct answer.
-     *
-     * @param correctAnswer the correct answer
-     */
     public void setCorrectAnswer(boolean correctAnswer) {
-        isCorrectAnswer = correctAnswer;
+        this.correctAnswer = correctAnswer;
     }
 
-    /**
-     * Gets answer.
-     *
-     * @return the answer
-     */
     public String getAnswer() {
         return answer;
     }
