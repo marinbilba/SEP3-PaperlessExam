@@ -1,0 +1,45 @@
+@* @page "/UpdateWrittenQuestion/{_writtenSets)}" *@
+@* @using SEP3.PaperlessExam.Model.Questions.written *@
+@* @using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService *@
+@* @inject IQuestionSetsService QuestionSetsService *@
+@* <h3>UpdateWrittenQuestion</h3> *@
+@* *@
+@* @code { *@
+@*     [Parameter] *@
+@*     public string Title { get; set; } *@
+@*     // Loading spinner *@
+@*     private bool _loadingShow; *@
+@*     // ConfirmNotification *@
+@*     private bool _confirmUpdateNotification; *@
+@*     private string _errorMessage; *@
+@*     private IList<WrittenSet> _updatedSets; *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*        IList<WrittenSet> writtenSets = await QuestionSetsService.FindWrittenQuestion("Written"); *@
+@*         _updatedSets = writtenSets; *@
+@*     } *@
+@* *@
+@*     private async Task EditQuestionSet() *@
+@*     { *@
+@*         _confirmUpdateNotification = false; *@
+@*         _loadingShow = true; *@
+@*         _errorMessage = ""; *@
+@*         try *@
+@*         { *@
+@*             IList<WrittenSet> tempSets = await WrittenSet.UpdateWrittenQuestionSet(_updatedSets); *@
+@*             if (tempSet != null) *@
+@*             { *@
+@*                 _confirmUpdateNotification = true; *@
+@*                 _loadingShow = false; *@
+@*             } *@
+@*         } *@
+@*         catch (Exception e) *@
+@*         { *@
+@*             _loadingShow = false; *@
+@*             _errorMessage = e.Message; *@
+@*             Console.WriteLine(e); *@
+@*         } *@
+@*     } *@
+@* *@
+@* } *@

@@ -69,7 +69,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\TeacherView\QuestionManagement\ReviewUpdateQuestions" />
       <Folder Include="Pages\Views\Student" />
     </ItemGroup>
 
