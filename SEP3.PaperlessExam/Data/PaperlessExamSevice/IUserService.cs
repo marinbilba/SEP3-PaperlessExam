@@ -12,5 +12,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
        Task<User> FindByUsername(string username);
        Task<User> DeleteUser(User user);
        Task<User> UpdateUser(User user);
+
+       Task<User> FindStudentByUsername(string username);
+       Task<IList<User>> FindStudentByFirstName(string firstName);
     }
 }
