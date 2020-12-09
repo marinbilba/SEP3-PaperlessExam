@@ -48,7 +48,8 @@
                             <th>Title</th>
                             <th>Topic</th>
                             <th>Create/Update date</th>
-                            <th>Choose</th>
+                            <th>Preview</th>
+                            <th>Add</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -59,6 +60,7 @@
                                 <tr>
                                     <td>@item.Title</td>
                                     <td>@item.Topic</td>
+                                    <td>@item.UpdatedTimestamp</td>
                                     <td>
                                         <button @onclick="PreviewWrittenSet">
                                             <i class="oi oi-pencil" style="color:green"/>
@@ -74,7 +76,7 @@
                         }
                         </tbody>
                     </table>
-                      <div style="color:red">@_errorMessage</div>
+                    <div style="color:red">@_errorMessage</div>
                 </RadzenStepsItem>
 
                 @* Third step *@
@@ -215,7 +217,7 @@
 </RadzenContent>
 
 @code {
-    private ExaminationEvent _examinationEvent=new ExaminationEvent();
+    private ExaminationEvent _examinationEvent = new ExaminationEvent();
 
     private IList<WrittenSet> _writtenSets;
     private IList<MultipleChoiceSet> _multipleChoiceSets;
@@ -223,7 +225,7 @@
     private WrittenSet _writtenSet;
     private MultipleChoiceSet _multipleChoiceSet;
     private string _examTitle;
-    
+
     private bool _examTitleIsSet;
 
     private bool _firstStepDisable = false;
@@ -254,7 +256,8 @@
         {
             case 1:
                 _thirdStepDisable = false;
-                Console.WriteLine(_writtenSets);
+                Console.WriteLine("asta");         
+    //  Console.WriteLine(_writtenSets);
                 break;
             case 2:
                 _secondStepDisable = true;
@@ -362,7 +365,7 @@
         }
         else
         {
-            _errorMessage = "Exam title is required"; 
+            _errorMessage = "Exam title is required";
         }
 
         EvaluateIfSecondStepIsAvailable();
