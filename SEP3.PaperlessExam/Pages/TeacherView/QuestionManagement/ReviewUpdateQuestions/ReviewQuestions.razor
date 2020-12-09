@@ -51,6 +51,7 @@
     <tr>
         <th>Title</th>
         <th>Topic</th>
+        <th>Creation date</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
@@ -63,6 +64,7 @@
             <tr>
                 <td>@item.Title</td>
                 <td>@item.Topic</td>
+                <td>@item.DateTime</td>
                 <td>
                     <button @onclick="ToEditWrittenQuestion">
                         <i class="oi oi-pencil" style="color:green"/>
