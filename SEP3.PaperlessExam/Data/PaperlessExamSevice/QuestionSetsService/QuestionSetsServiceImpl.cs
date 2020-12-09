@@ -65,10 +65,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
                 throw new Exception(serverMessage);
             }
             
-           // WrittenSet q1 = new WrittenSet("caca", "maca", new User("steve", "fghjkl"));
-           //
-           //
-           //  setsDeserialize.Add(q1);
+           
+           
             return setsDeserialize;
         }
         
@@ -111,9 +109,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
                 throw new Exception(serverMessage);
             }
             
-           // MultipleChoiceSet q2 = new MultipleChoiceSet("dfg", "mate", new User("mama", "yaa"));
-           //
-           //  setsDeserialize.Add(q2);
+           
             return setsDeserialize;
         }
 
@@ -158,7 +154,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
              }
              else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
              {
-                 
+                 throw new Exception(serverMessage);
              }
 
              return setDeserialize;
