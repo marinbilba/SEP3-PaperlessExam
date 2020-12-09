@@ -30,10 +30,31 @@ public class ExaminationEventController {
     @Autowired
     private IExaminationEventService examinationEventService;
 
+    /**
+     * Create the examination event .It is processed as a POST request requesting <i>ExaminationEvent object</i>
+     * in format of JSON as an argument.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/createExaminationEvent
+     * </p>
+     *
+     * <b>BODY</b>:
+     *
+     * @param examinationEvent the multiple choice question
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question or
+     * <i>HTTP 400 - BAD_REQUEST</i>
+     *<i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
     @RequestMapping(value = "/createExaminationEvent", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createExaminationEvent(@RequestBody ExaminationEvent examinationEvent) {
-     ExaminationEvent createdExaminationEvent=null;
-        createdExaminationEvent=examinationEventService.createExaminationEvent(examinationEvent);
+        ExaminationEvent createdExaminationEvent = null;
+        try {
+            createdExaminationEvent = examinationEventService.createExaminationEvent(examinationEvent);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.OK).body(createdExaminationEvent);
     }
 }
