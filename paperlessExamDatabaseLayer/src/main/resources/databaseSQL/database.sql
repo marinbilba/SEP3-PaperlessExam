@@ -36,6 +36,7 @@ INSERT INTO roles VALUES (1, 'Student');
 INSERT INTO roles VALUES (2, 'Teacher');
 
 INSERT INTO users(id,firstName,lastName,username,email,password,fk_role_id) VALUES (10,'Silvestru','Mandrila','silvmandrila','silvmandr@va.cs','111111',1);
+INSERT INTO users(id,firstName,lastName,username,email,password,fk_role_id) VALUES (12,'Bilba','Marin','marinbilba','marinbilba@gmail.com','111111',1);
 
 -- On update cascade
 -- Multiple choice set

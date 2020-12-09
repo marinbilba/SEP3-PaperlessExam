@@ -1,17 +1,12 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
+
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * MultipleChoiceSet entity. Class provides the functionality to add/remove
@@ -23,19 +18,24 @@ import java.util.Objects;
  * @version v1.0
  */
 @Entity
-@IdClass(QuestionsSet.class)
-public class MultipleChoiceSet extends QuestionsSet {
 
-    @OneToMany(
-            mappedBy = "multipleChoiceSet",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
-// Must be PK as well or at least not null. No idea how to implement.
-    @OneToOne()
-    @JoinColumn(name = "fk_user_id")
+
+public class MultipleChoiceSet {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String title;
+    private String topic;
+
+    @UpdateTimestamp
+    private Date updatedTimestamp;
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id", updatable = false)
     private User user;
+
+    @ManyToMany(mappedBy = "multipleChoiceSets")
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
     /**
      * Instantiates a new Multiple choice set.
@@ -43,102 +43,104 @@ public class MultipleChoiceSet extends QuestionsSet {
     public MultipleChoiceSet() {
     }
 
-    /**
-     * Instantiates a new Multiple choice set.
-     *
-     * @param title the title
-     * @param topic the topic
-     */
     public MultipleChoiceSet(String title, String topic, User user) {
-        super(title, topic);
+        this.title = title;
+        this.topic = topic;
         this.user = user;
     }
 
+    public List<ExaminationEvent> getExaminationEvents() {
+        return examinationEvents;
+    }
+
+    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+        this.examinationEvents = examinationEvents;
+    }
+
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+
+//    public List<ExaminationEvent> getExaminationEvents() {
+//        return examinationEvents;
+//    }
+//
+//    public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
+//        this.examinationEvents = examinationEvents;
+//    }
+
     /**
-     * Add question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
+     * Gets updated timestamp.
      *
-     * @param multipleChoiceQuestion the multiple choice question
+     * @return the updated timestamp
      */
-    public void addQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
-        this.multipleChoiceQuestions.add(multipleChoiceQuestion);
-        multipleChoiceQuestion.setMultipleChoiceSet(this);
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
     }
 
     /**
-     * Remove question. Method synchronizes both sides of the bidirectional association between
-     * this entity {@link MultipleChoiceSet} and MultipleChoiceQuestion {@link MultipleChoiceQuestion}
-     * in order to avoid very subtle state propagation issues
+     * Sets updated timestamp.
      *
-     * @param multipleChoiceQuestions the multiple choice questions
+     * @param updatedTimestamp the updated timestamp
      */
-    public void removeQuestion(MultipleChoiceQuestion multipleChoiceQuestions) {
-        this.multipleChoiceQuestions.remove(multipleChoiceQuestions);
-        multipleChoiceQuestions.setMultipleChoiceSet(null);
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
     }
 
-    /**
-     * Add question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void addQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.addQuestionOption(questionOption);
-            }
-        }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
-        return super.getTitle();
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getTopic() {
-        return super.getTopic();
+        return topic;
     }
 
-    /**
-     * Remove question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void removeQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.removeQuestionOption(questionOption);
-            }
-        }
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) return false;
-        else {
-            MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions) && user.equals(other.user);
-        }
+        if (this == o) return true;
+        if (!(o instanceof MultipleChoiceSet)) return false;
+        MultipleChoiceSet that = (MultipleChoiceSet) o;
+        return id.equals(that.id) &&
+                title.equals(that.title) &&
+                topic.equals(that.topic) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                user.equals(that.user) &&
+                examinationEvents.equals(that.examinationEvents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceQuestions);
+        return Objects.hash(id, title, topic, updatedTimestamp, user, examinationEvents);
     }
 }

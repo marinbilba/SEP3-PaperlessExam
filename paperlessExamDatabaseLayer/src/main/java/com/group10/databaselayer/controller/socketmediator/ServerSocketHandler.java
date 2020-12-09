@@ -3,17 +3,23 @@ package com.group10.databaselayer.controller.socketmediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
+import com.group10.databaselayer.controller.ExaminationEventDAO;
 import com.group10.databaselayer.controller.RoleController;
 import com.group10.databaselayer.controller.UserController;
 import com.group10.databaselayer.controller.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.controller.networkcontainer.RequestOperation;
 import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
+import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
+import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
+import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
-import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.exception.user.UserWasNotDeleted;
-import org.springframework.context.annotation.Scope;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,7 +43,7 @@ import static com.group10.databaselayer.controller.networkcontainer.RequestOpera
  * @author Marin Bilba
  * @version 2.5
  */
-@Scope("prototype")
+
 public class ServerSocketHandler implements Runnable {
 
     private final Socket socket;
@@ -46,6 +52,8 @@ public class ServerSocketHandler implements Runnable {
     private RoleController roleController;
     private UserController userController;
     private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
+    private WrittenQuestionsController writtenQuestionsController;
+    private ExaminationEventDAO examinationEventDAO;
 
     private final Gson gson;
 
@@ -63,7 +71,7 @@ public class ServerSocketHandler implements Runnable {
     public ServerSocketHandler(Socket socket, HashSet<Object> controllersSet) {
         this.socket = socket;
         this.controllersSet = controllersSet;
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();
         parseControllerSet(this.controllersSet);
 
     }
@@ -82,6 +90,10 @@ public class ServerSocketHandler implements Runnable {
                 this.userController = (UserController) controller;
             } else if (controller instanceof MultipleChoiceQuestionsController) {
                 this.multipleChoiceQuestionsController = (MultipleChoiceQuestionsController) controller;
+            } else if (controller instanceof WrittenQuestionsController) {
+                this.writtenQuestionsController = (WrittenQuestionsController) controller;
+            }else if (controller instanceof ExaminationEventDAO) {
+                this.examinationEventDAO = (ExaminationEventDAO) controller;
             }
 
         }
@@ -112,23 +124,189 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_USERS_BY_FIRST_NAME:
                     getUsersListByFirstName(networkContainerRequestDeserialized);
-               break;
+                    break;
                 case DELETE_USER:
                     deleteUser(networkContainerRequestDeserialized);
                     break;
 //                    Questions request
-                case MULTIPLE_CHOICE_SET_EXISTS:
-                    existsMultipleChoiceSet(networkContainerRequestDeserialized);
+                case GET_MULTIPLE_CHOICE_SET:
+                    getMultipleChoiceSet(networkContainerRequestDeserialized);
                     break;
                 case CREATE_MULTIPLE_CHOICE_SET:
                     createMultipleChoiceSet(networkContainerRequestDeserialized);
                     break;
-
+                case CREATE_MULTIPLE_CHOICE_SET_QUESTION:
+                    createMultipleChoiceSetQuestion(networkContainerRequestDeserialized);
+                    break;
+                case GET_MULTIPLE_CHOICE_SET_QUESTION:
+                    getMultipleChoiceSetQuestion(networkContainerRequestDeserialized);
+                    break;
+                case CREATE_MULTIPLE_CHOICE_SET_QUESTION_OPTION:
+                    createMultipleChoiceSetQuestionOption(networkContainerRequestDeserialized);
+                    break;
+                case GET_MULTIPLE_CHOICE_SET_QUESTION_OPTION:
+                    getMultipleChoiceSetQuestionOption(networkContainerRequestDeserialized);
+                    break;
+                case CREATE_WRITTEN_SET:
+                    createWrittenSet(networkContainerRequestDeserialized);
+                    break;
+                case GET_WRITTEN_SET:
+                    getWrittenSet(networkContainerRequestDeserialized);
+                    break;
+                case CREATE_WRITTEN_SET_QUESTION:
+                    createWrittenSetQuestion(networkContainerRequestDeserialized);
+                    break;
+                case GET_WRITTEN_SET_QUESTION:
+                    getWrittenSetQuestion(networkContainerRequestDeserialized);
+                    break;
+                case GET_ALL_MULTIPLE_CHOICE_SETS:
+                    getAllUsersMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
+                case GET_ALL_WRITTEN_SETS:
+                    getAllUsersWrittenSet(networkContainerRequestDeserialized);
+                    break;
+                    //Examination Event
+                case CREATE_EXAMINATION_EVENT:
+                    createExaminationEvent(networkContainerRequestDeserialized);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private void createExaminationEvent(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_EXAMINATION_EVENT start");
+        ExaminationEvent examinationEventDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), ExaminationEvent.class);
+        ExaminationEvent createdExaminationEvent = examinationEventDAO.createUpdate(examinationEventDeserialized);
+        objectSerialized = gson.toJson(createdExaminationEvent);
+        networkContainer = new NetworkContainer(CREATE_EXAMINATION_EVENT, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_EXAMINATION_EVENT end");
+    }
+
+    private void getAllUsersWrittenSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_ALL_WRITTEN_SETS start");
+        User userDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
+        List<WrittenSet> fetchedMultipleChoiceSetList = writtenQuestionsController.getAllWrittenSet(userDeserialized);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSetList);
+        networkContainer = new NetworkContainer(GET_ALL_WRITTEN_SETS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_ALL_WRITTEN_SETS end");
+    }
+
+    private void getAllUsersMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_ALL_MULTIPLE_CHOICE_SETS start");
+        User userDeserialized = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), User.class);
+        List<MultipleChoiceSet> fetchedMultipleChoiceSetList = multipleChoiceQuestionsController.getAllUsersMultipleChoiceSet(userDeserialized);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSetList);
+        networkContainer = new NetworkContainer(GET_ALL_MULTIPLE_CHOICE_SETS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_ALL_MULTIPLE_CHOICE_SETS end");
+    }
+
+    private void getWrittenSetQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_WRITTEN_SET_QUESTION start");
+        WrittenQuestion writtenSetQuestion = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenQuestion.class);
+        WrittenQuestion fetchedWrittenQuestion = null;
+        fetchedWrittenQuestion = writtenQuestionsController.getWrittenSetQuestion(writtenSetQuestion);
+        objectSerialized = gson.toJson(fetchedWrittenQuestion);
+        networkContainer = new NetworkContainer(GET_WRITTEN_SET_QUESTION, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_WRITTEN_SET_QUESTION end");
+    }
+
+    private void createWrittenSetQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_WRITTEN_SET_QUESTION start");
+        WrittenQuestion writtenSetQuestion = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenQuestion.class);
+        WrittenQuestion createdWrittenSetQuestion = null;
+        createdWrittenSetQuestion = writtenQuestionsController.createUpdateWrittenSetQuestion(writtenSetQuestion);
+        objectSerialized = gson.toJson(createdWrittenSetQuestion);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_WRITTEN_SET_QUESTION end");
+    }
+
+    private void getWrittenSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+
+        System.out.println("GET_WRITTEN_SET start");
+        WrittenSet writtenSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenSet.class);
+        WrittenSet fetchedWrittenSet = null;
+        fetchedWrittenSet = writtenQuestionsController.getWrittenSet(writtenSet);
+        objectSerialized = gson.toJson(fetchedWrittenSet);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_WRITTEN_SET end");
+    }
+
+    private void createWrittenSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_WRITTEN_SET start");
+        WrittenSet writtenSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenSet.class);
+        WrittenSet createdWrittenSet = null;
+        createdWrittenSet = writtenQuestionsController.createUpdateWrittenSet(writtenSet);
+        objectSerialized = gson.toJson(createdWrittenSet);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_WRITTEN_SET end");
+    }
+
+    private void getMultipleChoiceSetQuestionOption(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTION_OPTION start");
+        QuestionOption multipleChoiceSetQuestionOption = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), QuestionOption.class);
+        QuestionOption fetchedMultipleChoiceSetQuestionOption = null;
+        fetchedMultipleChoiceSetQuestionOption = multipleChoiceQuestionsController.getMultipleChoiceSetQuestionOption(multipleChoiceSetQuestionOption);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSetQuestionOption);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTION_OPTION end");
+    }
+
+    private void createMultipleChoiceSetQuestionOption(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET_QUESTION_OPTION start");
+        QuestionOption multipleChoiceSetQuestionOption = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), QuestionOption.class);
+        QuestionOption createdMultipleChoiceSetQuestionOption = null;
+
+
+        createdMultipleChoiceSetQuestionOption = multipleChoiceQuestionsController.createUpdateMultipleChoiceSetQuestionOption(multipleChoiceSetQuestionOption);
+        objectSerialized = gson.toJson(createdMultipleChoiceSetQuestionOption);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET_QUESTION_OPTION, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET_QUESTION_OPTION end");
+    }
+
+    private void getMultipleChoiceSetQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTIONS start");
+        MultipleChoiceQuestion multipleChoiceSetQuestion = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+        MultipleChoiceQuestion fetchedMultipleChoiceSet = null;
+
+        fetchedMultipleChoiceSet = multipleChoiceQuestionsController.getMultipleChoiceSetQuestion(multipleChoiceSetQuestion);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSet);
+        networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTIONS end");
+    }
+
+    private void createMultipleChoiceSetQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET_QUESTION start");
+        MultipleChoiceQuestion multipleChoiceSetQuestion = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+        MultipleChoiceQuestion createdMultipleChoiceSet = null;
+        createdMultipleChoiceSet = multipleChoiceQuestionsController.createUpdateMultipleChoiceSetQuestion(multipleChoiceSetQuestion);
+        objectSerialized = gson.toJson(createdMultipleChoiceSet);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("CREATE_MULTIPLE_CHOICE_SET_QUESTION end");
+    }
+
 
     private void deleteUser(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("DELETE_USER start");
@@ -137,8 +315,8 @@ public class ServerSocketHandler implements Runnable {
 //        delete user
         userController.deleteUser(userToDelete);
 //        check if user was deleted
-        deletedUser= userController.getUserByUsername(userToDelete.getUsername());
-        if(deletedUser!=null){
+        deletedUser = userController.getUserByUsername(userToDelete.getUsername());
+        if (deletedUser != null) {
             try {
                 throw new UserWasNotDeleted("User could not be deleted");
             } catch (UserWasNotDeleted userWasNotDeleted) {
@@ -146,7 +324,7 @@ public class ServerSocketHandler implements Runnable {
             }
         }
         objectSerialized = gson.toJson(userToDelete);
-        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
         System.out.println("DELETE_USER end");
@@ -156,28 +334,31 @@ public class ServerSocketHandler implements Runnable {
         System.out.println("CREATE_MULTIPLE_CHOICE_SET start");
         MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
         MultipleChoiceSet createdMultipleChoiceSet = null;
+
+        User user = userController.getUserByUsername("silvmandrila");
+
+        multipleChoiceSet.setUser(user);
+
+
         createdMultipleChoiceSet = multipleChoiceQuestionsController.createUpdateMultipleChoiceSet(multipleChoiceSet);
         objectSerialized = gson.toJson(createdMultipleChoiceSet);
-        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
         System.out.println("CREATE_MULTIPLE_CHOICE_SET end");
     }
 
-    private void existsMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
-        System.out.println("MULTIPLE_CHOICE_SET_EXISTS start");
+    private void getMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_MULTIPLE_CHOICE_SET start");
         MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
-        boolean existsMultipleChoiceSet = false;
-        try {
-            existsMultipleChoiceSet = multipleChoiceQuestionsController.existsMultipleChoiceSet(multipleChoiceSet);
-        } catch (TitleOrTopicAreNull titleOrTopicAreNull) {
-            titleOrTopicAreNull.printStackTrace();
-        }
-        objectSerialized = gson.toJson(existsMultipleChoiceSet);
-        networkContainer = new NetworkContainer(MULTIPLE_CHOICE_SET_EXISTS, objectSerialized);
+        MultipleChoiceSet fetchedMultipleChoiceSet = null;
+
+        fetchedMultipleChoiceSet = multipleChoiceQuestionsController.getMultipleChoiceSet(multipleChoiceSet);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSet);
+        networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
-        System.out.println("MULTIPLE_CHOICE_SET_EXISTS end");
+        System.out.println("GET_MULTIPLE_CHOICE_SET end");
     }
 
     private void getUsersListByFirstName(NetworkContainer networkContainerRequestDeserialized) throws IOException {

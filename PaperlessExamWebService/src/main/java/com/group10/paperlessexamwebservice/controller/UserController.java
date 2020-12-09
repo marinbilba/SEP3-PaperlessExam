@@ -176,6 +176,61 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    /**
+     * Get Method for user <i>STUDENTS</i> by username. Username should be pass as path parameter in the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/user/getUserByUsername/test123
+     * </p>
+     *
+     * @param username the username that should be found
+     * @return <i>HTTP 200 - OK</i> with the found user object if the passed username was found in the system
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
+     */
+    @RequestMapping(value = "/getUserStudentByUsername/{username}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUserStudentByUsername(@PathVariable String username) {
+        User user = null;
+        try {
+            user = userService.getUserStudentByUsername(username);
+        } catch (ServiceNotAvailable e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
+        } catch (UserNotFound e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+    /**
+     * Get Method that fetches only <i>STUDENT</i> users in the system by their firstname. Firstname should be pass as path parameter in the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/user/getUsersStudentsByFirstName/test123
+     * </p>
+     *
+     * @param firstName users firstname that should be filtered from the database
+     * @return <i>HTTP 200 - OK</i> with the found list of users
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
+     */
+    @RequestMapping(value = "/getUsersStudentsByFirstName/{firstName}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUsersStudentsByFirstName(@PathVariable String firstName) {
+
+        List<User> userList = null;
+        try {
+            userList = userService.getUsersStudentsByFirstName(firstName);
+        } catch (ServiceNotAvailable e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
+        } catch (UserNotFound e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userList);
+    }
 
     /**
      * Update user. Method processed as a POST request requiring a <i>User object</i> in format of JSON

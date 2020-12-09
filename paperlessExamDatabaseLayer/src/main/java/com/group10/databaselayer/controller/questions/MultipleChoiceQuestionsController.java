@@ -1,8 +1,9 @@
 package com.group10.databaselayer.controller.questions;
 
-import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
@@ -28,25 +29,23 @@ public class MultipleChoiceQuestionsController {
     private IMultipleChoiceSetRepository multipleChoiceSetRepository;
     private IMultipleChoiceQuestionOptionRepository multipleChoiceQuestionOptionRepository;
     private IMultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
-    private WrittenMultipleChoiceQuestionsSharedMethods writtenMultipleChoiceQuestionsSharedMethods;
 
 
     /**
      * Instantiates a new Multiple choice questions controller using Spring Boot dependency injection.
      *
-     * @param multipleChoiceSetRepository                 the multiple choice set repository
-     * @param multipleChoiceQuestionOptionRepository      the multiple choice question option repository
-     * @param multipleChoiceQuestionRepository            the multiple choice question repository
-     * @param writtenMultipleChoiceQuestionsSharedMethods the written multiple choice questions shared methods
+     * @param multipleChoiceSetRepository            the multiple choice set repository
+     * @param multipleChoiceQuestionOptionRepository the multiple choice question option repository
+     * @param multipleChoiceQuestionRepository       the multiple choice question repository
      */
     @Autowired
     public MultipleChoiceQuestionsController(IMultipleChoiceSetRepository multipleChoiceSetRepository, IMultipleChoiceQuestionOptionRepository
-            multipleChoiceQuestionOptionRepository, IMultipleChoiceQuestionRepository multipleChoiceQuestionRepository,
-                                             WrittenMultipleChoiceQuestionsSharedMethods writtenMultipleChoiceQuestionsSharedMethods) {
+            multipleChoiceQuestionOptionRepository, IMultipleChoiceQuestionRepository multipleChoiceQuestionRepository
+    ) {
         this.multipleChoiceSetRepository = multipleChoiceSetRepository;
         this.multipleChoiceQuestionOptionRepository = multipleChoiceQuestionOptionRepository;
         this.multipleChoiceQuestionRepository = multipleChoiceQuestionRepository;
-        this.writtenMultipleChoiceQuestionsSharedMethods = writtenMultipleChoiceQuestionsSharedMethods;
+
     }
 
 
@@ -79,7 +78,7 @@ public class MultipleChoiceQuestionsController {
 
     /**
      * Finds if the given multiple choice set is defined in the database. The written set must contain both title
-     * and topic of the questions set{@link QuestionsSet}.
+     * and topic of the questions set
      *
      * @param multipleChoiceSet multiple choice set that should be queried
      * @return boolean value true if the set was found and false if it was not.
@@ -87,38 +86,58 @@ public class MultipleChoiceQuestionsController {
      */
     public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
         Optional<MultipleChoiceSet> queriedMultipleChoiceSet = Optional.empty();
-        if (writtenMultipleChoiceQuestionsSharedMethods.checkTitleTopicNotNull(multipleChoiceSet)) {
-            queriedMultipleChoiceSet = multipleChoiceSetRepository.findById(multipleChoiceSet);
+        if (checkTitleTopicNotNull(multipleChoiceSet)) {
+            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId()));
         }
         return queriedMultipleChoiceSet.isPresent();
     }
 
     /**
+     * Check if title and topic are not null.
+     *
+     * @param questionsSet the questions set
+     * @return the boolean true if the check title and topic are not null
+     * @throws TitleOrTopicAreNull the title or topic are null
+     */
+    public boolean checkTitleTopicNotNull(MultipleChoiceSet questionsSet) throws TitleOrTopicAreNull {
+        String titleToQuery = questionsSet.getTitle();
+        String topicToQuery = questionsSet.getTopic();
+        if (!titleToQuery.isEmpty() && !topicToQuery.isEmpty()) {
+            return true;
+        } else {
+            throw new TitleOrTopicAreNull("Title or topic are not set");
+        }
+
+    }
+
+    /**
      * Add question to existing multiple choice set. Method checks if the passed MultipleChoiceSet exists, otherwise exception is thrown.
-     *     If set exists, the passed MultipleChoice question is check if such exists. If the passed question does not exist it will
-     *     be added to the database.
+     * If set exists, the passed MultipleChoice question is check if such exists. If the passed question does not exist it will
+     * be added to the database.
      *
      * @param multipleChoiceSet      the multiple choice set
      * @param multipleChoiceQuestion the multiple choice question
      * @return the multiple choice question
-     * @throws QuestionSetNotFound the question set not found
+     * @throws QuestionSetNotFound   the question set not found
+     * @throws TitleOrTopicAreNull   the title or topic are null
+     * @throws QuestionAlreadyExists the question already exists
      */
     public MultipleChoiceQuestion addQuestionToExistingMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet,
                                                                          MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionSetNotFound, TitleOrTopicAreNull, QuestionAlreadyExists {
         // Check if the passed multipleChoiceSet exists
         boolean questionNotFound = false;
-        Optional<MultipleChoiceSet> tempQueriedMultipleChoiceSet = multipleChoiceSetRepository.findById(multipleChoiceSet);
+        Optional<MultipleChoiceSet> tempQueriedMultipleChoiceSet = multipleChoiceSetRepository.findById(multipleChoiceSet.getId());
 
         if (tempQueriedMultipleChoiceSet.isPresent()) {
-MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
+            MultipleChoiceSet queriedMultipleChoiceSet = tempQueriedMultipleChoiceSet.get();
 // Check if question already exists
             try {
-                findQuestionInMultipleChoiceSet(multipleChoiceSet,multipleChoiceQuestion);
+                findQuestionInMultipleChoiceSet(multipleChoiceSet, multipleChoiceQuestion);
             } catch (QuestionNotFound notFound) {
                 questionNotFound = true;
             }
             if (questionNotFound) {
-               multipleChoiceQuestion.setMultipleChoiceSet(queriedMultipleChoiceSet);
+                multipleChoiceQuestion.setMultipleChoiceSet(queriedMultipleChoiceSet);
                 return multipleChoiceQuestionRepository.save(multipleChoiceQuestion);
             } else
                 throw new QuestionAlreadyExists("Question '" + multipleChoiceQuestion.getQuestion() + "' already exists");
@@ -129,9 +148,9 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
 
     /**
      * Find question in multiple choice set. Method checks if the passed MultipleChoiceSet exists,
-     *  otherwise exception is thrown. The list of multiple choice question are retrieved from the
-     *  database based on the passed  multiple choice set.
-     *  The passed written question is searched in the list and if it is found it will be returned.
+     * otherwise exception is thrown. The list of multiple choice question are retrieved from the
+     * database based on the passed  multiple choice set.
+     * The passed written question is searched in the list and if it is found it will be returned.
      *
      * @param multipleChoiceSet      the multiple choice set
      * @param multipleChoiceQuestion the multiple choice question
@@ -141,14 +160,14 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
      * @throws QuestionSetNotFound the question set not found
      */
     public MultipleChoiceQuestion findQuestionInMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet,
-         MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionNotFound, TitleOrTopicAreNull, QuestionSetNotFound {
+                                                                  MultipleChoiceQuestion multipleChoiceQuestion) throws QuestionNotFound, TitleOrTopicAreNull, QuestionSetNotFound {
         if (existsMultipleChoiceSet(multipleChoiceSet)) {
             List<MultipleChoiceQuestion> fetchedMultipleChoiceQuestionsList = multipleChoiceQuestionRepository.findByMultipleChoiceSet(multipleChoiceSet);
             MultipleChoiceQuestion foundMultipleChoiceQuestion = null;
 
             for (var question : fetchedMultipleChoiceQuestionsList) {
-                if (question.getQuestion().equals(multipleChoiceQuestion.getQuestion())&&
-                        question.getQuestionScore()==question.getQuestionScore()){
+                if (question.getQuestion().equals(multipleChoiceQuestion.getQuestion()) &&
+                        question.getScore() == question.getScore()) {
                     foundMultipleChoiceQuestion = multipleChoiceQuestion;
                 }
             }
@@ -157,27 +176,71 @@ MultipleChoiceSet queriedMultipleChoiceSet=tempQueriedMultipleChoiceSet.get();
             } else throw new QuestionNotFound("Question was not found");
         }
         throw new QuestionSetNotFound("Written set with given title and topic was not found");
-}
-
-    /**
-     * Remove a question from the written set. Method checks if the passed WrittenSet exists, otherwise exception is thrown.
-     * The passed written question will be check if it exists. If it does exist it will be removed from the written set
-     *
-     * @param multipleChoiceSet      the written set that should be queried
-     * @param multipleChoiceQuestion the written question that should be deleted
-     * @return a confirmation String containing question title of the removed question
-     * @throws TitleOrTopicAreNull in case the title or topic are null
-     * @throws QuestionSetNotFound in case the written set not found
-     * @throws QuestionNotFound    in case the question not found
-     */
-    public String removeQuestionMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet, MultipleChoiceQuestion multipleChoiceQuestion) throws TitleOrTopicAreNull, QuestionSetNotFound, QuestionNotFound {
-        if (existsMultipleChoiceSet(multipleChoiceSet)) {
-            findQuestionInMultipleChoiceSet(multipleChoiceSet, multipleChoiceQuestion);
-            multipleChoiceSet.removeQuestion(multipleChoiceQuestion);
-            multipleChoiceSetRepository.save(multipleChoiceSet);
-            return "Question " + multipleChoiceQuestion.getQuestion() + " was REMOVED";
-        }
-        throw new QuestionSetNotFound("Multiple choice set with given title and topic was not found");
     }
 
+    /**
+     * Gets multiple choice set from the database.
+     *
+     * @param multipleChoiceSet the multiple choice set
+     * @return the multiple choice set or null if not found
+     */
+    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
+        return multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId());
+    }
+
+    /**
+     * Create update multiple choice set question multiple choice question.
+     *
+     * @param multipleChoiceSetQuestion the multiple choice set question
+     * @return the multiple choice question
+     */
+    public MultipleChoiceQuestion createUpdateMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) {
+        return multipleChoiceQuestionRepository.save(multipleChoiceSetQuestion);
+    }
+
+    /**
+     * Gets multiple choice set question.
+     *
+     * @param multipleChoiceSetQuestion the multiple choice set question
+     * @return the multiple choice set question
+     */
+    public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) {
+        MultipleChoiceSet multipleChoiceSet = multipleChoiceSetQuestion.getMultipleChoiceSet();
+        return multipleChoiceQuestionRepository.findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndQuestionNumberAndQuestionAndScore(multipleChoiceSet.getTopic(), multipleChoiceSet.getTitle(), multipleChoiceSet.getId(), multipleChoiceSetQuestion.getQuestionNumber(), multipleChoiceSetQuestion.getQuestion(), multipleChoiceSetQuestion.getScore());
+
+    }
+
+    public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
+        MultipleChoiceQuestion multipleChoiceSetQuestion = multipleChoiceSetQuestionOption.getMultipleChoiceQuestion();
+        MultipleChoiceSet multipleChoiceSet = multipleChoiceSetQuestion.getMultipleChoiceSet();
+        // multipleChoiceQuestionOptionRepository.findAll((Pageable) multipleChoiceSetQuestion);
+        QuestionOption qw = multipleChoiceQuestionOptionRepository.findByAnswerAndCorrectAnswerAndMultipleChoiceQuestion_QuestionAndMultipleChoiceQuestion_ScoreAndMultipleChoiceQuestion_QuestionNumber(multipleChoiceSetQuestionOption.getAnswer(), multipleChoiceSetQuestionOption.setCorrectAnswer(), multipleChoiceSetQuestion.getQuestion(), multipleChoiceSetQuestion.getScore(), multipleChoiceSetQuestion.getQuestionNumber());
+
+        return qw;
+
+    }
+
+    /**
+     * Create update multiple choice set question option question option.
+     *
+     * @param multipleChoiceSetQuestionOption the multiple choice set question option
+     * @return the question option
+     */
+    public QuestionOption createUpdateMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
+        return multipleChoiceQuestionOptionRepository.save(multipleChoiceSetQuestionOption);
+
+    }
+
+    public List<MultipleChoiceQuestion> getAllQuestionsByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
+        return multipleChoiceQuestionRepository.findByMultipleChoiceSet(multipleChoiceSet);
+    }
+
+    public List<QuestionOption> getAllQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
+        return multipleChoiceQuestionOptionRepository.findByMultipleChoiceQuestion(multipleChoiceQuestion);
+    }
+
+
+    public List<MultipleChoiceSet> getAllUsersMultipleChoiceSet(User userDeserialized) {
+        return multipleChoiceSetRepository.findByUserId(userDeserialized.getId());
+    }
 }

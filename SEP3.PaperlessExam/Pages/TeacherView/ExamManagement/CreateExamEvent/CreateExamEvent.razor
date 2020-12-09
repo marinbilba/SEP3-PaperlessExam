@@ -1,3 +1,4 @@
+@page "/"
 @page "/CreateExamEvent"
 @using Radzen
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
@@ -13,20 +14,20 @@
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
 
 @* <div class="jumbotron text-center"> *@
-    <h1>Create Exam Event</h1>
+<h1>Create Exam Event</h1>
 @* </div> *@
 <RadzenContent Container="main">
     <ChildContent>
         <RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
             <Steps>
                 @* First step *@
-                <RadzenStepsItem Text="Exam title" Disabled="_firstStepDisable" >
+                <RadzenStepsItem Text="Exam title" Disabled="_firstStepDisable">
                     <div class="row">
                         <div class="col-md-1 padding-right0">
-                            <RadzenLabel Text="Title"/>
+                            <RadzenLabel Text="Exam Title"/>
                         </div>
                         <div class="col-md-3 padding-left0">
-                            <RadzenTextBox style="margin-bottom: 5px;" Change="@(args=>SetTitle(args))">
+                            <RadzenTextBox style="margin-bottom: 5px;" Change="@(args => SetTitle(args))">
                             </RadzenTextBox>
 
                         </div>
@@ -35,6 +36,7 @@
                             </RadzenButton>
                         </div>
                     </div>
+                    <div style="color:red">@_errorMessage</div>
                 </RadzenStepsItem>
 
                 @* Second Step *@
@@ -44,7 +46,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>ExamTitle</th>
                             <th>Topic</th>
                             <th>Preview</th>
                             <th>Choose</th>
@@ -74,14 +76,14 @@
                         </tbody>
                     </table>
                 </RadzenStepsItem>
-                
+
                 @* Third step *@
-                <RadzenStepsItem Text="Select multiple Choice Questions" Disabled="_thirdStepDisable ">
+                <RadzenStepsItem Text="Select multiple Choice Questions" Disabled="_thirdStepDisable">
                     <h1>Select Multiple Choice Sets</h1>
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>ExamTitle</th>
                             <th>Topic</th>
                             <th>Preview</th>
                             <th>Choose</th>
@@ -117,7 +119,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>ExamTitle</th>
                             <th>Topic</th>
                             <th>Edit</th>
                             <th>Delete</th>
@@ -130,7 +132,7 @@
                             @foreach (var item in _examEventSets)
                             {
                                 <tr>
-                                    @* <td>@item.Title</td> *@
+                                    @* <td>@item.ExamTitle</td> *@
                                     @* <td>@item.Topic</td> *@
 
                                 </tr>
@@ -139,9 +141,9 @@
                         </tbody>
                     </table>
                 </RadzenStepsItem>
-                
+
                 @* Fifth step *@
-                
+
                 <RadzenStepsItem Text="Asign students" Disabled="_fifthStepDisable">
                     <h1>Assign students to exam</h1>
                     <div class="row">
@@ -154,13 +156,13 @@
                             <input type="text" placeholder="Type username" @bind-value="_searchedUsername"/>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-2">
                         <button class="btn btn-success btn-lg" @onclick="@(SearchByFirstNameOrUsername)">
                             Search
                         </button>
                     </div>
-                    
+
                     <table class="table">
                         <thead>
                         <tr>
@@ -192,17 +194,17 @@
                                 @* </td> *@
                             </tr>
                         }
-                    
+
                         </tbody>
                     </table>
-                    
+
                 </RadzenStepsItem>
-                
+
                 @* Sixth step *@
                 <RadzenStepsItem Text="Review students" Disabled="_sixthStepDisable">
                     <h1>Review assigned students</h1>
                 </RadzenStepsItem>
-                
+
                 @*Seventh step*@
                 <RadzenStepsItem Text="Set date and time" Disabled="_seventhStepDisable">
                     <h1>Set date and time</h1>
@@ -213,9 +215,11 @@
 </RadzenContent>
 
 @code {
+    private ExaminationEvent _examinationEvent;
+
     private IList<WrittenSet> _writtenSets;
     private IList<MultipleChoiceSet> _multipleChoiceSets;
-    private IList<ExamEventSet> _examEventSets;
+    private IList<ExaminationEvent> _examEventSets;
     private WrittenSet _writtenSet;
     private MultipleChoiceSet _multipleChoiceSet;
     private string _examTitle;
@@ -236,12 +240,12 @@
     private bool _seventhStepDisable = true;
 
     private string _errorMessage;
-    
+
     private string _searchedFirstName;
     private string _searchedUsername;
     private IList<User> _allUsers = new List<User>();
 
-    
+
     protected async Task StepChange(int args)
     {
         Console.WriteLine(args);
@@ -257,7 +261,7 @@
                 Console.WriteLine(_examTitle);
                 Console.WriteLine(_multipleChoiceSets);
                 break;
-                
+
             case 3:
                 _thirdStepDisable = true;
                 _fifthStepDisable = false;
@@ -267,7 +271,7 @@
             case 4:
                 _fourthStepDisable = true;
                 _sixthStepDisable = false;
-                    break;
+                break;
             case 5:
                 _fifthStepDisable = true;
                 _seventhStepDisable = false;
@@ -291,48 +295,46 @@
     private async Task AddToWrittenExamSet(WrittenSet set)
     {
         _errorMessage = "";
-    try
-    {
-       WrittenSet writtenSet = await ExamService.AddWrittenSet(set);
-        _writtenSets.Remove(set);
-    }
-    catch (Exception e)
-    {
-        _errorMessage = e.Message;
-        Console.WriteLine(e);
-    }
+        try
+        {
+            WrittenSet writtenSet = await ExamService.AddWrittenSet(set);
+            _writtenSets.Remove(set);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
     }
 
     private async Task AddMultipleChoiceExamSet(MultipleChoiceSet set)
     {
-       
-            _errorMessage = ""; 
-            try 
-            { 
-              MultipleChoiceSet multipleChoiceSet =  await ExamService.AddMultipleChoiceSet(set); 
-                _multipleChoiceSets.Remove(set); 
-           } 
-            catch (Exception e) 
-           { 
-               _errorMessage = e.Message; 
-                Console.WriteLine(e); 
-           } 
-       
+        _errorMessage = "";
+        try
+        {
+            MultipleChoiceSet multipleChoiceSet = await ExamService.AddMultipleChoiceSet(set);
+            _multipleChoiceSets.Remove(set);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
     }
 
     private void CheckErrorsOnFirstStep()
     {
-        //Check if the user entered a title
+    //Check if the user entered a title
         if (_examTitle == null)
         {
             _errorMessage = "Enter title";
         }
         else
         {
-             _errorMessage=String.Empty;
+            _errorMessage = String.Empty;
         }
     }
-    
+
     private void EvaluateIfSecondStepIsAvailable()
     {
         if (_examTitleIsSet)
@@ -352,57 +354,55 @@
     {
         if (value != null)
         {
-            _examTitle = value;
-            // examEventSet.Title = _examTitle;
+            _examinationEvent.ExamTitle = value;
+    // examEventSet.ExamTitle = _examTitle;
             _examTitleIsSet = true;
         }
+        _errorMessage = "Exam title is required";
 
-       
 
         EvaluateIfSecondStepIsAvailable();
-        
     }
 
     private async Task SearchByFirstNameOrUsername()
     {
         _errorMessage = String.Empty;
-        // _loadingShow = true;
+    // _loadingShow = true;
         if (String.IsNullOrEmpty(_searchedUsername) && String.IsNullOrEmpty(_searchedFirstName))
         {
             _errorMessage = "You must enter the username or first name";
-            // _loadingShow = false;
-            
-        }else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
+    // _loadingShow = false;
+        }
+        else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
         {
             _errorMessage = "Only one search criteria is allowed";
-            // _loadingShow = false;
+    // _loadingShow = false;
         }
         else if (!String.IsNullOrEmpty(_searchedFirstName))
         {
             try
             {
-
                 _allUsers = await UserService.FindByFirstName(_searchedFirstName);
-                // _loadingShow = false;
-
+    // _loadingShow = false;
             }
             catch (Exception e)
             {
-                // _loadingShow = false;
+    // _loadingShow = false;
                 Console.WriteLine(e);
                 _errorMessage = e.Message;
             }
-        }else if (!String.IsNullOrEmpty(_searchedUsername))
+        }
+        else if (!String.IsNullOrEmpty(_searchedUsername))
         {
             try
             {
                 User tempUser = await UserService.FindByUsername(_searchedUsername);
                 _allUsers.Add(tempUser);
-                // _loadingShow = false;
+    // _loadingShow = false;
             }
             catch (Exception e)
             {
-                // _loadingShow = false;
+    // _loadingShow = false;
                 Console.WriteLine(e);
                 _errorMessage = e.Message;
             }

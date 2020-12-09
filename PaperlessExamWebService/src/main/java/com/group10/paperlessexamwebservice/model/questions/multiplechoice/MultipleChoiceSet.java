@@ -1,11 +1,13 @@
 package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 
+import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,9 +20,10 @@ import java.util.Objects;
  */
 public class MultipleChoiceSet extends QuestionsSet {
 
-    private List<MultipleChoiceQuestion> multipleChoiceQuestions = new ArrayList<>();
-
     private User user;
+    private Date updatedTimestamp;
+    @Hidden
+    private ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
 
     /**
      * Instantiates a new Multiple choice set.
@@ -37,60 +40,17 @@ public class MultipleChoiceSet extends QuestionsSet {
      */
     public MultipleChoiceSet(String title, String topic, User user) {
         super(title, topic);
-        this.user=user;
-    }
-
-
-    /**
-     * Add question.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     */
-    public void addQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
-        this.multipleChoiceQuestions.add(multipleChoiceQuestion);
-        multipleChoiceQuestion.setMultipleChoiceSet(this);
+        this.user = user;
     }
 
     /**
-     * Remove question.
+     * Instantiates a new Multiple choice set.
      *
-     * @param multipleChoiceQuestions the multiple choice questions
+     * @param title the title
+     * @param topic the topic
      */
-    public void removeQuestion(MultipleChoiceQuestion multipleChoiceQuestions) {
-        this.multipleChoiceQuestions.remove(multipleChoiceQuestions);
-        multipleChoiceQuestions.setMultipleChoiceSet(null);
-    }
-
-    /**
-     * Add question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void addQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.addQuestionOption(questionOption);
-            }
-        }
-    }
-
-    /**
-     * Gets multiple choice questions.
-     *
-     * @return the multiple choice questions
-     */
-    public List<MultipleChoiceQuestion> getMultipleChoiceQuestions() {
-        return multipleChoiceQuestions;
-    }
-
-    /**
-     * Sets multiple choice questions.
-     *
-     * @param multipleChoiceQuestions the multiple choice questions
-     */
-    public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
-        this.multipleChoiceQuestions = multipleChoiceQuestions;
+    public MultipleChoiceSet(String title, String topic) {
+        super(title, topic);
     }
 
     /**
@@ -111,44 +71,48 @@ public class MultipleChoiceSet extends QuestionsSet {
         this.user = user;
     }
 
+    public ArrayList<MultipleChoiceQuestion> getMultipleChoiceQuestionList() {
+        return multipleChoiceQuestionList;
+    }
+
+    public void setMultipleChoiceQuestionList(ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList) {
+        this.multipleChoiceQuestionList = multipleChoiceQuestionList;
+    }
+
+    private boolean sameAsFormer(User newUser) {
+        return Objects.equals(user, newUser);
+    }
+
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
+    }
+
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
+    }
+
     public String getTitle() {
         return super.getTitle();
     }
+
     public String getTopic() {
         return super.getTopic();
     }
 
-    /**
-     * Remove question option.
-     *
-     * @param multipleChoiceQuestion the multiple choice question
-     * @param questionOption         the question option
-     */
-    public void removeQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption) {
-        for (var question : this.multipleChoiceQuestions) {
-            if (question.equals(multipleChoiceQuestion)) {
-                multipleChoiceQuestion.removeQuestionOption(questionOption);
-            }
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof MultipleChoiceSet)) return false;
         if (!super.equals(o)) return false;
-        else {
-            MultipleChoiceSet other = (MultipleChoiceSet) o;
-            return multipleChoiceQuestions.equals(other.multipleChoiceQuestions)&&user.equals(other.user);
-        }
+        MultipleChoiceSet that = (MultipleChoiceSet) o;
+        return user.equals(that.user) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                multipleChoiceQuestionList.equals(that.multipleChoiceQuestionList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), multipleChoiceQuestions);
+        return Objects.hash(super.hashCode());
     }
 }

@@ -1,4 +1,4 @@
-package com.group10.databaselayer.entity.questions.written;
+package com.group10.databaselayer.annotations.hidden;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

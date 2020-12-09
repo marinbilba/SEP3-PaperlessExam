@@ -1,33 +1,35 @@
 package com.group10.databaselayer.entity.questions.written;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.annotations.Expose;
-import com.group10.databaselayer.entity.questions.Question;
-import org.springframework.data.annotation.Transient;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * The type Written question.
+ */
 @Entity
-@IdClass(Question.class)
-public class WrittenQuestion extends Question {
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade=CascadeType.PERSIST)
-    @Hidden
+public class WrittenQuestion {
+    @GeneratedValue
+    @Id
+    private Long id;
+
+    private int questionNumber;
+
+    private String question;
+
+    private double score;
+    @ManyToOne()
+//    @JoinColumns({
+//            @JoinColumn(name = "multiple_choice_set_id"),
+//            @JoinColumn(name = "multiple_choice_set_title"),
+//            @JoinColumn(name = "multiple_choice_set_topic"),
+//    })
+    @Fetch(FetchMode.SELECT)
     private WrittenSet writtenSet;
-
-
     /**
      * Instantiates a new Written question.
      */
@@ -35,17 +37,12 @@ public class WrittenQuestion extends Question {
 
     }
 
-    /**
-     * Instantiates a new Written question.
-     *
-     * @param question the question
-     * @param score    the score
-     */
-    public WrittenQuestion(String question, double score,int questionNumber) {
-        super(question, score,questionNumber);
-
-}
-
+    public WrittenQuestion(int questionNumber, String question, double score, WrittenSet writtenSet) {
+        this.questionNumber = questionNumber;
+        this.question = question;
+        this.score = score;
+        this.writtenSet = writtenSet;
+    }
 
     /**
      * Gets written set.
@@ -64,47 +61,53 @@ public class WrittenQuestion extends Question {
     public void setWrittenSet(WrittenSet writtenSet) {
         this.writtenSet = writtenSet;
     }
-public String getQuestion(){
-        return super.getQuestion();
-}
 
-    /**
-     * Get question score double.
-     *
-     * @return the double
-     */
-    public double getQuestionScore(){
-        return super.getScore();
+    public Long getId() {
+        return id;
     }
-    /**
-     * Sets question.
-     *
-     * @param question the question
-     */
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
     public void setQuestion(String question) {
-        super.setQuestion(question);
+        this.question = question;
     }
-    /**
-     * Sets score.
-     *
-     * @param score the question
-     */
+
+    public double getScore() {
+        return score;
+    }
+
     public void setScore(double score) {
-        super.setScore(score);
+        this.score = score;
     }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null) { return false; }
-        if (getClass() != o.getClass()) { return false; }
-        if (! super.equals(o)) return false;
-        else {
-            WrittenQuestion other=(WrittenQuestion) o;
-       return writtenSet.equals(other.writtenSet);
-        }
+        if (this == o) return true;
+        if (!(o instanceof WrittenQuestion)) return false;
+        WrittenQuestion that = (WrittenQuestion) o;
+        return questionNumber == that.questionNumber &&
+                Double.compare(that.score, score) == 0 &&
+                id.equals(that.id) &&
+                question.equals(that.question) &&
+                writtenSet.equals(that.writtenSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), writtenSet);
+        return Objects.hash(id, questionNumber, question, score, writtenSet);
     }
 }
