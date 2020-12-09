@@ -27,14 +27,15 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
         public void AddQuestionOption(QuestionOption questionOption)
         {
             QuestionOptions.Add(questionOption);
-            questionOption.MultipleChoiceQuestion = this;
+            
         }
 
         public void RemoveQuestionOption(QuestionOption questionOption)
         {
             QuestionOptions.Remove(questionOption);
-            questionOption.MultipleChoiceQuestion = null;
+            
         }
+        
 
         public void RemoveQuestionOption(int i)
         {

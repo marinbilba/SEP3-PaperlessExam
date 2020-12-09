@@ -3,16 +3,16 @@
     public class QuestionOption
     {
         public long Id { get; set; }
-        public bool IsCorrectAnswer { get; set; }
+        public bool CorrectAnswer { get; set; }
         public string Answer { get; set; }
 
         public MultipleChoiceQuestion MultipleChoiceQuestion { get; set; }
         
         public QuestionOption() {}
 
-        public QuestionOption(bool isCorrectAnswer, string answer)
+        public QuestionOption(bool correctAnswer, string answer)
         {
-            IsCorrectAnswer = isCorrectAnswer;
+            CorrectAnswer = correctAnswer;
             Answer = answer;
         }
         

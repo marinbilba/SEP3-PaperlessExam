@@ -6,9 +6,11 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 {
     public interface IQuestionSetsService
     {
-        Task<bool> ValidateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
+        Task<MultipleChoiceSet> CreateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
 
-        Task<MultipleChoiceSet> GetMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
+        Task<MultipleChoiceQuestion> AddMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion);
+
+        Task<QuestionOption> AddMultipleChoiceQuestionOption(QuestionOption questionOption);
     }
     
     

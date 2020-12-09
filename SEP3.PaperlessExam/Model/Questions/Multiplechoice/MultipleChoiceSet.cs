@@ -25,8 +25,29 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 
         public void RemoveQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
         {
-            MultipleChoiceQuestions.Add(multipleChoiceQuestion);
-            multipleChoiceQuestion.MultipleChoiceSet = this;
+            MultipleChoiceQuestions.Remove(multipleChoiceQuestion);
+            // multipleChoiceQuestion.MultipleChoiceSet = this;
+        }
+        
+        public void RemoveQuestion(int i)
+        {
+            MultipleChoiceQuestions.RemoveAt(i);
+            // multipleChoiceQuestion.MultipleChoiceSet = this;
+        }
+
+        public MultipleChoiceQuestion GetQuestionBeforeLastQuestion()
+        {
+            return MultipleChoiceQuestions[MultipleChoiceQuestions.Count-2];
+        }
+
+        public MultipleChoiceQuestion GetLastQuestion()
+        {
+            return MultipleChoiceQuestions[MultipleChoiceQuestions.Count - 1];
+        }
+
+        public void RemoveLastQuestion()
+        {
+            MultipleChoiceQuestions.RemoveAt(MultipleChoiceQuestions.Count-1);
         }
 
         public void AddQuestionOption(MultipleChoiceQuestion multipleChoiceQuestion, QuestionOption questionOption)

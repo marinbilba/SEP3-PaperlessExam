@@ -85,7 +85,7 @@
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
                         LogUsername();
-                        <MultipleChoiceQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
+                        <MultipleChoiceQuestions MultipleChoiceSet="@_multipleChoiceSet" Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
                     }
                     else
                     {
