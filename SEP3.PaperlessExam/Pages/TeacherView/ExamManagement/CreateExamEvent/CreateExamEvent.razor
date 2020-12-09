@@ -1,6 +1,7 @@
 @page "/"
 @page "/CreateExamEvent"
 @using Radzen
+@using SEP3.PaperlessExam.Authentication
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 @using SEP3.PaperlessExam.Model
@@ -10,7 +11,7 @@
 @inject NavigationManager NavigationManager
 @inject IExamService ExamService
 @inject IUserService UserService
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
 
 @* <div class="jumbotron text-center"> *@
@@ -285,7 +286,13 @@
                 break;
         }
     }
-
+    private async Task LogUsername()
+    {
+        UserService.LoginUser(new User());
+        var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        string username = authState.Username;
+    }
+    
     private void PreviewWrittenSet()
     {
         NavigationManager.NavigateTo("/");

@@ -74,5 +74,10 @@ namespace SEP3.PaperlessExam.Authentication
             ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth_type");
             return identity;
         }
+
+        public User GetCachedUser()
+        {
+            return cachedUser;
+        }
     }
 }
