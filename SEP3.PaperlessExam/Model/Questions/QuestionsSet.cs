@@ -4,18 +4,19 @@ using System.Text.Json.Serialization;
 namespace SEP3.PaperlessExam.Model.Questions
 {
     public class QuestionsSet
-    {
+    {      [JsonPropertyName("id")]public long Id { get; set; }
         [JsonPropertyName("title")]public string Title { get; set; }
-        [JsonPropertyName("topic")]public string Topic { get; set; } 
-        [JsonPropertyName("date")] public DateTime DateTime { get; set; }
-        
-        public QuestionsSet(){}
+        [JsonPropertyName("topic")]public string Topic { get; set; }
 
-        public QuestionsSet(string title, string topic, DateTime dateTime)
+        public QuestionsSet()
         {
-            this.Title = title;
-            this.Topic = topic;
-            this.DateTime = dateTime;
         }
+
+        public QuestionsSet(string title, string topic)
+        {
+            Title = title;
+            Topic = topic;
+        }
+        
     }
 }

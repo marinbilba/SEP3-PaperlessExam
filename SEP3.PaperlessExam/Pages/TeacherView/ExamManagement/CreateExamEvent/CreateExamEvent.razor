@@ -38,7 +38,6 @@
                     </div>
                     <div style="color:red">@_errorMessage</div>
                 </RadzenStepsItem>
-
                 @* Second Step *@
                 <RadzenStepsItem Text="Select written questions"Disabled="_secondStepDisable">
                     <h1>Select Written Sets</h1>
@@ -46,9 +45,9 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>ExamTitle</th>
+                            <th>Title</th>
                             <th>Topic</th>
-                            <th>Preview</th>
+                            <th>Create/Update date</th>
                             <th>Choose</th>
                         </tr>
                         </thead>
@@ -75,6 +74,7 @@
                         }
                         </tbody>
                     </table>
+                      <div style="color:red">@_errorMessage</div>
                 </RadzenStepsItem>
 
                 @* Third step *@
@@ -215,7 +215,7 @@
 </RadzenContent>
 
 @code {
-    private ExaminationEvent _examinationEvent;
+    private ExaminationEvent _examinationEvent=new ExaminationEvent();
 
     private IList<WrittenSet> _writtenSets;
     private IList<MultipleChoiceSet> _multipleChoiceSets;
@@ -223,6 +223,7 @@
     private WrittenSet _writtenSet;
     private MultipleChoiceSet _multipleChoiceSet;
     private string _examTitle;
+    
     private bool _examTitleIsSet;
 
     private bool _firstStepDisable = false;
@@ -325,13 +326,14 @@
     private void CheckErrorsOnFirstStep()
     {
     //Check if the user entered a title
-        if (_examTitle == null)
+        if (_examinationEvent.ExamTitle == null)
         {
-            _errorMessage = "Enter title";
+            _errorMessage = "Exam title is required";
         }
         else
         {
             _errorMessage = String.Empty;
+            _examTitleIsSet = true;
         }
     }
 
@@ -358,8 +360,10 @@
     // examEventSet.ExamTitle = _examTitle;
             _examTitleIsSet = true;
         }
-        _errorMessage = "Exam title is required";
-
+        else
+        {
+            _errorMessage = "Exam title is required"; 
+        }
 
         EvaluateIfSecondStepIsAvailable();
     }

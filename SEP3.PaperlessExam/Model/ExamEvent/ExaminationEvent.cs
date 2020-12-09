@@ -21,6 +21,10 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
         [JsonPropertyName("examdateandtime")] public DateTime ExamDateAndTime { get; set; }
         [JsonPropertyName("updatedtimestamp")] private DateTime UpdatedTimestamp { get; set; }
 
+        public ExaminationEvent()
+        {
+        }
+
         public ExaminationEvent(string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime)
         {
             ExamTitle = examTitle;
