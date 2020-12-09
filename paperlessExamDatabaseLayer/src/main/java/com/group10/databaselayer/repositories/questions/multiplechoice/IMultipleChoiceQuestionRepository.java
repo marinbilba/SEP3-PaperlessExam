@@ -3,6 +3,7 @@ package com.group10.databaselayer.repositories.questions.multiplechoice;
 import com.group10.databaselayer.entity.questions.Question;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,6 @@ public interface IMultipleChoiceQuestionRepository extends JpaRepository<Multipl
 
 
     MultipleChoiceQuestion findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndQuestionNumberAndQuestionAndScore(String topic, String title, Long id, int questionNumber, String question, double questionScore);
+
 
 }

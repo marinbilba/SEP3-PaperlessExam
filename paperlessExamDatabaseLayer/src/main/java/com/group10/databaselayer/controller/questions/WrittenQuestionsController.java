@@ -2,8 +2,10 @@ package com.group10.databaselayer.controller.questions;
 
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
@@ -165,4 +167,20 @@ public class WrittenQuestionsController {
         throw new QuestionSetNotFound("Written set with given title and topic was not found");
     }
 
+    public WrittenSet getWrittenSet(WrittenSet writtenSet) {
+        return writtenSetRepository.findByTitleAndTopicAndUserId(writtenSet.getTitle(), writtenSet.getTopic(), writtenSet.getUser().getId());
+
+    }
+
+    public WrittenQuestion createUpdateWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
+        return writtenQuestionRepository.save(writtenSetQuestion);
+    }
+
+    public WrittenQuestion getWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
+        WrittenSet writtenSet=writtenSetQuestion.getWrittenSet();
+        return writtenQuestionRepository.findByWrittenSetTopicAndWrittenSetTitleAndWrittenSetIdAndQuestionNumberAndQuestionAndScore(writtenSet.getTopic(),writtenSet.getTitle(),writtenSet.getId(),writtenSetQuestion.getQuestionNumber(),writtenSetQuestion.getQuestion(),writtenSetQuestion.getScore());
+    }
+    public List<WrittenSet> getAllWrittenSet(User userDeserialized) {
+        return writtenSetRepository.findByUserId(userDeserialized.getId());
+    }
 }

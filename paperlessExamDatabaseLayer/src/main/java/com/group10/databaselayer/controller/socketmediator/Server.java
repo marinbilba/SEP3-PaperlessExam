@@ -44,6 +44,7 @@ public class Server {
     @Autowired
     private IUserRepository userRepository;
 
+
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
     private static final HashSet<Object> controllersSet = new HashSet<>();
@@ -54,6 +55,7 @@ public class Server {
         controllersSet.add(roleController);
         controllersSet.add(userController);
         controllersSet.add(multipleChoiceQuestionsController);
+        controllersSet.add(writtenQuestionsController);
 
         gson = new GsonBuilder();
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());

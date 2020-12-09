@@ -11,4 +11,8 @@ import java.util.List;
 @Repository
 public interface IWrittenQuestionRepository extends JpaRepository<WrittenQuestion, Question> {
     List<WrittenQuestion> findByWrittenSet(WrittenSet writtenSet);
+
+    WrittenQuestion findByWrittenSetTopicAndWrittenSetTitleAndWrittenSetIdAndQuestionNumberAndQuestionAndScore(String topic, String title, Long id, int questionNumber, String question, double score);
+
+
 }

@@ -6,13 +6,11 @@ import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.user.User;
 import com.sun.istack.NotNull;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -28,7 +26,10 @@ public class WrittenSet extends QuestionsSet {
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
-
+    @UpdateTimestamp
+    private Date updatedTimestamp;
+    @OneToMany(mappedBy = "writtenSet")
+    transient private Set<WrittenQuestion> writtenQuestions = new HashSet<WrittenQuestion>();
     /**
      * Instantiates a new Written set.
      */
@@ -46,6 +47,13 @@ public class WrittenSet extends QuestionsSet {
         this.user=user;
     }
 
+    public Date getUpdatedTimestamp() {
+        return updatedTimestamp;
+    }
+
+    public void setUpdatedTimestamp(Date updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
+    }
 
     public String getTitle() {
        return super.getTitle();
@@ -54,26 +62,35 @@ public class WrittenSet extends QuestionsSet {
         return super.getTopic();
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
+    public Set<WrittenQuestion> getWrittenQuestions() {
+        return writtenQuestions;
+    }
+
+    public void setWrittenQuestions(Set<WrittenQuestion> writtenQuestions) {
+        this.writtenQuestions = writtenQuestions;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof WrittenSet)) return false;
         if (!super.equals(o)) return false;
-        else {
-            WrittenSet other = (WrittenSet) o;
-            return user.equals(other.user);
-        }
+        WrittenSet that = (WrittenSet) o;
+        return user.equals(that.user) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                writtenQuestions.equals(that.writtenQuestions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode());
+        return Objects.hash(super.hashCode(), user, updatedTimestamp, writtenQuestions);
     }
 }

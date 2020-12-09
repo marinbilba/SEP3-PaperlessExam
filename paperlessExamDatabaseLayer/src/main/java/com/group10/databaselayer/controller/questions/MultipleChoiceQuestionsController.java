@@ -4,6 +4,9 @@ import com.group10.databaselayer.entity.questions.QuestionsSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
+import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
 import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
@@ -194,6 +197,15 @@ public class MultipleChoiceQuestionsController {
 
     }
 
+    public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
+        MultipleChoiceQuestion multipleChoiceSetQuestion= multipleChoiceSetQuestionOption.getMultipleChoiceQuestion();
+       MultipleChoiceSet multipleChoiceSet=multipleChoiceSetQuestion.getMultipleChoiceSet();
+      // multipleChoiceQuestionOptionRepository.findAll((Pageable) multipleChoiceSetQuestion);
+       QuestionOption qw= multipleChoiceQuestionOptionRepository.findByAnswerAndCorrectAnswerAndMultipleChoiceQuestion_QuestionAndMultipleChoiceQuestion_ScoreAndMultipleChoiceQuestion_QuestionNumber(multipleChoiceSetQuestionOption.getAnswer(),multipleChoiceSetQuestionOption.setCorrectAnswer(),multipleChoiceSetQuestion.getQuestion(),multipleChoiceSetQuestion.getQuestionScore(),multipleChoiceSetQuestion.getQuestionNumber());
+
+        return qw;
+
+    }
     /**
      * Create update multiple choice set question option question option.
      *
@@ -203,5 +215,17 @@ public class MultipleChoiceQuestionsController {
     public QuestionOption createUpdateMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
         return multipleChoiceQuestionOptionRepository.save(multipleChoiceSetQuestionOption);
 
+    }
+
+        public List<MultipleChoiceQuestion> getAllQuestionsByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
+        return multipleChoiceQuestionRepository.findByMultipleChoiceSet(multipleChoiceSet);
+    }
+    public List<QuestionOption> getAllQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
+        return multipleChoiceQuestionOptionRepository.findByMultipleChoiceQuestion(multipleChoiceQuestion);
+    }
+
+
+    public List<MultipleChoiceSet> getAllUsersMultipleChoiceSet(User userDeserialized) {
+        return multipleChoiceSetRepository.findByUserId(userDeserialized.getId());
     }
 }

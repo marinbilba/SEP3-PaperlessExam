@@ -15,12 +15,6 @@ import java.util.Objects;
 @IdClass(Question.class)
 public class MultipleChoiceQuestion extends Question {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumns({
-//            @JoinColumn(name = "multiple_choice_set_id"),
-//            @JoinColumn(name = "multiple_choice_set_title"),
-//            @JoinColumn(name = "multiple_choice_set_topic"),
-//    })
-
     private MultipleChoiceSet multipleChoiceSet;
 
 

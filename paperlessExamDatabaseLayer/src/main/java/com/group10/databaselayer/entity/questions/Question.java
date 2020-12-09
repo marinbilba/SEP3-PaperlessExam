@@ -12,8 +12,9 @@ import java.util.Objects;
  * @version v1.0
  */
 @MappedSuperclass
+@Embeddable
 public class Question implements Serializable {
-    @Column(name = "questionNumber", unique = true)
+    @Column(name = "questionNumber")
     private int questionNumber;
     @Id
     private String question;
