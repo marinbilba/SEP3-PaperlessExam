@@ -5,15 +5,29 @@
 /*Black box with question number*/
 .questionNumberBox {
 
-    width: 36px;
-    height: 34px;
+    width: 35px;
+    height: 31px;
     background: #222120;
+    justify-content: center;
+    
 }
 .questionNumber{
-    width: 36px;
-    background: #222120;
+    color: white;
+    justify-content: center;
+    text-align: center;
+    margin-top: 4px;
+}
+.counterDiv{
     color: white;
     text-align: center;
+}
+.questionNumber{
+    
+    width: 34px;
+    background: #222120;
+    color: white;
+    
+    
 }
 /*Remove spacing between cols right side*/
 .padding-right0{

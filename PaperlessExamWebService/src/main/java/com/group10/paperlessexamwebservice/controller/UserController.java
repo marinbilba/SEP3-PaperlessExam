@@ -120,7 +120,7 @@ public class UserController {
 
 
     /**
-     * Get Method that fetches the users in the system by their firstname. Firstname should be pass as path parameter in the URI
+     * Get Method that fetches the users ix x`n the system by their firstname. Firstname should be pass as path parameter in the URI
      * <p>
      * <b>EXAMPLE</b>:
      * <p>

@@ -1,6 +1,14 @@
-﻿@page "/htr"
+﻿@page "/"
 @page "/createQuestion"
 @using Radzen
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using Microsoft.AspNetCore.Http
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Model
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/createQuestionMain.css">
@@ -13,7 +21,7 @@
         <RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
             <Steps>
                 @* First step *@
-                <RadzenStepsItem Disabled="false" Selected="false" Text="Question type">
+                <RadzenStepsItem Disabled="_firstStepDisable" Selected="false" Text="Question type">
                     <ChildContent>
                         <div class="row">
                             <div class="col-md-2">
@@ -39,7 +47,7 @@
                 <RadzenStepsItem Text="Setup" Disabled="_secondStepDisable">
                     <div class="row">
                         <div class="col-md-1 padding-right0">
-                            <RadzenLabel Text="ExamTitle"/>
+                            <RadzenLabel Text="Title"/>
 
                         </div>
                         <div class="col-md-3 padding-left0">
@@ -71,11 +79,14 @@
                 <RadzenStepsItem Text="Create question" Disabled="_thirdStepDisable">
                     @if (_displayWrittenQuestionBuilder)
                     {
-                        <WrittenQuestions></WrittenQuestions>
+                        LogUsername();
+                        <WrittenQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></WrittenQuestions>
+                        
                     }
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
-                        <MultipleChoiceQuestions></MultipleChoiceQuestions>
+                        LogUsername();
+                        <MultipleChoiceQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
                     }
                     else
                     {
@@ -88,10 +99,26 @@
 </RadzenContent>
 
 @code {
+    
+    private string _authMessage;
+    
+    private string username;
+    
+    private MultipleChoiceSet _multipleChoiceSet;
+    
+    private async Task LogUsername()
+    {
+        UserService.LoginUser(new User());
+        var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        username = authState.Username;
+    }
+    
+    // After second step send multiplechoiceset with 3 args;
+    
     // Question type: Written or Multiple-choice
     private string _questionType;
 
-    private string _errorMessage;
+    private string _errorMessage;    
 
     private bool _displayMultipleChoiceQuestionBuilder;
     private bool _displayWrittenQuestionBuilder;
@@ -99,6 +126,7 @@
     // Used in first step as value for the radio buttons
     int? nullableValue = null;
 
+    private bool _firstStepDisable = true;
     // Controls the access to second step.
     private bool _secondStepDisable = true;
     // Controls the access to third step.
@@ -137,6 +165,7 @@
         if (value != null)
         {
             _questionSetTopic = value;
+            
             _questionSetTopicIsSet = true;
         }
         EvaluateIfThirdStepIsAvailable();
@@ -163,21 +192,18 @@
 
     protected async Task StepChange(int args)
     {
-        Console.WriteLine(args);
+        
         switch (args)
         {
+            case 0:
+                _firstStepDisable = true;
+                break;
             case 1:
+                _firstStepDisable = true;
                 break;
-            case 2:
-                if (_questionType == "Written")
-                {
-                    Console.WriteLine(_questionType);
-                }
-                else if (_questionType == "Multiple-choice")
-                {
-                    Console.WriteLine(_questionType);
-                }
-                break;
+                case 2:
+                    _secondStepDisable = true;
+                    break;
         }
     }
 

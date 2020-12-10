@@ -8,7 +8,6 @@ namespace SEP3.PaperlessExam.Model
     {
         [JsonPropertyName("id")] public int Id { get; set; }
         [JsonPropertyName("username")] public string Username { get; set; }
-        
         [JsonPropertyName("email")] public string Email { get; set; }
         [JsonPropertyName("password")] public string Password { get; set; }
         [JsonPropertyName("confirmPassword")] public string ConfirmPassword { get; set; }

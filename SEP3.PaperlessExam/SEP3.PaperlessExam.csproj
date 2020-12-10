@@ -69,12 +69,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Data\PaperlessExamSevice\UserService" />
       <Folder Include="Pages\Views\Student" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Remove="Pages\Counter.razor" />
       <Content Remove="Pages\FetchData.razor" />
+      <Content Remove="Pages\TeacherView\QuestionManagement\CreateQuestionSet\QuestionManagement.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -86,6 +88,10 @@
 
     <ItemGroup>
       <PackageReference Include="Blazored.Typeahead" Version="4.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Data\PaperlessExamSevice\UserService\IUserService.cs" />
     </ItemGroup>
 
 </Project>

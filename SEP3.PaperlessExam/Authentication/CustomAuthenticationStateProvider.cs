@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
-using SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService;
 using SEP3.PaperlessExam.Model;
 
 namespace SEP3.PaperlessExam.Authentication
@@ -23,6 +22,12 @@ namespace SEP3.PaperlessExam.Authentication
             this.jsRuntime = jsRuntime;
             this.userService = userService;
         }
+
+        public User GetCachedUser()
+        {
+            return cachedUser;    
+        }
+
         
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -75,10 +80,6 @@ namespace SEP3.PaperlessExam.Authentication
             ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth_type");
             return identity;
         }
-
-        public User GetCachedUser()
-        {
-            return cachedUser;
-        }
+        
     }
 }

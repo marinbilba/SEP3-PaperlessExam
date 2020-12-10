@@ -6,8 +6,8 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
     public class MultipleChoiceQuestion : Question
     {
         [JsonPropertyName("multiplechoiceset")] public MultipleChoiceSet MultipleChoiceSet { get; set; }
-       
-       
+
+        public List<QuestionOption> QuestionOptions = new List<QuestionOption>();
 
         public MultipleChoiceQuestion()
         {
@@ -19,5 +19,14 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
             MultipleChoiceSet = multipleChoiceSet;
         }
 
+        public void RemoveQuestionOption(QuestionOption questionOption)
+        {
+            QuestionOptions.Remove(questionOption);
+        }
+        public void AddQuestionOption(QuestionOption questionOption)
+        {
+            QuestionOptions.Add(questionOption);
+            
+        }
     }
 }

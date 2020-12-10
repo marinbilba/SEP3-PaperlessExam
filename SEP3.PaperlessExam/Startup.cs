@@ -17,7 +17,6 @@ using SEP3.PaperlessExam.Data;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService;
-using SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService;
 
 namespace SEP3.PaperlessExam
 {
