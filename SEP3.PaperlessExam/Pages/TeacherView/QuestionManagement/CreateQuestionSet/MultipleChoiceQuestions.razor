@@ -238,7 +238,7 @@
                  {
                      try
                      {
-                         await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer));
+                         await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
                      }
                      catch (Exception e)
                      {
