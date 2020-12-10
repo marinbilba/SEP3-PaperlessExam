@@ -16,14 +16,15 @@
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 
-<h3>Multiple-choice Questions Builder</h3>
+<h3>Multiple-choice Questions Builder</h3>    
 
 <EditForm Model="_multipleChoiceSet">
-
+    
     @for (var _index1 = 0; _index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; _index1++)
     {
+
         var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[_index1];
-        _counter = _index1 + 1;
+        _counter = _index1+1;
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
@@ -50,17 +51,20 @@
             </div>
 
 
+
+
             <div class="row top-buffer justify-content-center">
                 <div class="col-md-1 offset-2">
-                </div>
+                </div> 
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-1"></div>
             </div>
-
-
+            
+            
             @for (var i = 0; i < multipleChoiceQuestion.QuestionOptions.Count; i++)
             {
+                
                 var questionOption = multipleChoiceQuestion.QuestionOptions[i];
                 Console.WriteLine(i);
                 <div class="form-group row top-buffer justify-content-center">
@@ -92,47 +96,46 @@
                     </button>
                 </div>
             </div>
-
+    
 
             @* Add additional option *@
-
+           
         </div>
+
     }
 
 
     @* Add new question && Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-3 offset-9">
-            <RadzenButton Icon="" Text="Add question" Click=@(() => done())></RadzenButton>
+            <RadzenButton Icon="" Text="Add question" Click=@(() =>done() )></RadzenButton>
             <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())>
-            </RadzenButton>
+                                                                </RadzenButton>
             <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
             </RadzenButton>
-
+             
         </div>
-
+        
         @* <div class="col-md-3"> *@
         @*    *@
         @* </div> *@
     </div>
 </EditForm>
-
 @code {
-
+    
     [Parameter]
     public string Username { get; set; }
-
     [Parameter]
     public string Title { get; set; }
-
     [Parameter]
     public string Topic { get; set; }
-
+    
+    
 
     private User _updatedUser;
 
     private string _roleName;
-
+    
     private string _score;
 
     private string _question;
@@ -140,32 +143,37 @@
     private int _counter;
 
     private int _stepper;
-
+    
     private bool _disable;
+
 
 
     private MultipleChoiceSet _multipleChoiceSet;
 
 
+    
+    
+    
     protected override async Task OnInitializedAsync()
     {
+        
         var user = await UserService.FindByUsername(Username);
-
-
+        
+        
         _updatedUser = user;
-        Console.WriteLine(_updatedUser.Username + "  " + Title);
+        Console.WriteLine(_updatedUser.Username+"  "+Title);
 
         _multipleChoiceSet =
-            new MultipleChoiceSet(Title, Topic, _updatedUser);
-
+        new MultipleChoiceSet(Title, Topic, _updatedUser);
         _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-
+        
         _stepper++;
         _disable = true;
-        Console.WriteLine(_stepper + "   stepper");
+        Console.WriteLine(_stepper+"   stepper");
     }
 
-
+    
+    
     bool _correctAnswerValue;
 
     int _questionNumber;
@@ -175,6 +183,7 @@
     private void SetCorrectAnswer(bool? value)
     {
         _correctAnswer = value;
+        
     }
 
     private async Task delete()
@@ -188,22 +197,53 @@
             _multipleChoiceSet.RemoveLastQuestion();
             _stepper--;
             _disable = false;
-            Console.WriteLine(_stepper + "   stepper");
+            Console.WriteLine(_stepper+"   stepper");
         }
+        
     }
-
+    
     private async Task done()
     {
         _multipleChoiceSet.MultipleChoiceQuestions[_counter - 1].QuestionNumber = _counter;
         _disable = false;
-        Console.WriteLine(_stepper + "   stepper");
+        Console.WriteLine(_stepper+"   stepper");
         _stepper++;
         if (_stepper == 1)
         {
             _disable = false;
+            
             try
             {
-                await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(Title, Topic, _updatedUser));
+                  await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
+                
+                var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+            
+            
+                var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
+            
+                
+                try
+                {
+     await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
+                    foreach (var optiom in multipleChoiceQuestionOptions)
+                    {
+                        try
+                        {
+     await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                    }
+                 
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
             catch (Exception e)
             {
@@ -212,39 +252,45 @@
             }
             Console.WriteLine("sdaasda");
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
+            
         }
         else
         {
-            var multipleChoiceQuestion = _multipleChoiceSet.GetLastQuestion();
-
-
-            var multipleChoiceQuestionOptions = multipleChoiceQuestion.QuestionOptions;
-
-            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-            try
-            {
-                await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, _multipleChoiceSet));
-                foreach (var optiom in multipleChoiceQuestionOptions)
-                {
-                    try
-                    {
-                        await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer, optiom.Answer, multipleChoiceQuestion));
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-    // Request to add MultipleChoiceQuestion
+            
+            
+            var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+            
+            
+            var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
+            
+            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion()); 
+             try
+             {
+                  await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
+                 foreach (var optiom in multipleChoiceQuestionOptions)
+                 {
+                     try
+                     {
+                          await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
+                     }
+                     catch (Exception e)
+                     {
+                         Console.WriteLine(e);
+                         throw;
+                     }
+                 }
+                 
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw;
+             }
+           // Request to add MultipleChoiceQuestion
+            
         }
-        Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber + "iobaniii caunter");
+        Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"iobaniii caunter");
+        Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question);
     }
 
 }
