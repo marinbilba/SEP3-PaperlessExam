@@ -64,8 +64,6 @@ namespace SEP3.PaperlessExam.Authentication
             } catch (Exception e) {
                 throw e;
             }
-
-           
             NotifyAuthenticationStateChanged(
                 Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity))));
         Console.WriteLine("Reached"); 

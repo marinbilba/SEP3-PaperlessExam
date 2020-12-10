@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/sfdfsd"
 @page "/createQuestion"
 @using Radzen
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
@@ -108,7 +108,7 @@
     
     private async Task LogUsername()
     {
-        UserService.LoginUser(new User());
+     // await  UserService.LoginUser(new User());
         var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
         username = authState.Username;
     }

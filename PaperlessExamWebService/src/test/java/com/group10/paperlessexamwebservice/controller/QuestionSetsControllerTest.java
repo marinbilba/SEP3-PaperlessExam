@@ -295,7 +295,8 @@ class QuestionSetsControllerTest {
 // Null fields
         MultipleChoiceSet createdMultipleChoiceSet2 = new MultipleChoiceSet("Test", "test");
         MultipleChoiceSet createdMultipleChoiceSet3 = new MultipleChoiceSet(null, "test");
-        
+//        Create set with not existing user
+        MultipleChoiceSet createdMultipleChoiceSet4 = new MultipleChoiceSet(null, "test",new User("NotExist", "NotExist", "NotExist", "NotExist@va.cs", "111111", new Role(1, "Strudent")));
 
 //        ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
 //        assertEquals(result1.getStatusCode(), HttpStatus.OK);
@@ -308,10 +309,18 @@ class QuestionSetsControllerTest {
             ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet3, createdMultipleChoiceSet3.getClass());
             assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST,"Null fields");
         });
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+            ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet3, createdMultipleChoiceSet3.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST,"Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+            ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet4, createdMultipleChoiceSet3.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST,"User that is trying to create the question set is not authorized");
+        });
 
         Assertions.assertThrows(HttpServerErrorException.ServiceUnavailable.class, () -> {
             ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
-            assertEquals(result2.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE,"Service is available");
+            assertNotEquals(result2.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE,"Service is available");
         });
 
     }
