@@ -12,20 +12,29 @@ import com.group10.paperlessexamwebservice.service.exceptions.questionsets.Quest
 import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
 import com.group10.paperlessexamwebservice.service.user.IUserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class QuestionSetsControllerTest {
-private static User user;
+    private static String businessTierUrl;
+    private static RestTemplate restUtility;
+    private static User user;
+
     @BeforeAll
     public static void setup() {
-        user =new User("Silvestru","Mandrila","silvmandrila","silvmandr@va.cs","111111",new Role(1,"Strudent"));
+        businessTierUrl = "http://localhost:8080";
+        restUtility = new RestTemplate();
+        user = new User("Silvestru", "Mandrila", "silvmandrila", "silvmandr@va.cs", "111111", new Role(1, "Strudent"));
     }
 
     @Test
@@ -131,8 +140,7 @@ private static User user;
 //        }
 
 
-
-  //    MultipleChoiceSet ms = null;
+        //    MultipleChoiceSet ms = null;
 //       try {
 //            ms = questionSetsService.getMultipleChoiceSet(new MultipleChoiceSet("Java21e1", "Capitals", user));
 //        } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -279,16 +287,32 @@ private static User user;
 //        System.out.println(gson.toJson(multipleChoiceSetList));
     }
 
+
     @Test
     void createMultipleChoiceSet() {
-        String businessTierUrl = "http://localhost:8080";
-         final RestTemplate restUtility = new RestTemplate();
+// Good case
+        MultipleChoiceSet createdMultipleChoiceSet = new MultipleChoiceSet("Test", "test", user);
+// Null fields
+        MultipleChoiceSet createdMultipleChoiceSet2 = new MultipleChoiceSet("Test", "test");
+        MultipleChoiceSet createdMultipleChoiceSet3 = new MultipleChoiceSet(null, "test");
+        
 
-         MultipleChoiceSet createdMultipleChoiceSet = new MultipleChoiceSet("Test", "test",user);
+//        ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
+//        assertEquals(result1.getStatusCode(), HttpStatus.OK);
 
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet2, createdMultipleChoiceSet2.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST,"Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+            ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet3, createdMultipleChoiceSet3.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST,"Null fields");
+        });
 
-        ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
-        assertEquals(result1.getStatusCode(), HttpStatus.OK);
+        Assertions.assertThrows(HttpServerErrorException.ServiceUnavailable.class, () -> {
+            ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE,"Service is available");
+        });
 
     }
 
