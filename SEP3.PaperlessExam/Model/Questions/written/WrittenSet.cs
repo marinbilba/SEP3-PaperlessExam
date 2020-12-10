@@ -8,8 +8,8 @@ namespace SEP3.PaperlessExam.Model.Questions.written
     {
         [JsonPropertyName("user")] public User User { get; set; } 
         
-        [JsonPropertyName("updatedtimestamp")] public DateTime UpdatedTimestamp { get; set; }
-        
+        [JsonPropertyName("updatedTimestamp")] public DateTime UpdatedTimestamp { get; set; }
+
         public List<WrittenQuestion> WrittenQuestions = new List<WrittenQuestion>();
         public WrittenSet() {}
 

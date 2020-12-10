@@ -11,15 +11,15 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
     {
         [JsonPropertyName("id")] private long id { get; set; }
 
-        [JsonPropertyName("examtitle")] public string ExamTitle { get; set; }
-        [JsonPropertyName("writtensets")] public IList<WrittenSet> WrittenSets { get; set; }
+        [JsonPropertyName("examTitle")] public string ExamTitle { get; set; }
+        [JsonPropertyName("writtenSets")] public IList<WrittenSet> WrittenSets { get; set; }
 
-        [JsonPropertyName("multiplechoicesets")]
+        [JsonPropertyName("multipleChoiceSets")]
         public IList<MultipleChoiceSet> MultipleChoiceSets { get; set; }
 
-        [JsonPropertyName("usersassigned")] public IList<User> UsersAssigned { get; set; }
-        [JsonPropertyName("examdateandtime")] public DateTime ExamDateAndTime { get; set; }
-        [JsonPropertyName("updatedtimestamp")] private DateTime UpdatedTimestamp { get; set; }
+        [JsonPropertyName("usersAssigned")] public IList<User> UsersAssigned { get; set; }
+        [JsonPropertyName("examDateAndTime")] public DateTime ExamDateAndTime { get; set; }
+        [JsonPropertyName("updatedTimestamp")] private DateTime UpdatedTimestamp { get; set; }
 
         public ExaminationEvent()
         {

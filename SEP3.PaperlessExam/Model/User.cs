@@ -36,7 +36,19 @@ namespace SEP3.PaperlessExam.Model
             LastName = lastName;
             Role = role;
         }
-        
+
+        public bool Equals( User y)
+        {
+            if (ReferenceEquals(this, y)) return true;
+            if (ReferenceEquals(this, null)) return false;
+            if (ReferenceEquals(y, null)) return false;
+            if (this.GetType() != y.GetType()) return false;
+            return this.Id == y.Id && this.Username == y.Username && this.Email == y.Email &&
+                   this.Password == y.Password &&
+                   this.ConfirmPassword == y.ConfirmPassword && this.FirstName == y.FirstName &&
+                   this.LastName == y.LastName &&
+                   this.Role.Equals(y.Role);
+        }
+
     }
-    
 }

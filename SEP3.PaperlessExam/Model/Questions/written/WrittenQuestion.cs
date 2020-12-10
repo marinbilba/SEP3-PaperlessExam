@@ -5,9 +5,7 @@ namespace SEP3.PaperlessExam.Model.Questions.written
 {
     public class WrittenQuestion : Question
     {
-        [JsonPropertyName("writtenset")] public WrittenSet WrittenSet { get; set; }
-
-        
+        [JsonPropertyName("writtenSet")] public WrittenSet WrittenSet { get; set; }
         
         public WrittenQuestion(){}
 
