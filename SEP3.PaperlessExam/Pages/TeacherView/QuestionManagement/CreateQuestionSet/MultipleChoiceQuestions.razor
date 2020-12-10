@@ -207,16 +207,18 @@
         _multipleChoiceSet.MultipleChoiceQuestions[_counter - 1].QuestionNumber = _counter;
         _disable = false;
         Console.WriteLine(_stepper+"   stepper");
-        _stepper++;
+        
         if (_stepper == 1)
         {
             _disable = false;
             
             try
             {
-                  await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
+                MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet(Title, Topic, _updatedUser);
+                multipleChoiceSet.MultipleChoiceQuestions = _multipleChoiceSet.MultipleChoiceQuestions;
+                await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(multipleChoiceSet.Title, multipleChoiceSet.Topic, _updatedUser));
                 
-                var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+                var multipleChoiceQuestion = multipleChoiceSet.MultipleChoiceQuestions[_stepper-1];
             
             
                 var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
@@ -224,17 +226,17 @@
                 
                 try
                 {
-     await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
-                    foreach (var optiom in multipleChoiceQuestionOptions)
+                    await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, multipleChoiceSet));
+                    foreach (var option in multipleChoiceQuestionOptions)
                     {
+                        
                         try
                         {
-     await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
+                            await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(option.CorrectAnswer,option.Answer, multipleChoiceQuestion));
                         }
                         catch (Exception e)
                         {
                             Console.WriteLine(e);
-                            throw;
                         }
                     }
                  
@@ -242,13 +244,11 @@
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    throw;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
             Console.WriteLine("sdaasda");
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
@@ -276,7 +276,6 @@
                      catch (Exception e)
                      {
                          Console.WriteLine(e);
-                         throw;
                      }
                  }
                  
@@ -284,13 +283,14 @@
              catch (Exception e)
              {
                  Console.WriteLine(e);
-                 throw;
+                 
              }
            // Request to add MultipleChoiceQuestion
             
         }
         Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"iobaniii caunter");
-        Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question);
+        Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question+"   "+_multipleChoiceSet);
+        _stepper++;
     }
 
 }
