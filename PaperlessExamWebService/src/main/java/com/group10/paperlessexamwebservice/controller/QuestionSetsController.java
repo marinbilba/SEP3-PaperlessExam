@@ -460,7 +460,7 @@ public class QuestionSetsController {
      *  <p>
      *   <b>EXAMPLE</b>:
      *   <p>
-     *   http://{host}:8080/questionsets/createMultipleChoiceSet
+     *   http://{host}:8080/questionsets/createWrittenQuestion
      *   </p>
      *
      *   <b>BODY</b>:
