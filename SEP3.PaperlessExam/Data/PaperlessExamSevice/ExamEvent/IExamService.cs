@@ -12,5 +12,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
         Task<MultipleChoiceSet> AddMultipleChoiceSet(MultipleChoiceSet set);
 
         Task<IList<ExaminationEvent>> GetExaminationEvents(string username);
+        Task<ExaminationEvent> GetExamEvent(ExaminationEvent examinationEvent);
     }
 }

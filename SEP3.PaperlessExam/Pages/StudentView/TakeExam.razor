@@ -1,6 +1,25 @@
-@page "/TakeExam"
+@page "/TakeExam/{examEvent}"
+@using SEP3.PaperlessExam.Model.ExamEvent
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@inject IExamService ExamService
 
 
 @code {
+    [Parameter]
+    public ExaminationEvent examEvent { get; set; }
+
+    private ExaminationEvent _neededExamEvent;
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        ExaminationEvent examinationEvent = await ExamService.GetExamEvent(examEvent);
+        _neededExamEvent.ExamTitle = examinationEvent.ExamTitle;
+        _neededExamEvent.UsersAssigned = examinationEvent.UsersAssigned;
+        _neededExamEvent.WrittenSets = examinationEvent.WrittenSets;
+        _neededExamEvent.MultipleChoiceSets = examinationEvent.MultipleChoiceSets;
+        _neededExamEvent.ExamDateAndTime = examinationEvent.ExamDateAndTime;
+    }
+    
     
 }
