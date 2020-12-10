@@ -227,7 +227,10 @@
         else
         {
             
-            var multipleChoiceQuestion= _multipleChoiceSet.GetQuestionBeforeLastQuestion();
+            
+                var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+            
+            
             var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
             
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion()); 
