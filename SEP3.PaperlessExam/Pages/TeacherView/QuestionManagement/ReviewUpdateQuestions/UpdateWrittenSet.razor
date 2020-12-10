@@ -1,0 +1,51 @@
+@page "/UpdateWrittenQuestion/{set)}"
+@using SEP3.PaperlessExam.Model.Questions.written
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
+@inject IQuestionSetsService QuestionSetsService
+<h3>UpdateWrittenQuestion</h3>
+
+@code {
+    [Parameter]
+    public WrittenSet set{ get; set; }
+    // Loading spinner
+    private bool _loadingShow;
+    // ConfirmNotification
+    private bool _confirmUpdateNotification;
+    private string _errorMessage;
+    private WrittenSet _updatedWrittenSet;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+      _updatedWrittenSet =  await QuestionSetsService.FindWrittenSet(set);
+        _updatedWrittenSet.User = set.User;
+        _updatedWrittenSet.UpdatedTimestamp = set.UpdatedTimestamp;
+        _updatedWrittenSet.Id = set.Id;
+        _updatedWrittenSet.Title = set.Title;
+        _updatedWrittenSet.Topic = set.Topic;
+    }
+
+    private async Task EditQuestionSet()
+    {
+        _confirmUpdateNotification = false;
+        _loadingShow = true;
+        _errorMessage = "";
+        try
+        {
+            WrittenSet tempSet = await QuestionSetsService.UpdateWrittenSet(_updatedWrittenSet);
+            if (tempSet != null)
+            {
+                _confirmUpdateNotification = true;
+                _loadingShow = false;
+            }
+        }
+        catch (Exception e)
+        {
+            _loadingShow = false;
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
+    }
+
+}

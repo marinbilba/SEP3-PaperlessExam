@@ -66,7 +66,7 @@
                 <td>@item.Topic</td>
                 <td>@item.UpdatedTimestamp</td>
                 <td>
-                    <button class="btn btn-success" @onclick="ToEditWrittenQuestion">
+                    <button class="btn btn-success" @onclick="(()=>ToEditWrittenQuestion(item))">
                        Edit
                     </button>
                 </td>
@@ -87,7 +87,7 @@
                 <td>@item.Title</td>
                 <td>@item.Topic</td>
                 <td>
-                    <button class="btn btn-success" @onclick="ToEditMultipleChoiceQuestion">
+                    <button class="btn btn-success" @onclick="(()=>ToEditMultipleChoiceQuestion(item))">
                         Edit
                     </button>
                     <button class="btn btn-danger" @onclick="(() => DeleteMultipleChoice(item))">
@@ -128,14 +128,14 @@ else if(_questionType == "Multiple choice"){
     protected ConfirmBase DeleteConfirmation { get; set; }
     // protected ConfirmBase DeleteConfirmation2 { get; set; }
 
-    private void ToEditWrittenQuestion()
+    private void ToEditWrittenQuestion(WrittenSet set)
     {
-        NavigationManager.NavigateTo($"/UpdateWrittenQuestion/{_writtenSets}");
+        NavigationManager.NavigateTo($"/UpdateWrittenQuestion/{set}");
     }
 
-    private void ToEditMultipleChoiceQuestion()
+    private void ToEditMultipleChoiceQuestion(MultipleChoiceSet set)
     {
-        NavigationManager.NavigateTo($"/UpdateMultipleChoiceQuestion/{_multipleChoiceSets}");
+        NavigationManager.NavigateTo($"/UpdateMultipleChoiceQuestion/{set}");
     }
 
     private async Task DeleteWritten(WrittenSet set)
@@ -204,7 +204,7 @@ else if(_questionType == "Multiple choice"){
             case "Written":
                 try
                 {
-                    _writtenSets = await QuestionSetsService.FindWrittenQuestion(_questionType);
+                    _writtenSets = await QuestionSetsService.FindWrittenSets(_questionType);
                     if (_writtenSets == null)
                     {
                         _errorMessage = "Nothing was found";
@@ -221,7 +221,7 @@ else if(_questionType == "Multiple choice"){
             case "Multiple choice":
                 try
                 {
-                    _multipleChoiceSets = await QuestionSetsService.FindMultipleChoiceQuestion(_questionType);
+                    _multipleChoiceSets = await QuestionSetsService.FindMultipleChoiceSets(_questionType);
                     _loadingShow = false;
                 }
                 catch (Exception e)

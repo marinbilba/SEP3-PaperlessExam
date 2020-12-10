@@ -1,0 +1,52 @@
+@page "/UpdateMultipleChoiceSet{set}"
+@using SEP3.PaperlessExam.Model.Questions.written
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@inject IQuestionSetsService QuestionSetsService
+<h3>UpdateWrittenQuestion</h3>
+
+@code {
+    [Parameter]
+    public MultipleChoiceSet set{ get; set; }
+    // Loading spinner
+    private bool _loadingShow;
+    // ConfirmNotification
+    private bool _confirmUpdateNotification;
+    private string _errorMessage;
+    private MultipleChoiceSet _updatedMultipleChoiceSet;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+      _updatedMultipleChoiceSet =  await QuestionSetsService.FindMultipleChoiceSet(set);
+        _updatedMultipleChoiceSet.User = set.User;
+        _updatedMultipleChoiceSet.UpdatedTimestamp = set.UpdatedTimestamp;
+        _updatedMultipleChoiceSet.Id = set.Id;
+        _updatedMultipleChoiceSet.Title = set.Title;
+        _updatedMultipleChoiceSet.Topic = set.Topic;
+    }
+
+    private async Task EditQuestionSet()
+    {
+        _confirmUpdateNotification = false;
+        _loadingShow = true;
+        _errorMessage = "";
+        try
+        {
+            MultipleChoiceSet tempSet = await QuestionSetsService.UpdateMultipleChoiceSet(_updatedMultipleChoiceSet);
+            if (tempSet != null)
+            {
+                _confirmUpdateNotification = true;
+                _loadingShow = false;
+            }
+        }
+        catch (Exception e)
+        {
+            _loadingShow = false;
+            _errorMessage = e.Message;
+            Console.WriteLine(e);
+        }
+    }
+
+}

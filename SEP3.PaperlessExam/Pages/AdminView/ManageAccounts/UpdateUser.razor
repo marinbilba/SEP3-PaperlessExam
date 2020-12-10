@@ -119,8 +119,6 @@
     protected override async Task OnInitializedAsync()
     {
         User user = await UserService.FindByUsername(Username);
-
-
         _updatedUser.Username = user.Username;
         _updatedUser.FirstName = user.FirstName;
         _updatedUser.LastName = user.LastName;
@@ -128,7 +126,6 @@
         _updatedUser.ConfirmPassword = user.ConfirmPassword;
         _updatedUser.Role = user.Role;
         _updatedUser.Email = user.Email;
-
         _roleName = user.Role.Name;
     }
 
