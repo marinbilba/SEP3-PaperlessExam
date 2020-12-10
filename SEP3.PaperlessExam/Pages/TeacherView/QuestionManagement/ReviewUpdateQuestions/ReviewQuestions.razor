@@ -130,12 +130,12 @@ else if(_questionType == "Multiple choice"){
 
     private void ToEditWrittenQuestion(WrittenSet set)
     {
-        NavigationManager.NavigateTo($"/UpdateWrittenQuestion/{set}");
+        NavigationManager.NavigateTo($"/UpdateWrittenSet/{set}");
     }
 
     private void ToEditMultipleChoiceQuestion(MultipleChoiceSet set)
     {
-        NavigationManager.NavigateTo($"/UpdateMultipleChoiceQuestion/{set}");
+        NavigationManager.NavigateTo($"/UpdateMultipleChoiceSet/{set}");
     }
 
     private async Task DeleteWritten(WrittenSet set)
