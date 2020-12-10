@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace SEP3.PaperlessExam.Model.Questions.written
@@ -5,6 +6,8 @@ namespace SEP3.PaperlessExam.Model.Questions.written
     public class WrittenQuestion : Question
     {
         [JsonPropertyName("writtenset")] public WrittenSet WrittenSet { get; set; }
+
+        
         
         public WrittenQuestion(){}
 
@@ -12,5 +15,7 @@ namespace SEP3.PaperlessExam.Model.Questions.written
         {
             WrittenSet = writtenSet;
         }
+        
+        
     }
 }

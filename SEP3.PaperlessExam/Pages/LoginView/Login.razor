@@ -1,14 +1,13 @@
-﻿@page "/asdasd"
+﻿@page "/sadsda"
 @page "/login"
 
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Authentication
-@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserService UserService;
 @layout LoginLayout
 @inject NavigationManager NavigationManager
-
 
 <link rel="stylesheet" href="css/Login/style.css">
 <AuthorizeView>
@@ -21,11 +20,9 @@
 
                     @if (!_loadingShow)
                     {
-                        
                         <button type="button" @onclick="@SubmitLogin">
                             Login
                         </button>
-                        
                     }
                     else
                     {
@@ -51,11 +48,6 @@
     private string _errorMessage;
 
     private bool _loadingShow = false;
-    
-    
-   
-    
-    
 
     private async Task SubmitLogin()
     {
@@ -68,7 +60,6 @@
             _username = "";
             _password = "";
             NavigationManager.NavigateTo("/index", true);
-            
         }
         catch (Exception e)
         {

@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using SEP3.PaperlessExam.Model.Questions;
+using SEP3.PaperlessExam.Model.Questions.MultipleChoice;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -6,55 +9,101 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
-using SEP3.PaperlessExam.Model.Questions;
-using SEP3.PaperlessExam.Model.Questions.MultipleChoice;
 using SEP3.PaperlessExam.Model.Questions.written;
-using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet;
 
 namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 {
     public class QuestionSetsServiceImpl : IQuestionSetsService
     {
-        private string uri = "";
+        private string uri = "http://localhost:8080";
         private readonly HttpClient client;
-       
-        
-        public Task<bool> ValidateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet)
+
+        public QuestionSetsServiceImpl()
         {
-            throw new System.NotImplementedException();
+            client = new HttpClient();
         }
-        
-        
-        
-        public async Task<IList<WrittenSet>>   FindWrittenQuestion(string type)
+
+        public async Task<MultipleChoiceSet> CreateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet)
         {
-            IList<WrittenSet> setsDeserialize = new List<WrittenSet>();
+            MultipleChoiceSet multipleChoiceSetDeserialize = null;
             HttpResponseMessage responseMessage;
-            // 1. Send GET request
+            string multipleChoiceSetSerialized = JsonSerializer.Serialize(multipleChoiceSet);
+            var content = new StringContent(multipleChoiceSetSerialized, Encoding.UTF8, "application/json");
+            
+            // 1. Send POST request
             try
             {
                 responseMessage =
-                    await client.GetAsync($"{uri}/set/getSetByType/{type}");
+                    await client.PostAsync(uri + "/questionsets/createMultipleChoiceSet", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
                     throw new Exception("Ooops, resource not found");
                 }
             }
-            // 3. Catch the exception in case the Server is not running 
+            // 3. Catch the exception in case the Server is not running
             catch (HttpRequestException e)
             {
-                throw new Exception("No connection could be made because the server is not responding");
+                throw new Exception("No connection... Gfckyourself");
             }
             
             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
             // 4. Check the response status codes, else throws the error message to the client
+            
             if (responseMessage.IsSuccessStatusCode)
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                setsDeserialize = JsonSerializer.Deserialize<IList<WrittenSet>>(readAsStringAsync);
+                multipleChoiceSetDeserialize = JsonSerializer.Deserialize<MultipleChoiceSet>(readAsStringAsync);
+                Console.WriteLine(multipleChoiceSetDeserialize.User.Username);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new Exception(serverMessage);
+            }
             
+            return multipleChoiceSetDeserialize;
+            
+            // return new MultipleChoiceSet("valera", "jora", new User());
+        }
+        
+        public async Task<MultipleChoiceQuestion> AddMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
+        {
+            MultipleChoiceQuestion multipleChoiceQuestionDeserialize = null;
+            HttpResponseMessage responseMessage;
+            string multipleChoiceQuestionSerialized = JsonSerializer.Serialize(multipleChoiceQuestion);
+            var content = new StringContent(multipleChoiceQuestionSerialized, Encoding.UTF8, "application/json");
+
+            // 1. Send POST request
+            try
+            {
+                responseMessage =
+                    await client.PostAsync(uri + "/questionsets/addMultipleChoiceQuestion", content);
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection... Gfckyourself2");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                multipleChoiceQuestionDeserialize = JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
+                Console.WriteLine(multipleChoiceQuestionDeserialize.question);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
@@ -65,40 +114,42 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
                 throw new Exception(serverMessage);
             }
             
-           
-           
-            return setsDeserialize;
-        }
+            return multipleChoiceQuestionDeserialize;
+        } 
         
-         public async Task<IList<MultipleChoiceSet>>   FindMultipleChoiceQuestion(string type)
+        public async Task<QuestionOption> AddMultipleChoiceQuestionOption(QuestionOption questionOption)
         {
-            IList<MultipleChoiceSet> setsDeserialize = new List<MultipleChoiceSet>();
+            QuestionOption questionOptionDeserialize = null;
             HttpResponseMessage responseMessage;
-            // 1. Send GET request
+            string questionOptionSerialize = JsonSerializer.Serialize(questionOption);
+            var content = new StringContent(questionOptionSerialize, Encoding.UTF8, "application/json");
+            Console.WriteLine(questionOption);
+            // 1. Send POST request
             try
             {
                 responseMessage =
-                    await client.GetAsync($"{uri}/set/getSetByType/{type}");
+                    await client.PostAsync(uri + "/questionsets/addMultipleChoiceQuestionOption", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
                     throw new Exception("Ooops, resource not found");
                 }
             }
-            // 3. Catch the exception in case the Server is not running 
+            // 3. Catch the exception in case the Server is not running
             catch (HttpRequestException e)
             {
-                throw new Exception("No connection could be made because the server is not responding");
+                throw new Exception("No connection... Gfckyourself2");
             }
-            
+
             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
             // 4. Check the response status codes, else throws the error message to the client
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                setsDeserialize = JsonSerializer.Deserialize<IList<MultipleChoiceSet>>(readAsStringAsync);
-            
+                questionOptionDeserialize = JsonSerializer.Deserialize<QuestionOption>(readAsStringAsync);
+                Console.WriteLine(questionOptionDeserialize.Answer);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
@@ -109,94 +160,101 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
                 throw new Exception(serverMessage);
             }
             
-           
-            return setsDeserialize;
+            return questionOptionDeserialize;
         }
 
-         // public async Task<IList<WrittenSet>> UpdateWrittenQuestionSet(WrittenSet writtenSet)
-         // {
-         //     IList<WrittenSet> setsDeserialize = new List<WrittenSet>();
-         //     HttpResponseMessage responseMessage;
-         //     string setsSerialized = JsonSerializer.Serialize(writtenSet);
-         //     var content = new StringContent(setsDeserialize, Encoding.UTF8, "application/json");
-         // }
+        public async Task<WrittenSet> CreateWrittenSet(WrittenSet writtenSet)
+        {
+            WrittenSet writtenSetDeserealize = null;
+            HttpResponseMessage responseMessage;
+            string writtenSetSerialize = JsonSerializer.Serialize(writtenSet);
+            var content = new StringContent(writtenSetSerialize, Encoding.UTF8, "application/json");
+            Console.WriteLine(writtenSet);
+            // 1. Send POST request
+            try
+            {
+                responseMessage =
+                    await client.PostAsync(uri + "/questionsets/createWrittenSet", content);
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection... Gfckyourself2");
+            }
 
-         public async Task<WrittenSet> DeleteWritten(WrittenSet writtenSet)
-         {
-             WrittenSet setDeserialize = null;
-             HttpResponseMessage responseMessage;
-             string setSerialized = JsonSerializer.Serialize(writtenSet);
-             var content = new StringContent(setSerialized, Encoding.UTF8, "application/json");
-             // 1. Send POST request
-             try
-             {
-                 responseMessage =
-                     await client.PostAsync(uri + "/user/deleteWritten", content);
-                 // 2. Check if the resource was found, else throw exception to the client
-                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
-                 {
-                     throw new Exception("Ooops, resource not found");
-                 }
-             }
-             // 3. Catch the exception in case the Server is not running 
-             catch (HttpRequestException e)
-             {
-                 throw new Exception("No connection could be made because the server is not responding");
-             }
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
 
-             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
-             // 4. Check the response status codes, else throws the error message to the client
-             if (responseMessage.IsSuccessStatusCode)
-             {
-                 // 5. Deserialize the object
-                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                 setDeserialize = JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
-             }
-             else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
-             {
-                 throw new Exception(serverMessage);
-             }
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                writtenSetDeserealize = JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
+                Console.WriteLine(writtenSetSerialize);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+            
+            return writtenSetDeserealize;
+        }
+        
+        public async Task<WrittenQuestion> AddWrittenQuestion(WrittenQuestion writtenQuestion)
+        {
+            WrittenQuestion writtenQuestionDeserealize = null;
+            HttpResponseMessage responseMessage;
+            string writtenQuestionSerialize = JsonSerializer.Serialize(writtenQuestion);
+            var content = new StringContent(writtenQuestionSerialize, Encoding.UTF8, "application/json");
+            Console.WriteLine(writtenQuestion);
+            // 1. Send POST request
+            try
+            {
+                responseMessage =
+                    await client.PostAsync(uri + "/questionsets/createWrittenSet", content);
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection... Gfckyourself2");
+            }
 
-             return setDeserialize;
-         }
-         
-         public async Task<MultipleChoiceSet> DeleteMultipleChoice(MultipleChoiceSet multipleChoiceSet)
-         {
-             MultipleChoiceSet setDeserialize = null;
-             HttpResponseMessage responseMessage;
-             string setSerialized = JsonSerializer.Serialize(multipleChoiceSet);
-             var content = new StringContent(setSerialized, Encoding.UTF8, "application/json");
-             // 1. Send POST request
-             try
-             {
-                 responseMessage =
-                     await client.PostAsync(uri + "/user/deleteMultipleChoice", content);
-                 // 2. Check if the resource was found, else throw exception to the client
-                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
-                 {
-                     throw new Exception("Ooops, resource not found");
-                 }
-             }
-             // 3. Catch the exception in case the Server is not running 
-             catch (HttpRequestException e)
-             {
-                 throw new Exception("No connection could be made because the server is not responding");
-             }
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
 
-             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
-             // 4. Check the response status codes, else throws the error message to the client
-             if (responseMessage.IsSuccessStatusCode)
-             {
-                 // 5. Deserialize the object
-                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                 setDeserialize = JsonSerializer.Deserialize<MultipleChoiceSet>(readAsStringAsync);
-             }
-             else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
-             {
-                 
-             }
-
-             return setDeserialize;
-         }
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                writtenQuestionDeserealize = JsonSerializer.Deserialize<WrittenQuestion>(readAsStringAsync);
+                Console.WriteLine(writtenQuestionSerialize);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+            
+            return writtenQuestionDeserealize;
+        }
     }
+    
+    
 }

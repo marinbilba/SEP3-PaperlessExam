@@ -31,7 +31,8 @@
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex">
                         <div class="d-flex">
-                            <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber">
+                            <p class="questionNumber">@_counter</p>
+                            @* <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber"> *@
                         </div>
                     </div>
                 </div>
@@ -128,8 +129,8 @@
     public string Title { get; set; }
     [Parameter]
     public string Topic { get; set; }
-    [Parameter]
-    public MultipleChoiceSet MultipleChoiceSet { get; set; }
+    
+    
 
     private User _updatedUser;
 
@@ -203,15 +204,17 @@
     
     private async Task done()
     {
+        _multipleChoiceSet.MultipleChoiceQuestions[_counter - 1].QuestionNumber = _counter;
         _disable = false;
         Console.WriteLine(_stepper+"   stepper");
         _stepper++;
         if (_stepper == 1)
         {
             _disable = false;
+            
             try
             {
-                 // await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
+                 await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
             }
             catch (Exception e)
             {
@@ -224,29 +227,35 @@
         else
         {
             
-            if (_stepper < 3)
-            {
-                var multipleChoiceQuestion = _multipleChoiceSet.GetLastQuestion();
-            }
-            else
-            {
-                var multipleChoiceQuestion= _multipleChoiceSet.GetQuestionBeforeLastQuestion();
-            }
-           
+            var multipleChoiceQuestion= _multipleChoiceSet.GetQuestionBeforeLastQuestion();
+            var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
+            
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion()); 
-            // try
-            // {
-            //     await QuestionSetsService.AddMultipleChoiceQuestion(multipleChoiceQuestion);
-            // }
-            // catch (Exception e)
-            // {
-            //     Console.WriteLine(e);
-            //     throw;
-            // }
-           //Request to add MultipleChoiceQuestion
+             try
+             {
+                 await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
+                 foreach (var optiom in multipleChoiceQuestionOptions)
+                 {
+                     try
+                     {
+                         await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer));
+                     }
+                     catch (Exception e)
+                     {
+                         Console.WriteLine(e);
+                         throw;
+                     }
+                 }
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw;
+             }
+           // Request to add MultipleChoiceQuestion
             
         }
-       
+        Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"iobaniii caunter");
     }
 
 }

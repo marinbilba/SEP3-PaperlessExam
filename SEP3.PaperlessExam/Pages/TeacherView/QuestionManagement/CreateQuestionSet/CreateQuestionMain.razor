@@ -47,7 +47,7 @@
                 <RadzenStepsItem Text="Setup" Disabled="_secondStepDisable">
                     <div class="row">
                         <div class="col-md-1 padding-right0">
-                            <RadzenLabel Text="ExamTitle"/>
+                            <RadzenLabel Text="Title"/>
 
                         </div>
                         <div class="col-md-3 padding-left0">
@@ -79,13 +79,14 @@
                 <RadzenStepsItem Text="Create question" Disabled="_thirdStepDisable">
                     @if (_displayWrittenQuestionBuilder)
                     {
-                        <WrittenQuestions></WrittenQuestions>
+                        LogUsername();
+                        <WrittenQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></WrittenQuestions>
                         
                     }
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
                         LogUsername();
-                        <MultipleChoiceQuestions MultipleChoiceSet="@_multipleChoiceSet" Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
+                        <MultipleChoiceQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
                     }
                     else
                     {

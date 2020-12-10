@@ -1,39 +1,47 @@
 ﻿@page "/writtenQuestionWiz"
 @using SEP3.PaperlessExam.Model.Questions.written
+@using SEP3.PaperlessExam.Model.Questions.MultipleChoice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.ReviewUpdateQuestions
+
+@inject IJSRuntime JsRuntime
+@inject IUserService UserService
+@inject IQuestionSetsService QuestionSetsService
+@inject NavigationManager NavigationManager
+@inject IToastService toastService
 <h3>Written Questions Builder</h3>
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
-<EditForm Model="_writtenSet" OnValidSubmit="OnValidSubmit">
-    @for (var i = 0; i < _writtenSet.GetWrittenQuestions().Count; i++)
+<EditForm Model="_writtenSet">
+    @for (var i = 0; i < _writtenSet.WrittenQuestions.Count; i++)
     {
-        int count = i + 1;
-        var writtenQuestion = _writtenSet.GetWrittenQuestions()[i];
+        _counter = i+1;
+        var writtenQuestion = _writtenSet.WrittenQuestions[i];
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex justify-content-center">
-                        @count
+                       <p class="questionNumber">@_counter</p> 
                     </div>
                 </div>
                 <div class="col-md-11">
-                    <input type="text" class="form-control" placeholder="Type your question"/>
+                    <input type="text" class="form-control" placeholder="Type your question" @bind-value="writtenQuestion.question"/>
                 </div>
             </div>
             @* Type number of points *@
             <div class="row top-buffer">
                 <div class="col-md-1 offset-1  padding-right0 ">
-                    <input type="number" class="form-control" placeholder="Score"/>
+                    <input type="number" class="form-control" placeholder="Score" @bind-value="writtenQuestion.Score"/>
                 </div>
                 <div class="col-md-1 padding-left0">
                     <label>points</label>
                 </div>
             </div>
-            <div class="row top-buffer justify-content-end">
-                            <RadzenButton style="width: auto; margin-right: 7px" Text="Delete Question" Click=@(() => _writtenSet.RemoveQuestion(writtenQuestion))>
-                            </RadzenButton>
-                        </div>
+            
 
         </div>
     }
@@ -41,7 +49,8 @@
 @* Add new question && Finish buttons *@
 <div class="row top-buffer justify-content-between">
     <div class="col-md-3 offset-9">
-        <RadzenButton Icon="" Click="@(()=> _writtenSet.AddQuestion(new WrittenQuestion()))" Text="Add question"> </RadzenButton>
+        <RadzenButton Icon="" Click=@(()=> done()) Text="Add question"> </RadzenButton>
+        <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())></RadzenButton>
         <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
         </RadzenButton>
     </div>
@@ -55,6 +64,97 @@
 @code {
     private WrittenSet _writtenSet =new WrittenSet();
     
-    int questionNumber;
-    public EventCallback OnValidSubmit { get; set; }
+    [Parameter]
+    public string Username { get; set; }
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Topic { get; set; }
+
+    private int _counter;
+
+    private User _updatedUser;
+
+    private int _stepper;
+
+    private bool _disable;
+    int _questionNumber;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        
+        var user = await UserService.FindByUsername(Username);
+        
+        
+        _updatedUser = user;
+        Console.WriteLine(_updatedUser.Username+"  "+Title);
+
+        _writtenSet =
+            new WrittenSet(Title, Topic, _updatedUser);
+        _writtenSet.AddQuestion(new WrittenQuestion());
+        
+        _stepper++;
+        _disable = true;
+        
+    }
+
+    private async Task delete()
+    {
+        if (_stepper == 1)
+        {
+            _disable = true;
+        }
+        else
+        {
+            _writtenSet.RemoveLastQuestion();
+            _stepper--;
+            _disable = false;
+            Console.WriteLine(_stepper+"   stepper");
+        }
+        
+    }
+    
+    private async Task done()
+    {
+        _writtenSet.WrittenQuestions[_counter - 1].QuestionNumber = _counter;
+        _disable = false;
+        Console.WriteLine(_stepper+"   stepper");
+        _stepper++;
+        if (_stepper == 1)
+        {
+            _disable = false;
+            
+            try
+            {
+                  await QuestionSetsService.CreateWrittenSet( new WrittenSet(Title, Topic, _updatedUser));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+            _writtenSet.AddQuestion(new WrittenQuestion());
+        }
+        else
+        {
+            
+            var writtenQuestion = _writtenSet.GetLastQuestion();
+            
+            try
+            {
+                await QuestionSetsService.AddWrittenQuestion( new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+           
+            _writtenSet.AddQuestion(new WrittenQuestion()); 
+    
+            Console.WriteLine(_writtenSet.WrittenQuestions[0].QuestionNumber+"   iobaniii caunter");
+ 
+        }
+    }
 }

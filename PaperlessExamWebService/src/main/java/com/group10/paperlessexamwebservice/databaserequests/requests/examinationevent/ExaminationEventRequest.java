@@ -41,6 +41,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             socketConnector.connect();
             // Serialize the object
             String examinationEventSerialized = gson.toJson(examinationEvent);
+            System.out.println(examinationEventSerialized);
             //            Send request
             requestSharedMethods.sendRequest(examinationEventSerialized,  CREATE_EXAMINATION_EVENT);
             //            Read response

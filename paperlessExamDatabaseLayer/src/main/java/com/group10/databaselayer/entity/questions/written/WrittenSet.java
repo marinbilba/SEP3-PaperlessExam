@@ -1,5 +1,6 @@
 package com.group10.databaselayer.entity.questions.written;
 
+import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,7 +32,7 @@ public class WrittenSet {
     private User user;
     @UpdateTimestamp
     private Date updatedTimestamp;
-
+@Hidden
     @ManyToMany(mappedBy = "writtenSets")
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 

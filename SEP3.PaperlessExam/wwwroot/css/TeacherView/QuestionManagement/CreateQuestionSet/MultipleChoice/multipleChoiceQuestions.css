@@ -5,11 +5,17 @@
 /*Black box with question number*/
 .questionNumberBox {
 
-    width: 36px;
-    height: 34px;
+    width: 35px;
+    height: 31px;
     background: #222120;
+    justify-content: center;
     
-    
+}
+.questionNumber{
+    color: white;
+    justify-content: center;
+    text-align: center;
+    margin-top: 4px;
 }
 .counterDiv{
     color: white;
