@@ -66,13 +66,13 @@
                 <td>@item.Topic</td>
                 <td>@item.UpdatedTimestamp</td>
                 <td>
-                    <button @onclick="ToEditWrittenQuestion">
-                        <i class="oi oi-pencil" style="color:green"/>
+                    <button class="btn btn-success" @onclick="ToEditWrittenQuestion">
+                       Edit
                     </button>
                 </td>
                 <td>
-                    <button @onclick="(() => DeleteWritten(item))">
-                        <i class="oi oi-trash" style="color:red"/>
+                    <button class="btn btn-danger" @onclick="(() => DeleteWritten(item))">
+                        Delete
                     </button>
                 </td>
             </tr>
@@ -87,11 +87,11 @@
                 <td>@item.Title</td>
                 <td>@item.Topic</td>
                 <td>
-                    <button @onclick="ToEditMultipleChoiceQuestion">
-                        <i class="oi oi-pencil" style="color:green"/>
+                    <button class="btn btn-success" @onclick="ToEditMultipleChoiceQuestion">
+                        Edit
                     </button>
-                    <button @onclick="(() => DeleteMultipleChoice(item))">
-                        <i class="oi oi-trash" style="color:red"/>
+                    <button class="btn btn-danger" @onclick="(() => DeleteMultipleChoice(item))">
+                        Delete
                     </button>
                 </td>
             </tr>

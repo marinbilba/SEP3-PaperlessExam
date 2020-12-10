@@ -91,15 +91,16 @@ else
                 <td>@item.Role.Name</td>
                 <td>@item.Email</td>
                 <td>
-                    <button @onclick="@(() => DeleteUser(item))">
-                        <i class="oi oi-trash" style="color:red"/>
+                    <button class="btn btn-success" @onclick="@(() => ToEditUser(item))">
+                        Edit
                     </button>
                 </td>
                 <td>
-                    <button @onclick="@(() => ToEditUser(item))">
-                        <i class="oi oi-pencil" style="color:green"/>
+                    <button class="btn btn-danger" @onclick="@(() => DeleteUser(item))">
+                        Delete
                     </button>
                 </td>
+
             </tr>
         }
 
@@ -137,8 +138,8 @@ else
         {
             _errorMessage = "You must enter the username or first name";
             _loadingShow = false;
-            
-        }else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
+        }
+        else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
         {
             _errorMessage = "Only one search criteria is allowed";
             _loadingShow = false;
@@ -147,10 +148,8 @@ else
         {
             try
             {
-
                 _allUsers = await UserService.FindByFirstName(_searchedFirstName);
                 _loadingShow = false;
-
             }
             catch (Exception e)
             {
@@ -158,7 +157,8 @@ else
                 Console.WriteLine(e);
                 _errorMessage = e.Message;
             }
-        }else if (!String.IsNullOrEmpty(_searchedUsername))
+        }
+        else if (!String.IsNullOrEmpty(_searchedUsername))
         {
             try
             {
