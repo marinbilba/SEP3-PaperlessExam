@@ -100,7 +100,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
             return multipleChoiceSetDeserialize;
         }
 
-        public async Task<IList<ExaminationEvent>> GetExaminationEvents(User user)
+        public async Task<IList<ExaminationEvent>> GetExaminationEvents(string username)
         {
             IList<ExaminationEvent> examEventsDeserialize = null;
             HttpResponseMessage responseMessage;
@@ -108,7 +108,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
             try
             {
                 responseMessage =
-                    await client.GetAsync($"{uri}/exam/getExaminationEvent{user}");
+                    await client.GetAsync($"{uri}/exam/getExaminationEvent{username}");
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -139,9 +139,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
             }
 
             return examEventsDeserialize;
-            // List<User> users = new List<User>();
-            // users.Add(new User("HEJ", "tyuiop", "fgjukil", "dfgnhjmk", "tgyhuj", new Role("teacher"), ""));
-            // return users;
+          
         }
         
     }

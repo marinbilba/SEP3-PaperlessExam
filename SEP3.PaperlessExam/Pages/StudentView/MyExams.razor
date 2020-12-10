@@ -4,17 +4,26 @@
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
 
 <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-5 red" @onclick="ViewExams" >
         <img src="images/eye.png" style=" height: 120px;  align-content: center"/>
         <h3><b>View exams</b></h3>
     </div>
     <div class="col-md-1"></div>
-    <div class="col-md-5">
+    <div class="col-md-5 red " @onclick="TakeExam">
          <img src="images/exam.png" style=" height: 120px;  align-content: center"/>
                 <h3><b>Take exam</b></h3>
     </div>
 </div>
 
 @code {
-    
+
+    private void ViewExams()
+    {
+        NavigationManager.NavigateTo("/ViewExams");
+    }
+
+    private void TakeExam()
+    {
+        NavigationManager.NavigateTo("/TakeExam");
+    }
 }

@@ -1,34 +1,65 @@
 @page "/StudentMainPage"
 @using SEP3.PaperlessExam.Model.ExamEvent
-
-<table class="table">
-   <thead>
-   <tr>
-      <th>Title</th>
-      <th>Date</th>
-   </tr>
-   </thead>
-   
-   <tbody>
-   @foreach (var item in _examinationEventsToShow)
-   {
-       <tr>
-           <td>@item.ExamTitle</td>
-           <td>@item.ExamDateAndTime</td>
-       </tr>
-   }
-   </tbody>
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IExamService ExamService
 
 
-</table>
+@if (_examinationEventsToShow == null)
+{
+    <p>No exams to show</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date</th>
+        </tr>
+        </thead>
 
+        <tbody>
+        @foreach (var item in _examinationEventsToShow)
+        {
+            <tr>
+                <td>@item.ExamTitle</td>
+                <td>@item.ExamDateAndTime</td>
+            </tr>
+        }
+        </tbody>
+
+
+    </table>
+}
 @code {
     private IList<ExaminationEvent> _examinationEventsToShow;
-    private
-    
+    private string _errorMessage;
+    string _username;
 
-    private async Task<IList<ExaminationEvent>> GetExams()
+    protected override async Task OnInitializedAsync()
     {
-        
+        LogUsername();
+    }
+
+    private async Task GetExams()
+     {
+    _errorMessage = "";
+    try
+    {
+        _examinationEventsToShow = await ExamService.GetExaminationEvents(_username);
+    }
+    catch (Exception e)
+    {
+        _errorMessage = e.Message;
+        Console.WriteLine(e);
+    }
+    }
+
+    private async Task LogUsername()
+    {
+        var user =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        _username = user.Username;
     }
 }
