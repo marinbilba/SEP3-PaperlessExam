@@ -4,6 +4,7 @@
 @using SEP3.PaperlessExam.Authentication
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService
 @using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Model.ExamEvent
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
@@ -18,214 +19,347 @@
 <h1>Create Exam Event</h1>
 @* </div> *@
 <RadzenContent Container="main">
-    <ChildContent>
-        <RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
-            <Steps>
-                @* First step *@
-                <RadzenStepsItem Text="Exam title" Disabled="_firstStepDisable">
-                    <div class="row">
-                        <div class="col-md-1 padding-right0">
-                            <RadzenLabel Text="Exam Title"/>
-                        </div>
-                        <div class="col-md-3 padding-left0">
-                            <RadzenTextBox style="margin-bottom: 5px;" Change="@(args => SetTitle(args))">
-                            </RadzenTextBox>
+<ChildContent>
+<RadzenSteps NextText="Next" Change="@((args) => StepChange(args))">
+<Steps>
+@* First step *@
+<RadzenStepsItem Text="Exam title" Disabled="_firstStepDisable">
+    <div class="row">
+        <div class="col-md-1 padding-right0">
+            <RadzenLabel Text="Exam Title"/>
+        </div>
+        <div class="col-md-3 padding-left0">
+            <RadzenTextBox style="margin-bottom: 5px;" Change="@(args => SetTitle(args))">
+            </RadzenTextBox>
 
-                        </div>
-                        <div class="col-md-1 offset-7">
-                            <RadzenButton Icon="help_outline" Click="@CheckErrorsOnFirstStep">
-                            </RadzenButton>
-                        </div>
-                    </div>
-                    <div style="color:red">@_errorMessage</div>
-                </RadzenStepsItem>
-                @* Second Step *@
-                <RadzenStepsItem Text="Select written questions"Disabled="_secondStepDisable">
-                    <h1>Select Written Sets</h1>
+        </div>
+        <div class="col-md-1 offset-7">
+            <RadzenButton Icon="help_outline" Click="@CheckErrorsOnFirstStep">
+            </RadzenButton>
+        </div>
+    </div>
+    <div style="color:red">@_errorMessage</div>
+</RadzenStepsItem>
+@* Second Step *@
+<RadzenStepsItem Text="Select written questions"Disabled="_secondStepDisable">
+    <h1>Select Written Sets</h1>
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Topic</th>
-                            <th>Create/Update date</th>
-                            <th>Preview</th>
-                            <th>Add</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if (_writtenSets != null)
-                        {
-                            @foreach (var item in _writtenSets)
-                            {
-                                <tr>
-                                    <td>@item.Title</td>
-                                    <td>@item.Topic</td>
-                                    <td>@item.UpdatedTimestamp</td>
-                                    <td>
-                                        <button @onclick="PreviewWrittenSet">
-                                            <i class="oi oi-pencil" style="color:green"/>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button @onclick="(() => AddToWrittenExamSet(item))">
-                                            <i class="oi oi-plus" style="color:aliceblue"/>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        </tbody>
-                    </table>
-                    <div style="color:red">@_errorMessage</div>
-                </RadzenStepsItem>
-
-                @* Third step *@
-                <RadzenStepsItem Text="Select multiple Choice Questions" Disabled="_thirdStepDisable">
-                    <h1>Select Multiple Choice Sets</h1>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ExamTitle</th>
-                            <th>Topic</th>
-                            <th>Preview</th>
-                            <th>Choose</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if (_writtenSets != null)
-                        {
-                            @foreach (var item in _multipleChoiceSets)
-                            {
-                                <tr>
-                                    <td>@item.Title</td>
-                                    <td>@item.Topic</td>
-                                    <td>
-                                        <button @onclick="PreviewMultipleChoiceSet">
-                                            <i class="oi oi-pencil" style="color:green"/>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button @onclick="(() => AddMultipleChoiceExamSet(item))">
-                                            <i class="oi oi-trash" style="color:red"/>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        </tbody>
-                    </table>
-                </RadzenStepsItem>
-                @* Fourth Step *@
-                <RadzenStepsItem Text="Review Questions" Disabled="_fourthStepDisable">
-                    <h1>Review chosen questions sets</h1>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ExamTitle</th>
-                            <th>Topic</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        //CUM FAC DISPLAY AICI?
-                        @if (_writtenSets != null)
-                        {
-                            @foreach (var item in _examEventSets)
-                            {
-                                <tr>
-                                    @* <td>@item.ExamTitle</td> *@
-                                    @* <td>@item.Topic</td> *@
-
-                                </tr>
-                            }
-                        }
-                        </tbody>
-                    </table>
-                </RadzenStepsItem>
-
-                @* Fifth step *@
-
-                <RadzenStepsItem Text="Asign students" Disabled="_fifthStepDisable">
-                    <h1>Assign students to exam</h1>
-                    <div class="row">
-                        <div class="col-md-4">
-                            @* <p> *@
-                            <input type="text" placeholder="Type first first name" @bind-value="_searchedFirstName"/>
-                        </div>
-                        <div class="col-md-4">
-                            @* <p> *@
-                            <input type="text" placeholder="Type username" @bind-value="_searchedUsername"/>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <button class="btn btn-success btn-lg" @onclick="@(SearchByFirstNameOrUsername)">
-                            Search
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Topic</th>
+            <th>Create/Update date</th>
+            <th>Preview</th>
+            <th>Select</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (_writtenSetsToShow != null)
+        {
+            @foreach (var item in _writtenSetsToShow)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Topic</td>
+                    <td>@item.UpdatedTimestamp</td>
+                    <td>
+                        <button @onclick="PreviewWrittenSet">
+                            <i class="oi oi-pencil" style="color:green"/>
                         </button>
+                    </td>
+                    <td>
+                        <button @onclick="(() => AddToWrittenExamSet(item))">
+                            <i class="oi oi-plus" style="color:aliceblue"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+    <div style="color:red">@_errorMessage</div>
+</RadzenStepsItem>
+
+@* Third step *@
+<RadzenStepsItem Text="Select multiple Choice Questions" Disabled="_thirdStepDisable">
+    <h1>Select Multiple Choice Sets</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Topic</th>
+            <th>Create/Update date</th>
+            <th>Preview</th>
+            <th>Select</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (_multipleChoiceSetsToShow != null)
+        {
+            @foreach (var item in _multipleChoiceSetsToShow)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Topic</td>
+                    <td>@item.UpdatedTimestamp</td>
+                    <td>
+                        <button @onclick="PreviewMultipleChoiceSet">
+                            <i class="oi oi-pencil" style="color:green"/>
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(() => AddMultipleChoiceExamSet(item))">
+                            <i class="oi oi-trash" style="color:red"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</RadzenStepsItem>
+@* Fourth Step *@
+<RadzenStepsItem Text="Review Questions" Disabled="_fourthStepDisable">
+    @if (_selectedWrittenSets != null)
+    {
+        <h1>Review chosen written sets</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Create/Update date</th>
+                <th>Preview</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach (var item in _selectedWrittenSets)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Topic</td>
+                    <td>@item.UpdatedTimestamp</td>
+                    <td>
+                        <button @onclick="PreviewWrittenSet">
+                            <i class="oi oi-pencil" style="color:green"/>
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(() => DeleteWrittenSetFromSelectedList(item))">
+                            <i class="oi oi-trash" style="color:red"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    }
+    @if (_selectedMultipleChoiceSets != null)
+    {
+        <h1>Review chosen multiple choice sets</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Create/Update date</th>
+                <th>Preview</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach (var item in _selectedMultipleChoiceSets)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Topic</td>
+                    <td>@item.UpdatedTimestamp</td>
+                    <td>
+                        <button @onclick="PreviewWrittenSet">
+                            <i class="oi oi-pencil" style="color:green"/>
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(() => DeleteMultipleChoiceSetFromSelectedList(item))">
+                            <i class="oi oi-trash" style="color:red"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    }
+    <div style="color:red">@_errorMessage</div>
+</RadzenStepsItem>
+
+@* Fifth step *@
+
+<RadzenStepsItem Text="Assign students" Disabled="_fifthStepDisable">
+    <div class="row">
+        <div class="col-md-4">
+            @* <p> *@
+            <input type="text" placeholder="Type first first name" @bind-value="_searchedFirstName"/>
+        </div>
+
+        @if (_loadingShow)
+        {
+            <div class="col-md-2">
+                <button class="btn btn-success" @onclick="@(SearchByFirstNameOrUsername)">
+                    <div id="spinner">
+                        <Chase Color="#4a6ac8" Size="20px"/>
                     </div>
+                    Search
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-2">
+                <button class="btn btn-success btn-lg" @onclick="@(SearchByFirstNameOrUsername)">
+                    Search
+                </button>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @* <p> *@
+            <input type="text" placeholder="Type username" @bind-value="_searchedUsername"/>
+        </div>
+    </div>
+    <br/>
+    @if (_allStudents != null)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Select</th>
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            @* <th>Delete</th> *@
-                            @* <th>Edit</th> *@
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var item in _allUsers)
-                        {
-                            <tr>
-                                <td>@item.FirstName</td>
-                                <td>@item.LastName</td>
-                                <td>@item.Username</td>
-                                <td>@item.Email</td>
-                                @* <td> *@
-                                @*     <button @onclick="@(() => DeleteUser(item))"> *@
-                                @*         <i class="oi oi-trash" style="color:red"/> *@
-                                @*     </button> *@
-                                @* </td> *@
-                                @* <td> *@
-                                @*     <button @onclick="@(() => ToEditUser(item))"> *@
-                                @*         <i class="oi oi-pencil" style="color:green"/> *@
-                                @*     </button> *@
-                                @* </td> *@
-                            </tr>
-                        }
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in _allStudents)
+            {
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Username</td>
+                    <td>@item.Email</td>
 
-                        </tbody>
-                    </table>
+                    <td>
+                        <button @onclick="@(() => AddStudentsToExaminationEvent(item))">
+                            <i class="oi oi-pencil" style="color:green"/>
+                        </button>
+                    </td>
+                </tr>
+            }
 
-                </RadzenStepsItem>
+            </tbody>
+        </table>
+    }
+    <div class="col-md">
+        <div style="color:red;padding:5px">@_errorMessage</div>
+    </div>
+</RadzenStepsItem>
 
-                @* Sixth step *@
-                <RadzenStepsItem Text="Review students" Disabled="_sixthStepDisable">
-                    <h1>Review assigned students</h1>
-                </RadzenStepsItem>
+@* Sixth step *@
+<RadzenStepsItem Text="Review students" Disabled="_sixthStepDisable">
+    <h1>Review assigned students</h1>
+    @if (_selectedStudents != null)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Delete</th>
 
-                @*Seventh step*@
-                <RadzenStepsItem Text="Set date and time" Disabled="_seventhStepDisable">
-                    <h1>Set date and time</h1>
-                </RadzenStepsItem>
-            </Steps>
-        </RadzenSteps>
-    </ChildContent>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in _selectedStudents)
+            {
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Username</td>
+                    <td>@item.Email</td>
+
+                    <td>
+                        <button @onclick="@(() => DeleteStudentsFromExaminationEvent(item))">
+                            <i class="oi oi-trash" style="color:green"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    }
+    <div class="col-md">
+        <div style="color:red;padding:5px">@_errorMessage</div>
+    </div>
+
+
+</RadzenStepsItem>
+
+@*Seventh step*@
+<RadzenStepsItem Text="Set date and time" Disabled="_seventhStepDisable">
+    <h1>Set date and time</h1>
+
+    <RadzenDatePicker TValue="DateTime?" ShowTime="true" ShowSeconds="true" HoursStep="1.5" MinutesStep="5" SecondsStep="10" Change=@(args => OnChange(args)) DateFormat="MM/dd/yyyy HH:mm"/>
+    <div class="col-md">
+        <div style="color:red;padding:5px">@_errorMessage</div>
+    </div>
+    <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Create examination event" Click=@(CreateExaminationEvent)>
+    </RadzenButton>
+</RadzenStepsItem>
+</Steps>
+</RadzenSteps>
+</ChildContent>
 </RadzenContent>
 
 @code {
+    // requeired
+    DateTime? value = DateTime.Now;
+
+    private DateTime examinationDateTime;
+
+    private bool _loadingShow;
+
     private ExaminationEvent _examinationEvent = new ExaminationEvent();
 
-    private IList<WrittenSet> _writtenSets;
-    private IList<MultipleChoiceSet> _multipleChoiceSets;
-    private IList<ExaminationEvent> _examEventSets;
-    private WrittenSet _writtenSet;
-    private MultipleChoiceSet _multipleChoiceSet;
     private string _examTitle;
+    
+    // Written sets displayed in UI
+    private IList<WrittenSet> _writtenSetsToShow;
+    private IList<WrittenSet> _selectedWrittenSets = new List<WrittenSet>();
+
+    // MultipleChoiceSet displayed in UI
+    private IList<MultipleChoiceSet> _multipleChoiceSetsToShow;
+    private IList<MultipleChoiceSet> _selectedMultipleChoiceSets = new List<MultipleChoiceSet>();
+
+    // Students displayed in UI
+    private IList<User> _allStudents = new List<User>();
+    private IList<User> _selectedStudents = new List<User>();
+    private string _searchedFirstName;
+    private string _searchedUsername;
+    
+
+    private MultipleChoiceSet _multipleChoiceSet;
+   
 
     private bool _examTitleIsSet;
 
@@ -245,10 +379,15 @@
 
     private string _errorMessage;
 
-    private string _searchedFirstName;
-    private string _searchedUsername;
-    private IList<User> _allUsers = new List<User>();
 
+    // Current logged in user
+    private User _currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+    // UserService.LoginUser(new User());
+        _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+    }
 
     protected async Task StepChange(int args)
     {
@@ -256,43 +395,94 @@
         switch (args)
         {
             case 1:
+                _errorMessage = "";
                 _thirdStepDisable = false;
-                Console.WriteLine("asta");         
-    //  Console.WriteLine(_writtenSets);
+            {
+                try
+                {
+                    _loadingShow = true;
+                    _writtenSetsToShow = await ExamService.GetWrittenSets(_currentUser);
+                    _loadingShow = false;
+                    if (_writtenSetsToShow == null)
+                    {
+                        _errorMessage = "You haven't created any written sets";
+                    }
+                }
+                catch (Exception e)
+                {
+                    _loadingShow = false;
+                    Console.WriteLine(e);
+                    _errorMessage = e.Message;
+                }
+            }
                 break;
             case 2:
+                _errorMessage = "";
                 _secondStepDisable = true;
                 _fourthStepDisable = false;
-                Console.WriteLine(_examTitle);
-                Console.WriteLine(_multipleChoiceSets);
+                try
+                {
+                    _loadingShow = true;
+                    _multipleChoiceSetsToShow = await ExamService.GetMultipleChoiceSets(_currentUser);
+                    _loadingShow = false;
+                    if (_multipleChoiceSetsToShow == null)
+                    {
+                        _errorMessage = "You haven't created any multiple choice sets";
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    _loadingShow = false;
+                    Console.WriteLine(e);
+                    _errorMessage = e.Message;
+                }
+
                 break;
 
             case 3:
-                _thirdStepDisable = true;
-                _fifthStepDisable = false;
-                Console.WriteLine(_writtenSets);
-                Console.WriteLine(_multipleChoiceSets);
+                _errorMessage = "";
+    // Check if any written exams were selected, and does not have any _multipleChoiceSetsToShow if not the user must not be allowed forward 
+                if (!_selectedWrittenSets.Any() && !_selectedMultipleChoiceSets.Any())
+                {
+                    _errorMessage = "You can not continue because you haven't selected any Written Sets or multiple choice sets";
+                    _secondStepDisable = false;
+                    _thirdStepDisable = false;
+                    _fifthStepDisable = true;
+                }
+                else
+                {
+                    _thirdStepDisable = true;
+                    _fifthStepDisable = false;
+                }
+
                 break;
             case 4:
+                _errorMessage = "";
                 _fourthStepDisable = true;
                 _sixthStepDisable = false;
                 break;
             case 5:
-                _fifthStepDisable = true;
-                _seventhStepDisable = false;
+                _errorMessage = "";
+                if (!_selectedStudents.Any())
+                {
+                    _secondStepDisable = true;
+                    _errorMessage = "You can not continue without selecting any users";
+                    _fifthStepDisable = false;
+                }
+                else
+                {
+                    _fifthStepDisable = true;
+                    _seventhStepDisable = false;
+                }
                 break;
             case 6:
                 _sixthStepDisable = true;
                 break;
         }
     }
-    private async Task LogUsername()
-    {
-        UserService.LoginUser(new User());
-        var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
-        string username = authState.Username;
-    }
-    
+
+
     private void PreviewWrittenSet()
     {
         NavigationManager.NavigateTo("/");
@@ -303,34 +493,22 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private async Task AddToWrittenExamSet(WrittenSet set)
+    private void AddToWrittenExamSet(WrittenSet set)
     {
-        _errorMessage = "";
-        try
-        {
-            WrittenSet writtenSet = await ExamService.AddWrittenSet(set);
-            _writtenSets.Remove(set);
-        }
-        catch (Exception e)
-        {
-            _errorMessage = e.Message;
-            Console.WriteLine(e);
-        }
+        _selectedWrittenSets.Add(set);
+        _writtenSetsToShow.Remove(set);
     }
 
     private async Task AddMultipleChoiceExamSet(MultipleChoiceSet set)
     {
-        _errorMessage = "";
-        try
-        {
-            MultipleChoiceSet multipleChoiceSet = await ExamService.AddMultipleChoiceSet(set);
-            _multipleChoiceSets.Remove(set);
-        }
-        catch (Exception e)
-        {
-            _errorMessage = e.Message;
-            Console.WriteLine(e);
-        }
+        _selectedMultipleChoiceSets.Add(set);
+        _multipleChoiceSetsToShow.Remove(set);
+    }
+
+    private void AddStudentsToExaminationEvent(User item)
+    {
+        _selectedStudents.Add(item);
+        _allStudents.Remove(item);
     }
 
     private void CheckErrorsOnFirstStep()
@@ -366,7 +544,7 @@
     {
         if (value != null)
         {
-            _examinationEvent.ExamTitle = value;
+           _examTitle = value;
     // examEventSet.ExamTitle = _examTitle;
             _examTitleIsSet = true;
         }
@@ -381,27 +559,46 @@
     private async Task SearchByFirstNameOrUsername()
     {
         _errorMessage = String.Empty;
-    // _loadingShow = true;
+        _loadingShow = true;
         if (String.IsNullOrEmpty(_searchedUsername) && String.IsNullOrEmpty(_searchedFirstName))
         {
             _errorMessage = "You must enter the username or first name";
-    // _loadingShow = false;
+            _loadingShow = false;
         }
         else if (!String.IsNullOrEmpty(_searchedUsername) && !String.IsNullOrEmpty(_searchedFirstName))
         {
             _errorMessage = "Only one search criteria is allowed";
-    // _loadingShow = false;
+            _loadingShow = false;
         }
         else if (!String.IsNullOrEmpty(_searchedFirstName))
         {
             try
             {
-                _allUsers = await UserService.FindByFirstName(_searchedFirstName);
-    // _loadingShow = false;
+    //Filter if the fetched users are not already selected by the teacher
+                IList<User> tempList = await UserService.FindByFirstName(_searchedFirstName);
+
+                IList<User> tempList2 = new List<User>();
+
+                for (int i = 0; i < tempList.Count; i++)
+                {
+                    if (!_selectedStudents.Any())
+                    {
+                        tempList2 = tempList;
+                    }
+                    for (int y = 0; y < _selectedStudents.Count; y++)
+                    {
+                        if (!tempList[i].Equals(_selectedStudents[y]))
+                        {
+                            tempList2.Add(tempList[i]);
+                        }
+                    }
+                }
+                _loadingShow = false;
+                _allStudents = tempList2;
             }
             catch (Exception e)
             {
-    // _loadingShow = false;
+                _loadingShow = false;
                 Console.WriteLine(e);
                 _errorMessage = e.Message;
             }
@@ -411,15 +608,92 @@
             try
             {
                 User tempUser = await UserService.FindByUsername(_searchedUsername);
-                _allUsers.Add(tempUser);
-    // _loadingShow = false;
+                _loadingShow = false;
+
+                for (int i = 0; i < _selectedStudents.Count; i++)
+                {
+                    if (_selectedStudents[i].Equals(tempUser))
+                    {
+                        throw new Exception("You have ALREADY selected this student for the exam event");
+                    }
+                }
+                _allStudents.Add(tempUser);
             }
             catch (Exception e)
             {
-    // _loadingShow = false;
+                _loadingShow = false;
                 Console.WriteLine(e);
                 _errorMessage = e.Message;
             }
+        }
+    }
+
+    private void DeleteStudentsFromExaminationEvent(User item)
+    {
+        _errorMessage = "";
+        if (_selectedStudents.Count > 1)
+        {
+            _selectedStudents.Remove(item);
+        }
+        else
+        {
+            _errorMessage = "You must have at leas one student in the Examination event";
+        }
+    }
+
+    private void DeleteWrittenSetFromSelectedList(WrittenSet item)
+    {
+    // EvaluateIfSetDeleteIsPossible();
+        _errorMessage = "";
+        if (EvaluateIfSetDeleteIsPossible())
+        {
+            _selectedWrittenSets.Remove(item);
+        }
+    }
+
+    private bool EvaluateIfSetDeleteIsPossible()
+    {
+        if (_selectedMultipleChoiceSets.Count + _selectedWrittenSets.Count < 1)
+        {
+            return true;
+        }
+        _errorMessage = "You must have at least one written or multiple choice set";
+        return false;
+    }
+
+    private void DeleteMultipleChoiceSetFromSelectedList(MultipleChoiceSet item)
+    {
+        _errorMessage = "";
+        if (EvaluateIfSetDeleteIsPossible())
+        {
+            _selectedMultipleChoiceSets.Remove(item);
+        }
+    }
+
+    private void OnChange(DateTime? args)
+    {
+        examinationDateTime = (DateTime) args;
+    }
+
+    private async Task CreateExaminationEvent()
+    {
+        _examinationEvent = new ExaminationEvent()
+        {
+            ExamTitle = _examTitle,
+            WrittenSets = _selectedWrittenSets,
+            MultipleChoiceSets = _selectedMultipleChoiceSets,
+            UsersAssigned = _selectedStudents,
+            ExamDateAndTime = examinationDateTime
+        };
+        try
+        {
+            _loadingShow = true;
+            await ExamService.CreateExaminationEvent(_examinationEvent);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _errorMessage = e.Message;
         }
     }
 

@@ -6,3 +6,11 @@
 .padding-left0{
     padding-left:0;
 }
+
+/* Loading spinner */
+
+#spinner{
+    float: right;
+    display: inline-block;
+    margin: 0 auto;
+}

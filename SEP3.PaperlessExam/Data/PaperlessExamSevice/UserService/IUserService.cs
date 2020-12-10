@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
- using System.Threading.Tasks;
+using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
 
-namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
+namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService
 {
     public interface IUserService
     {

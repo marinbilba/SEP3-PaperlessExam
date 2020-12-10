@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using SEP3.PaperlessExam.Data.PaperlessExamSevice;
+using SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService;
 using SEP3.PaperlessExam.Model;
 
 namespace SEP3.PaperlessExam.Authentication

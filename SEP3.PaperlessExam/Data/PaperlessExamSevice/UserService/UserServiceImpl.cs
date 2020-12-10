@@ -6,9 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
-using SEP3.PaperlessExam.Pages.AdminView.ManageAccounts;
 
-namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
+namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService
 {
     public class UserServiceImpl : IUserService
     {
