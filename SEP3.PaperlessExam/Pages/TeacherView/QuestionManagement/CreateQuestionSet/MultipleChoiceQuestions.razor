@@ -214,7 +214,36 @@
             
             try
             {
-                 await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
+                  await QuestionSetsService.CreateMultipleChoiceSet( new MultipleChoiceSet(Title, Topic, _updatedUser));
+                
+                var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+            
+            
+                var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
+            
+                
+                try
+                {
+     await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
+                    foreach (var optiom in multipleChoiceQuestionOptions)
+                    {
+                        try
+                        {
+     await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                    }
+                 
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
             catch (Exception e)
             {
@@ -223,12 +252,13 @@
             }
             Console.WriteLine("sdaasda");
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
+            
         }
         else
         {
             
             
-                var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
+            var multipleChoiceQuestion= _multipleChoiceSet.GetLastQuestion();
             
             
             var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
@@ -236,12 +266,12 @@
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion()); 
              try
              {
-                 await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
+                  await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber,_multipleChoiceSet));
                  foreach (var optiom in multipleChoiceQuestionOptions)
                  {
                      try
                      {
-                         await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
+                          await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(optiom.CorrectAnswer,optiom.Answer, multipleChoiceQuestion));
                      }
                      catch (Exception e)
                      {
@@ -249,6 +279,7 @@
                          throw;
                      }
                  }
+                 
              }
              catch (Exception e)
              {
@@ -259,6 +290,7 @@
             
         }
         Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"iobaniii caunter");
+        Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question);
     }
 
 }
