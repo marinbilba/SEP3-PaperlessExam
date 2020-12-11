@@ -34,8 +34,8 @@ public class Server {
 
     @Autowired
     private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
-@Autowired
-private ExaminationEventDAO examinationEventDAO;
+    @Autowired
+    private ExaminationEventDAO examinationEventDAO;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
@@ -130,7 +130,6 @@ private ExaminationEventDAO examinationEventDAO;
     }
 
     public void runServer() {
-
         try {
             ServerSocket server = new ServerSocket(SERVER_PORT);
             while (true) {
@@ -139,10 +138,8 @@ private ExaminationEventDAO examinationEventDAO;
                 System.out.println("[SERVER] Connected to client");
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
                 serverSocketHandler.run();
-                // executorService.execute(serverSocketHandler);
-                //  executorService.shutdown();
-
-
+                //   executorService.execute(serverSocketHandler);
+                //executorService.shutdown();
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());
                 //   executeWithResult(serverSocketHandler);

@@ -14,13 +14,13 @@ import java.util.Objects;
 @Table(name = "question_option")
 public class QuestionOption {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean correctAnswer;
     private String answer;
 
     @Fetch(FetchMode.SELECT)
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne()
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**

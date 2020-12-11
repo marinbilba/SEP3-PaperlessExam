@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 
 public class WrittenQuestion {
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 

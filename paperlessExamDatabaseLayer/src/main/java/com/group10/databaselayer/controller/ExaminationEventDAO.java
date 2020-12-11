@@ -12,5 +12,6 @@ public class ExaminationEventDAO {
 
     public ExaminationEvent createUpdate(ExaminationEvent examinationEvent) {
      return examinationEventRepository.save(examinationEvent);
+
     }
 }

@@ -13,7 +13,8 @@ import java.util.Objects;
  * @version v1.0
  */
 
-public class    Question implements Serializable {
+public class Question implements Serializable {
+    private Long id;
     private int questionNumber;
     private String question;
     private double score;

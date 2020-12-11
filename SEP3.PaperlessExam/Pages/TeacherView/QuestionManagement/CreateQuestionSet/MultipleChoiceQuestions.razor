@@ -18,13 +18,15 @@
 
 <h3>Multiple-choice Questions Builder</h3>    
 
+@if (_multipleChoiceSet != null)
+{
 <EditForm Model="_multipleChoiceSet">
-    
+
     @for (var _index1 = 0; _index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; _index1++)
     {
 
         var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[_index1];
-        _counter = _index1+1;
+        _counter = _index1 + 1;
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
@@ -55,16 +57,16 @@
 
             <div class="row top-buffer justify-content-center">
                 <div class="col-md-1 offset-2">
-                </div> 
+                </div>
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-1"></div>
             </div>
-            
-            
+
+
             @for (var i = 0; i < multipleChoiceQuestion.QuestionOptions.Count; i++)
             {
-                
+
                 var questionOption = multipleChoiceQuestion.QuestionOptions[i];
                 Console.WriteLine(i);
                 <div class="form-group row top-buffer justify-content-center">
@@ -96,10 +98,10 @@
                     </button>
                 </div>
             </div>
-    
+
 
             @* Add additional option *@
-           
+
         </div>
 
     }
@@ -108,19 +110,20 @@
     @* Add new question && Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-3 offset-9">
-            <RadzenButton Icon="" Text="Add question" Click=@(() =>done() )></RadzenButton>
+            <RadzenButton Icon="" Text="Add question" Click=@(() => done())></RadzenButton>
             <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())>
-                                                                </RadzenButton>
+            </RadzenButton>
             <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
             </RadzenButton>
-             
+
         </div>
-        
+
         @* <div class="col-md-3"> *@
         @*    *@
         @* </div> *@
     </div>
 </EditForm>
+}
 @code {
     
     [Parameter]
@@ -216,7 +219,7 @@
             {
                 MultipleChoiceSet multipleChoiceSet = new MultipleChoiceSet(Title, Topic, _updatedUser);
                 multipleChoiceSet.MultipleChoiceQuestions = _multipleChoiceSet.MultipleChoiceQuestions;
-                await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(multipleChoiceSet.Title, multipleChoiceSet.Topic, _updatedUser));
+             await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(multipleChoiceSet.Title, multipleChoiceSet.Topic, _updatedUser));
                 
                 var multipleChoiceQuestion = multipleChoiceSet.MultipleChoiceQuestions[_stepper-1];
             
@@ -226,7 +229,8 @@
                 
                 try
                 {
-                    await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, multipleChoiceSet));
+                    multipleChoiceQuestion.MultipleChoiceSet = multipleChoiceSet;
+                   await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, multipleChoiceSet));
                     foreach (var option in multipleChoiceQuestionOptions)
                     {
                         

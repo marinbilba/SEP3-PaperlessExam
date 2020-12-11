@@ -11,7 +11,7 @@ import java.util.*;
 // Owner of many to many relation
 @Entity
 public class ExaminationEvent {
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     private String examTitle;

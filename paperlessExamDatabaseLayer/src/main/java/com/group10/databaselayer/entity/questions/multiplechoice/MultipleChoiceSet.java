@@ -22,7 +22,7 @@ import java.util.*;
 
 public class MultipleChoiceSet {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String topic;

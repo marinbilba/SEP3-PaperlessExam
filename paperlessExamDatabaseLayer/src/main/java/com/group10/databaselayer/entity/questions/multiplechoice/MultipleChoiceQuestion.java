@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class MultipleChoiceQuestion  {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int questionNumber;
@@ -18,10 +18,8 @@ public class MultipleChoiceQuestion  {
     private String question;
 
     private double score;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     private MultipleChoiceSet multipleChoiceSet;
-
-
 
     /**
      * Instantiates a new Multiple choice question.

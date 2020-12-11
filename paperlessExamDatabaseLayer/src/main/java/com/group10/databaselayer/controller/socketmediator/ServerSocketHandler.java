@@ -448,7 +448,7 @@ public class ServerSocketHandler implements Runnable {
      */
     private String receiveRequest() throws IOException {
         InputStream inputStream = socket.getInputStream();
-        byte[] lenbytes = new byte[1024];
+        byte[] lenbytes = new byte[4096];
         int read = inputStream.read(lenbytes, 0, lenbytes.length);
         return new String(lenbytes, 0, read);
     }
