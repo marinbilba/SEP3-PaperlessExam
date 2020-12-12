@@ -10,11 +10,12 @@ namespace SEP3.PaperlessExam.Model.Questions.written
         
         [JsonPropertyName("updatedTimestamp")] public DateTime UpdatedTimestamp { get; set; }
 
-        public List<WrittenQuestion> WrittenQuestions = new List<WrittenQuestion>();
+        [JsonPropertyName("writtenQuestions")] public List<WrittenQuestion> WrittenQuestions { get; set; }
         public WrittenSet() {}
 
         public WrittenSet(string title, string topic, User user) : base(title, topic)
         {
+            WrittenQuestions=new List<WrittenQuestion>();
             User = user;
         }
         
@@ -23,13 +24,13 @@ namespace SEP3.PaperlessExam.Model.Questions.written
         public void AddQuestion(WrittenQuestion writtenQuestion)
         {
             WrittenQuestions.Add(writtenQuestion);
-            writtenQuestion.WrittenSet = this;
+          
         }
 
         public void RemoveQuestion(WrittenQuestion writtenQuestion)
         {
             WrittenQuestions.Remove(writtenQuestion);
-            writtenQuestion.WrittenSet = this;
+     
         }
 
         public List<WrittenQuestion> GetWrittenQuestions()

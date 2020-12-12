@@ -14,6 +14,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IExamService ExamService
 @inject IQuestionSetsService QuestionSetsService
+@using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.CreateQuestionSet
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
 <link rel="stylesheet" href="css/Shared/sharedStyle.css">
 <div class="jumbotron text-center">
@@ -160,21 +161,12 @@
             Console.WriteLine(e);
             _errorMessage = e.Message;
         }
-
-        
     }
+
 
     private async Task PreviewWrittenSet(long itemId)
     {
-        try
-        {
-            throw new NotImplementedException();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _errorMessage = e.Message;
-        }
+        NavigationManager.NavigateTo($"/writtenQuestionWiz/{itemId.ToString()}");
     }
 
     private async Task DeleteMultipleChoiceSet(MultipleChoiceSet item)

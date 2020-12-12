@@ -1,4 +1,4 @@
-﻿@page "/writtenQuestionWiz"
+﻿@page "/writtenQuestionWiz/{writtenSetId}"
 @using SEP3.PaperlessExam.Model.Questions.written
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
@@ -15,6 +15,8 @@
 
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
+@if (_writtenSet != null)
+{
 <EditForm Model="_writtenSet">
     @for (var i = 0; i < _writtenSet.WrittenQuestions.Count; i++)
     {
@@ -46,6 +48,7 @@
         </div>
     }
 </EditForm>
+}
 @* Add new question && Finish buttons *@
 <div class="row top-buffer justify-content-between">
     <div class="col-md-3 offset-9">
@@ -61,7 +64,7 @@
 
 
 @code {
-    private WrittenSet _writtenSet = new WrittenSet();
+    private WrittenSet _writtenSet;
 
     [Parameter]
     public string Username { get; set; }
@@ -81,8 +84,32 @@
     private bool _disable;
     int _questionNumber;
 
+    // For edit view
+    [Parameter]
+    public string WrittenSetId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+    //----------------------------------------------------------------- Edit purpose
+    // if WrittenSetId == this page has received a parameter for editing
+        if (WrittenSetId != null)
+        {
+            var writtenId = long.Parse(WrittenSetId);
+
+            Console.WriteLine(WrittenSetId);
+
+            try
+            {
+                _writtenSet = await QuestionSetsService.GetWrittenSetWithAllChildElements(writtenId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+    //------------------------------------------------------------------ Edit End
         var user = await UserService.FindByUsername(Username);
 
 
@@ -109,7 +136,7 @@
             {
                 var writtenQuestion = _writtenSet.GetLastQuestion();
 
-                await QuestionSetsService.DeleteWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
+                await QuestionSetsService.DeleteWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber));
             }
             catch (Exception e)
             {
@@ -129,56 +156,22 @@
         _disable = false;
         Console.WriteLine(_stepper + "   stepper");
 
-        if (_stepper == 1)
-        {
-            _disable = false;
-
-            try
-            {
-                var writtenQuestion = _writtenSet.WrittenQuestions[_stepper - 1];
-
-
-                await QuestionSetsService.CreateWrittenSet(new WrittenSet(Title, Topic, _updatedUser));
-
-
-                try
-                {
-                    await QuestionSetsService.AddWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            _writtenSet.AddQuestion(new WrittenQuestion());
-        }
-        else
-        {
-            var writtenQuestion = _writtenSet.GetLastQuestion();
-
-            try
-            {
-                await QuestionSetsService.AddWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            _writtenSet.AddQuestion(new WrittenQuestion());
-
-            Console.WriteLine(_writtenSet.WrittenQuestions[0].QuestionNumber + "   iobaniii caunter");
-        }
-        _stepper++;
+        _writtenSet.AddQuestion(new WrittenQuestion());
     }
-    private void Finish()
+
+    private async Task Finish()
     {
+        try
+        {
+            await QuestionSetsService.CreateWrittenSet(_writtenSet);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        Console.WriteLine(_writtenSet);
         NavigationManager.NavigateTo("/questionManagement");
-        
     }
+
 }

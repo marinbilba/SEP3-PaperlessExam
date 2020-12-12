@@ -29,7 +29,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             HttpResponseMessage responseMessage;
             string multipleChoiceSetSerialized = JsonSerializer.Serialize(multipleChoiceSet);
             var content = new StringContent(multipleChoiceSetSerialized, Encoding.UTF8, "application/json");
-            
+
             // 1. Send POST request
             try
             {
@@ -46,10 +46,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception("No connection... Gfckyourself");
             }
-            
+
             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
             // 4. Check the response status codes, else throws the error message to the client
-            
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 // 5. Deserialize the object
@@ -65,13 +65,14 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return multipleChoiceSetDeserialize;
-            
+
             // return new MultipleChoiceSet("valera", "jora", new User());
         }
-        
-        public async Task<MultipleChoiceQuestion> AddMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
+
+        public async Task<MultipleChoiceQuestion> AddMultipleChoiceQuestion(
+            MultipleChoiceQuestion multipleChoiceQuestion)
         {
             MultipleChoiceQuestion multipleChoiceQuestionDeserialize = null;
             HttpResponseMessage responseMessage;
@@ -102,7 +103,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                multipleChoiceQuestionDeserialize = JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
+                multipleChoiceQuestionDeserialize =
+                    JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
                 Console.WriteLine(multipleChoiceQuestionDeserialize.question);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
@@ -113,10 +115,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return multipleChoiceQuestionDeserialize;
-        } 
-        
+        }
+
         public async Task<QuestionOption> AddMultipleChoiceQuestionOption(QuestionOption questionOption)
         {
             QuestionOption questionOptionDeserialize = null;
@@ -159,10 +161,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return questionOptionDeserialize;
         }
-        
+
         public async Task<MultipleChoiceSet> DeleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet)
         {
             MultipleChoiceSet multipleChoiceSetDeserialize = null;
@@ -170,7 +172,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             string multipleChoiceSetSerialized = JsonSerializer.Serialize(multipleChoiceSet);
             Console.WriteLine(multipleChoiceSetSerialized);
             var content = new StringContent(multipleChoiceSetSerialized, Encoding.UTF8, "application/json");
-            
+
             // 1. Send POST request
             try
             {
@@ -187,10 +189,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception("No connection... Gfckyourself");
             }
-            
+
             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
             // 4. Check the response status codes, else throws the error message to the client
-            
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 // 5. Deserialize the object
@@ -204,10 +206,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             }
 
             return multipleChoiceSetDeserialize;
-            
         }
-        
-        public async Task<MultipleChoiceQuestion> DeleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
+
+        public async Task<MultipleChoiceQuestion> DeleteMultipleChoiceQuestion(
+            MultipleChoiceQuestion multipleChoiceQuestion)
         {
             MultipleChoiceQuestion multipleChoiceQuestionDeserialize = null;
             HttpResponseMessage responseMessage;
@@ -238,7 +240,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                multipleChoiceQuestionDeserialize = JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
+                multipleChoiceQuestionDeserialize =
+                    JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
                 Console.WriteLine(multipleChoiceQuestionDeserialize.question);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
@@ -249,10 +252,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return multipleChoiceQuestionDeserialize;
         }
-        
+
         public async Task<QuestionOption> DeleteMultipleChoiceQuestionOption(QuestionOption questionOption)
         {
             QuestionOption questionOptionDeserialize = null;
@@ -295,7 +298,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return questionOptionDeserialize;
         }
 
@@ -341,10 +344,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return writtenSetDeserealize;
         }
-        
+
         public async Task<WrittenQuestion> AddWrittenQuestion(WrittenQuestion writtenQuestion)
         {
             WrittenQuestion writtenQuestionDeserealize = null;
@@ -387,11 +390,11 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return writtenQuestionDeserealize;
         }
-        
-        
+
+
         public async Task<WrittenSet> DeleteWrittenSet(WrittenSet writtenSet)
         {
             WrittenSet deletedWrittenSet = null;
@@ -429,9 +432,10 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
+
             return deletedWrittenSet;
         }
-        
+
         public async Task<WrittenQuestion> DeleteWrittenQuestion(WrittenQuestion writtenQuestion)
         {
             WrittenQuestion writtenQuestionDeserealize = null;
@@ -474,11 +478,12 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return writtenQuestionDeserealize;
         }
 
-        public async Task<MultipleChoiceQuestion> RemoveMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
+        public async Task<MultipleChoiceQuestion> RemoveMultipleChoiceQuestion(
+            MultipleChoiceQuestion multipleChoiceQuestion)
         {
             MultipleChoiceQuestion multipleChoiceQuestionDeserealize = null;
             HttpResponseMessage responseMessage;
@@ -509,8 +514,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                multipleChoiceQuestionDeserealize = JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
-               
+                multipleChoiceQuestionDeserealize =
+                    JsonSerializer.Deserialize<MultipleChoiceQuestion>(readAsStringAsync);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
@@ -520,10 +525,51 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            
+
             return multipleChoiceQuestionDeserealize;
         }
+
+        public async Task<WrittenSet> GetWrittenSetWithAllChildElements(long writtenSetId)
+        {
+            WrittenSet writtenSetDeserealize = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/questionsets/getWrittenSetWithAllChildElements/{writtenSetId}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection... ");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                writtenSetDeserealize =
+                    JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return writtenSetDeserealize;
+        }
     }
-    
-    
 }

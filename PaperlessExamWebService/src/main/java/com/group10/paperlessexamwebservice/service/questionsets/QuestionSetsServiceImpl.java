@@ -88,7 +88,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public WrittenSet createWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UserNotFound, UnexpectedError, QuestionSetAlreadyExists {
+    public WrittenSet createWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UserNotFound, UnexpectedError, QuestionSetAlreadyExists, EmptyMultipleChoiceQuestion {
         WrittenSet createdWrittenSet = null;
         validateWrittenSetFields(writtenSet);
         User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
@@ -105,6 +105,12 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             if (createdWrittenSet == null) {
                 throw new UnexpectedError("Something went wrong");
             }
+            for (var question : writtenSet.getWrittenQuestions()) {
+                question.setWrittenSet(writtenSet);
+                addWrittenQuestion(question);
+            }
+
+
         }
 
 
@@ -118,7 +124,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             writtenSet.setUser(fetchedUser);
             WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSet(writtenSet);
             if (fetchedWrittenSet == null) {
-                throw new NullQuestionSet("Multiple Choice Set" + "with title: " + writtenSet.getTitle() +
+                throw new NullQuestionSet("Written Set" + "with title: " + writtenSet.getTitle() +
                         "and topic: " + writtenSet.getTopic() + " WAS NOT FOUND");
             } else
                 return fetchedWrittenSet;
@@ -164,7 +170,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
 
     public List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(String username) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet, ServiceNotAvailable, UnexpectedError, UsersMultipleChoiceSetNotFound, UserNotFound {
         User fetchedUser = userRequests.getUserByUsername(username);
-        if(fetchedUser==null){
+        if (fetchedUser == null) {
             throw new UserNotFound("User with give username was not found");
         }
         List<MultipleChoiceSet> fetchedMultipleChoiceQuestionList = questionSetsRequests.getUsersAllMultipleChoiceSet(fetchedUser);
@@ -177,7 +183,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public List<WrittenSet> getUsersAllWrittenSet(String username) throws ServiceNotAvailable, UsersWrittenSetNotFound, UserNotFound {
         User fetchedUser = userRequests.getUserByUsername(username);
-        if(fetchedUser==null){
+        if (fetchedUser == null) {
             throw new UserNotFound("User with give username was not found");
         }
         List<WrittenSet> fetchedWrittenSetsList = questionSetsRequests.getUsersAllWrittenSet(fetchedUser);
@@ -189,7 +195,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
 
     @Override
     public WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable {
-      return questionSetsRequests.deleteWrittenSet(writtenSetToDelete);
+        return questionSetsRequests.deleteWrittenSet(writtenSetToDelete);
     }
 
     @Override
@@ -199,17 +205,17 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
 
     @Override
     public MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws UnexpectedError, ServiceNotAvailable {
-        MultipleChoiceQuestion deletedMultipleChoiceQuestion= questionSetsRequests.deleteMultipleChoiceQuestion(multipleChoiceQuestionToDelete);
-    if(deletedMultipleChoiceQuestion==null){
-        throw new UnexpectedError("Something went wrong");
-    }
-    return deletedMultipleChoiceQuestion;
+        MultipleChoiceQuestion deletedMultipleChoiceQuestion = questionSetsRequests.deleteMultipleChoiceQuestion(multipleChoiceQuestionToDelete);
+        if (deletedMultipleChoiceQuestion == null) {
+            throw new UnexpectedError("Something went wrong");
+        }
+        return deletedMultipleChoiceQuestion;
     }
 
     @Override
     public WrittenQuestion deleteWrittenQuestion(WrittenQuestion writtenQuestionToDelete) throws UnexpectedError, ServiceNotAvailable {
-        WrittenQuestion deletedWrittenQuestion= questionSetsRequests.deleteWrittenSetQuestion(writtenQuestionToDelete);
-        if(deletedWrittenQuestion==null){
+        WrittenQuestion deletedWrittenQuestion = questionSetsRequests.deleteWrittenSetQuestion(writtenQuestionToDelete);
+        if (deletedWrittenQuestion == null) {
             throw new UnexpectedError("Something went wrong");
         }
         return deletedWrittenQuestion;

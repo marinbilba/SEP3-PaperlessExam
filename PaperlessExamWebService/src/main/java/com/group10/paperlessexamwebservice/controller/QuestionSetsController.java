@@ -524,7 +524,7 @@ public class QuestionSetsController {
         WrittenSet createdWrittenSet = null;
         try {
             createdWrittenSet = questionSetsService.createWrittenSet(writtenSet);
-        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists e) {
+        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists|EmptyMultipleChoiceQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -534,6 +534,7 @@ public class QuestionSetsController {
             userNotFound.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userNotFound.getMessage());
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(createdWrittenSet);
     }
 
@@ -794,5 +795,28 @@ public class QuestionSetsController {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(deletedWrittenQuestion);
+    }
+
+
+
+    /**
+     * Fetches the written set with all child elements.
+     * It is processed as a GET request requesting the <i>written set id</i>
+     *
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/getWrittenSetWithAllChildElements/{username123}
+     *
+     * @param writtenSetId the multiple choice set that should be found
+     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i>
+     *
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getWrittenSetWithAllChildElements/{writtenSetId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getWrittenSetWithAllChildElements(@PathVariable long writtenSetId) {
+        System.out.println(writtenSetId);
+        WrittenSet fetchedWrittenSet;
+       return null;
     }
 }

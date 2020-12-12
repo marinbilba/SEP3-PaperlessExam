@@ -1,6 +1,7 @@
 package com.group10.paperlessexamwebservice.model.questions.written;
 
 
+import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,7 +22,8 @@ public class WrittenSet extends QuestionsSet {
 
     private Date updatedTimestamp;
     private User user;
-
+    @Hidden
+private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
     /**
      * Instantiates a new Written set.
      */
@@ -55,6 +57,13 @@ public class WrittenSet extends QuestionsSet {
         return super.getTopic();
     }
 
+    public List<WrittenQuestion> getWrittenQuestions() {
+        return writtenQuestions;
+    }
+
+    public void setWrittenQuestions(List<WrittenQuestion> writtenQuestions) {
+        this.writtenQuestions = writtenQuestions;
+    }
 
     public User getUser() {
         return user;
