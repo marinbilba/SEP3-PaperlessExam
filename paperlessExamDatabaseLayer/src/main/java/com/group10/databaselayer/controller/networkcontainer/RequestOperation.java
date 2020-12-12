@@ -45,6 +45,7 @@ public enum RequestOperation {
 
 // [Examination event]
 
-    CREATE_EXAMINATION_EVENT
+    CREATE_EXAMINATION_EVENT,
+    GET_TEACHER_EXAMINATION_EVENTS
 
 }

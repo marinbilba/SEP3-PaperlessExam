@@ -9,7 +9,7 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
 {
     public class ExaminationEvent
     {
-        [JsonPropertyName("id")] private long id { get; set; }
+        [JsonPropertyName("id")] public long Id { get; set; }
 
         [JsonPropertyName("examTitle")] public string ExamTitle { get; set; }
         [JsonPropertyName("writtenSets")] public IList<WrittenSet> WrittenSets { get; set; }
@@ -20,19 +20,32 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
         [JsonPropertyName("usersAssigned")] public IList<User> UsersAssigned { get; set; }
         [JsonPropertyName("examDateAndTime")] public DateTime ExamDateAndTime { get; set; }
         [JsonPropertyName("updatedTimestamp")] private DateTime UpdatedTimestamp { get; set; }
+        [JsonPropertyName("createdBy")]public User CreatedBy { get; set; }
 
         public ExaminationEvent()
         {
         }
 
-        public ExaminationEvent(string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime)
+        public ExaminationEvent(long id, string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime, DateTime updatedTimestamp, User createdBy)
+        {
+            Id = id;
+            ExamTitle = examTitle;
+            WrittenSets = writtenSets;
+            MultipleChoiceSets = multipleChoiceSets;
+            UsersAssigned = usersAssigned;
+            ExamDateAndTime = examDateAndTime;
+            UpdatedTimestamp = updatedTimestamp;
+            CreatedBy = createdBy;
+        }
+
+        public ExaminationEvent(string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime, User createdBy)
         {
             ExamTitle = examTitle;
             WrittenSets = writtenSets;
             MultipleChoiceSets = multipleChoiceSets;
             UsersAssigned = usersAssigned;
             ExamDateAndTime = examDateAndTime;
+            this.CreatedBy = createdBy;
         }
-        
     }
 }

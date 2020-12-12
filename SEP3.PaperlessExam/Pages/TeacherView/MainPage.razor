@@ -1,25 +1,37 @@
 @page "/teacherMainPage"
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Model.ExamEvent
 @inject NavigationManager NavigationManager
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject  IExamService ExamService;
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
+ @if (_examinationEventsList != null)
+ {
+     <table class="table">
+         <thead>
+         <tr>
+             <th>Exam Title</th>
+             <th>Exam Date and Time</th>
+         </tr>
+         </thead>
+         <tbody>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>ExamTitle</th>
-        <th>Date</th>
-        <th>Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Math</td>
-        <td>25.10.2021</td>
-        <td>8.30</td>
-    </tr>
-    </tbody>
-</table>
-
+         @foreach (var exam in _examinationEventsList)
+         {
+             <tr>
+                 <td>@exam.ExamTitle</td>
+                 <td>@exam.ExamDateAndTime</td>
+             </tr>
+         }
+         </tbody>
+     </table>
+ }
+ else
+ {
+     <div style="color:red">@_errorMessage</div>
+ }
 <div class="container">
     <div class="row">
        
@@ -38,7 +50,26 @@
 
 
 @code{
-
+    private string _errorMessage;
+     private User _currentUser;
+    IList<ExaminationEvent> _examinationEventsList;
+    
+    protected override async Task OnInitializedAsync()
+    {
+    // UserService.LoginUser(new User());
+        _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        try
+        {
+ _examinationEventsList = await ExamService.GetTeachersExamEvents(_currentUser.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _errorMessage = e.Message;
+        }
+       
+    }
+    
     public void ToCreateQuestions()
     {
         NavigationManager.NavigateTo("/createQuestion");
@@ -48,6 +79,7 @@
     {
         NavigationManager.NavigateTo("/reviewQuestions");
     }
-    
 
+
+   
 }

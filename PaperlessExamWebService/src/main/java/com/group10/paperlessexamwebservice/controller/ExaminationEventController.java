@@ -2,19 +2,21 @@ package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.examinaationevents.IExaminationEventService;
+import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.UsersWrittenSetNotFound;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.GET_USER_BY_USERNAME;
 
@@ -40,11 +42,67 @@ public class ExaminationEventController {
      * </p>
      *
      * <b>BODY</b>:
+     * {
+     * "examTitle":"Eomana",
+     * "writtenSets":[
+     * <p>
+     * ],
+     * "multipleChoiceSets":[
+     * {
+     * "user":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
+     * }
+     * },
+     * "updatedtimestamp":"0001-01-01T00:00:00",
+     * "id":1,
+     * "title":"asd",
+     * "topic":"asdasd"
+     * }
+     * ],
+     * "usersAssigned":[
+     * {
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
+     * }
+     * }
+     * ],
+     * "examDateAndTime":"2020-12-18T11:00:00",
+     * "createdBy":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
+     * }
+     * }
+     * }
      *
      * @param examinationEvent the multiple choice question
-     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question or
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
      * <i>HTTP 400 - BAD_REQUEST</i>
-     *<i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/createExaminationEvent", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createExaminationEvent(@RequestBody ExaminationEvent examinationEvent) {
@@ -57,4 +115,36 @@ public class ExaminationEventController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(createdExaminationEvent);
     }
+
+
+    /**
+     * Gets teachers examination events. It is processed as a GET request requesting <i>teacher id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/createExaminationEvent
+     * </p>
+     *
+     * @param teacherId the teacher id
+     * @return the teachers examination events
+     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getTeachersExaminationEvents/{teacherId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getTeachersExaminationEvents(@PathVariable String teacherId) {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        try {
+            fetchedExaminationEvents = examinationEventService.getTeachersExaminationEvents(teacherId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (ExaminationEventException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
+    }
+
 }

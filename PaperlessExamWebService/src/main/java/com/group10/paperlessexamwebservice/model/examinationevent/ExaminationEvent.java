@@ -21,6 +21,7 @@ public class ExaminationEvent {
     private List<User> usersAssigned = new ArrayList<>();
     private Date examDateAndTime;
     private Date updatedTimestamp;
+    private User createdBy ;
 
     /**
      * Instantiates a new Examination event.
@@ -36,13 +37,15 @@ public class ExaminationEvent {
      * @param writtenSets        the written sets
      * @param usersAssigned      the users assigned
      * @param examDateAndTime    the exam date and time
+     * @param createdBy          the created by
      */
-    public ExaminationEvent(String examTitle, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime) {
+    public ExaminationEvent(String examTitle, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
         this.examTitle = examTitle;
         this.multipleChoiceSets = multipleChoiceSets;
         this.writtenSets = writtenSets;
         this.usersAssigned = usersAssigned;
         this.examDateAndTime = examDateAndTime;
+        this.createdBy = createdBy;
     }
 
     /**
@@ -151,5 +154,13 @@ public class ExaminationEvent {
      */
     public void setUpdatedTimestamp(Date updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 }

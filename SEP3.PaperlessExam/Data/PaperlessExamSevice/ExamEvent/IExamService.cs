@@ -14,6 +14,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
         Task<IList<WrittenSet>> GetWrittenSets(User currentUser);
         Task<IList<MultipleChoiceSet>> GetMultipleChoiceSets(User currentUser);
         Task<ExaminationEvent> CreateExaminationEvent(ExaminationEvent examinationEvent);
-        
+
+        Task<IList<ExaminationEvent>> GetTeachersExamEvents(int currentUserId);
     }
 }

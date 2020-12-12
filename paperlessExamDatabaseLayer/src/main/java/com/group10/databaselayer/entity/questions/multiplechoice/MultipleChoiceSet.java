@@ -1,6 +1,7 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
 
+import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -33,7 +34,7 @@ public class MultipleChoiceSet {
     @ManyToOne()
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
-
+    @Hidden
     @ManyToMany(mappedBy = "multipleChoiceSets")
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 

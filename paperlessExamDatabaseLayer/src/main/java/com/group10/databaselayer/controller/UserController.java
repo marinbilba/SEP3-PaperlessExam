@@ -42,4 +42,8 @@ public class UserController {
     public void deleteUser(User userToDelete) {
          userRepository.delete(userToDelete);
     }
+
+    public User getUserById(long parsedTeacherId) {
+        return userRepository.getOne(parsedTeacherId);
+    }
 }

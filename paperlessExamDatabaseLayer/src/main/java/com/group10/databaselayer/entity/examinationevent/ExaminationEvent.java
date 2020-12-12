@@ -41,15 +41,20 @@ public class ExaminationEvent {
     @CreationTimestamp
     private Date updatedTimestamp;
 
+    @ManyToOne()
+    @JoinColumn(name = "created_by", updatable = false)
+    private User createdBy;
+
     public ExaminationEvent() {
     }
 
-    public ExaminationEvent(String examTitle, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime) {
+    public ExaminationEvent(String examTitle, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
         this.examTitle = examTitle;
         this.multipleChoiceSets = multipleChoiceSets;
         this.writtenSets = writtenSets;
         this.usersAssigned = usersAssigned;
         this.examDateAndTime = examDateAndTime;
+        this.createdBy = createdBy;
     }
 
     public Date getExamDateAndTime() {
@@ -99,4 +104,33 @@ public class ExaminationEvent {
     public void setUpdatedTimestamp(Date updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
     }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User user) {
+        this.createdBy = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExaminationEvent)) return false;
+        ExaminationEvent that = (ExaminationEvent) o;
+        return id.equals(that.id) &&
+                examTitle.equals(that.examTitle) &&
+                multipleChoiceSets.equals(that.multipleChoiceSets) &&
+                writtenSets.equals(that.writtenSets) &&
+                usersAssigned.equals(that.usersAssigned) &&
+                examDateAndTime.equals(that.examDateAndTime) &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
+                createdBy.equals(that.createdBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, examTitle, multipleChoiceSets, writtenSets, usersAssigned, examDateAndTime, updatedTimestamp, createdBy);
+    }
 }
+

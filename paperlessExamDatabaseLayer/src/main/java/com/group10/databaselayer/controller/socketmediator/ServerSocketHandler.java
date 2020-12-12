@@ -168,10 +168,29 @@ public class ServerSocketHandler implements Runnable {
                     //Examination Event
                 case CREATE_EXAMINATION_EVENT:
                     createExaminationEvent(networkContainerRequestDeserialized);
+                    break;
+                case GET_TEACHER_EXAMINATION_EVENTS:
+                    getTeachersExaminationEvents(networkContainerRequestDeserialized);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getTeachersExaminationEvents(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_TEACHER_EXAMINATION_EVENTS start");
+        String teacherId = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
+        long parsedTeacherId= Integer.parseInt(teacherId);
+//        get user with id 10
+        User user=userController.getUserById(parsedTeacherId);
+
+        List<ExaminationEvent> createdExaminationEvent = examinationEventDAO.getTeachersExaminationEvents(user);
+        objectSerialized = gson.toJson(createdExaminationEvent);
+        networkContainer = new NetworkContainer(GET_TEACHER_EXAMINATION_EVENTS, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_TEACHER_EXAMINATION_EVENTS end");
     }
 
     private void createExaminationEvent(NetworkContainer networkContainerRequestDeserialized) throws IOException {

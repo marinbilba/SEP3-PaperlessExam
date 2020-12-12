@@ -7,12 +7,15 @@ import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.Net
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
@@ -55,5 +58,29 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return createdExaminationEvent;
+    }
+
+    @Override
+    public List<ExaminationEvent> getTeachersExaminationEvents(String teacherId) throws ServiceNotAvailable {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String teacherIdSerialized = gson.toJson(teacherId);
+            //            Send request
+            requestSharedMethods.sendRequest(teacherIdSerialized,  GET_TEACHER_EXAMINATION_EVENTS);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            ExaminationEvent[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), ExaminationEvent[].class);
+            fetchedExaminationEvents = Arrays.asList(tempList);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedExaminationEvents;
     }
 }
