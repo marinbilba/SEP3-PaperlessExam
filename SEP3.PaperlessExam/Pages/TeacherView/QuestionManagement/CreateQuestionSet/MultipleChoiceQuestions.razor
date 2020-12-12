@@ -197,6 +197,17 @@
         }
         else
         {
+            // todo SILVESTRU DELETE
+            try
+            {
+ await QuestionSetsService.RemoveMultipleChoiceQuestion(multipleChoiceSetTemp.MultipleChoiceQuestions[^1]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                
+            }
+          
             _multipleChoiceSet.RemoveLastQuestion();
             _stepper--;
             _disable = false;
