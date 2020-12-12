@@ -106,6 +106,18 @@
         }
         else
         {
+
+            try
+            {
+                var writtenQuestion = _writtenSet.GetLastQuestion();
+
+                await QuestionSetsService.DeleteWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             _writtenSet.RemoveLastQuestion();
             _stepper--;
             _disable = false;
@@ -126,9 +138,12 @@
             
             try
             {
-                  await QuestionSetsService.CreateWrittenSet( new WrittenSet(Title, Topic, _updatedUser));
-                var writtenQuestion = _writtenSet.GetLastQuestion();
-            
+                var writtenQuestion = _writtenSet.WrittenQuestions[_stepper-1];
+                
+                
+                await QuestionSetsService.CreateWrittenSet( new WrittenSet(Title, Topic, _updatedUser));
+                
+                
                 try
                 {
                     await QuestionSetsService.AddWrittenQuestion( new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
