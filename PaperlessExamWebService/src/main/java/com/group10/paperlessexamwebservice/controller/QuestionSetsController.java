@@ -658,6 +658,25 @@ public class QuestionSetsController {
      * </p>
      *
      * <b>BODY</b>:
+     * {
+     *    "user":{
+     *       "id":10,
+     *       "username":"silvmandrila",
+     *       "email":"silvmandr@va.cs",
+     *       "password":"111111",
+     *       "confirmPassword":null,
+     *       "firstName":"Silvestru",
+     *       "lastName":"Mandrila",
+     *       "role":{
+     *          "id":1,
+     *          "name":"Student"
+     *       }
+     *    },
+     *    "updatedtimestamp":"0001-01-01T00:00:00",
+     *    "id":2,
+     *    "title":"fddddddd",
+     *    "topic":"dffd"
+     * }
      *
      * @param multipleChoiceSetToDelete
      * @return <i>HTTP 200 - OK</i> with the deleted multiple choice set
@@ -686,7 +705,25 @@ public class QuestionSetsController {
      * </p>
      *
      * <b>BODY</b>:
-     *
+     *{
+     *    "user":{
+     *       "id":10,
+     *       "username":"silvmandrila",
+     *       "email":"silvmandr@va.cs",
+     *       "password":"111111",
+     *       "confirmPassword":null,
+     *       "firstName":"Silvestru",
+     *       "lastName":"Mandrila",
+     *       "role":{
+     *          "id":1,
+     *          "name":"Student"
+     *       }
+     *    },
+     *    "updatedTimestamp":"2020-12-12T21:12:54+01:00",
+     *    "id":2,
+     *    "title":"War",
+     *    "topic":"WW2"
+     * }
      * @param writtenSetToDelete
      * @return <i>HTTP 200 - OK</i> with the deleted written set
      * *
