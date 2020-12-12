@@ -359,7 +359,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/questionsets/addWrittenQuestion", content);
+                    await client.PostAsync(uri + "/questionsets/createWrittenQuestion", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {

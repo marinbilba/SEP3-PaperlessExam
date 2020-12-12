@@ -219,7 +219,7 @@
             
             try
             {
-                var multipleChoiceSetTemp = new MultipleChoiceSet(Title, Topic, _updatedUser);
+                multipleChoiceSetTemp = new MultipleChoiceSet(Title, Topic, _updatedUser);
                 multipleChoiceSetTemp.MultipleChoiceQuestions = _multipleChoiceSet.MultipleChoiceQuestions;
                 await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(multipleChoiceSetTemp.Title, multipleChoiceSetTemp.Topic, _updatedUser));
                 
@@ -257,14 +257,12 @@
                 Console.WriteLine(e);
             }
             Console.WriteLine("sdaasda");
+         
             _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-            
         }
         else
         {
-            
-            
-            var multipleChoiceQuestion = multipleChoiceSetTemp.GetLastQuestion();
+            var multipleChoiceQuestion = multipleChoiceSetTemp.MultipleChoiceQuestions[_stepper-1];
             
             
             var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
@@ -293,7 +291,7 @@
                 Console.WriteLine(e);
             }
            // Request to add MultipleChoiceQuestion
-            
+            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
         }
         Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"   iobaniii caunter");
         Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question+"   "+_multipleChoiceSet);

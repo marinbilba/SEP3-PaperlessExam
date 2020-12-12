@@ -18,14 +18,14 @@
 <EditForm Model="_writtenSet">
     @for (var i = 0; i < _writtenSet.WrittenQuestions.Count; i++)
     {
-        _counter = i+1;
+        _counter = i + 1;
         var writtenQuestion = _writtenSet.WrittenQuestions[i];
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
                 <div class="col-md-1">
                     <div class="questionNumberBox d-flex justify-content-center">
-                       <p class="questionNumber">@_counter</p> 
+                        <p class="questionNumber">@_counter</p>
                     </div>
                 </div>
                 <div class="col-md-11">
@@ -41,7 +41,7 @@
                     <label>points</label>
                 </div>
             </div>
-            
+
 
         </div>
     }
@@ -49,7 +49,7 @@
 @* Add new question && Finish buttons *@
 <div class="row top-buffer justify-content-between">
     <div class="col-md-3 offset-9">
-        <RadzenButton Icon="" Click=@(()=> done()) Text="Add question"> </RadzenButton>
+        <RadzenButton Icon="" Click=@(() => done()) Text="Add question"> </RadzenButton>
         <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())></RadzenButton>
         <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
         </RadzenButton>
@@ -58,16 +58,17 @@
     @*    *@
     @* </div> *@
 </div>
-   
 
 
 @code {
-    private WrittenSet _writtenSet =new WrittenSet();
-    
+    private WrittenSet _writtenSet = new WrittenSet();
+
     [Parameter]
     public string Username { get; set; }
+
     [Parameter]
     public string Title { get; set; }
+
     [Parameter]
     public string Topic { get; set; }
 
@@ -79,23 +80,21 @@
 
     private bool _disable;
     int _questionNumber;
-    
+
     protected override async Task OnInitializedAsync()
     {
-        
         var user = await UserService.FindByUsername(Username);
-        
-        
+
+
         _updatedUser = user;
-        Console.WriteLine(_updatedUser.Username+"  "+Title);
+        Console.WriteLine(_updatedUser.Username + "  " + Title);
 
         _writtenSet =
             new WrittenSet(Title, Topic, _updatedUser);
         _writtenSet.AddQuestion(new WrittenQuestion());
-        
+
         _stepper++;
         _disable = true;
-        
     }
 
     private async Task delete()
@@ -106,7 +105,6 @@
         }
         else
         {
-
             try
             {
                 var writtenQuestion = _writtenSet.GetLastQuestion();
@@ -117,36 +115,35 @@
             {
                 Console.WriteLine(e);
             }
-            
+
             _writtenSet.RemoveLastQuestion();
             _stepper--;
             _disable = false;
-            Console.WriteLine(_stepper+"   stepper");
+            Console.WriteLine(_stepper + "   stepper");
         }
-        
     }
-    
+
     private async Task done()
     {
         _writtenSet.WrittenQuestions[_counter - 1].QuestionNumber = _counter;
         _disable = false;
-        Console.WriteLine(_stepper+"   stepper");
-        
+        Console.WriteLine(_stepper + "   stepper");
+
         if (_stepper == 1)
         {
             _disable = false;
-            
+
             try
             {
-                var writtenQuestion = _writtenSet.WrittenQuestions[_stepper-1];
-                
-                
-                await QuestionSetsService.CreateWrittenSet( new WrittenSet(Title, Topic, _updatedUser));
-                
-                
+                var writtenQuestion = _writtenSet.WrittenQuestions[_stepper - 1];
+
+
+                await QuestionSetsService.CreateWrittenSet(new WrittenSet(Title, Topic, _updatedUser));
+
+
                 try
                 {
-                    await QuestionSetsService.AddWrittenQuestion( new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
+                    await QuestionSetsService.AddWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
                 }
                 catch (Exception e)
                 {
@@ -155,28 +152,29 @@
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);}
-            
+                Console.WriteLine(e);
+            }
+
             _writtenSet.AddQuestion(new WrittenQuestion());
         }
         else
         {
-            
             var writtenQuestion = _writtenSet.GetLastQuestion();
-            
+
             try
             {
-                await QuestionSetsService.AddWrittenQuestion( new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
+                await QuestionSetsService.AddWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber, _writtenSet));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-           
-            _writtenSet.AddQuestion(new WrittenQuestion()); 
-    
-            Console.WriteLine(_writtenSet.WrittenQuestions[0].QuestionNumber+"   iobaniii caunter");
-            _stepper++;
+
+            _writtenSet.AddQuestion(new WrittenQuestion());
+
+            Console.WriteLine(_writtenSet.WrittenQuestions[0].QuestionNumber + "   iobaniii caunter");
         }
+        _stepper++;
     }
+
 }

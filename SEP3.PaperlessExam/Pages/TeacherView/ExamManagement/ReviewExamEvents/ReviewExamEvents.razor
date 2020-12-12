@@ -31,7 +31,7 @@
                 <td>@exam.ExamTitle</td>
                 <td>@exam.ExamDateAndTime</td>
                 <td>
-                    <button @onclick="EvaluateStudents">
+                    <button @onclick="(() => EvaluateStudents(exam.Id))">
                         <i class="oi oi-pencil" style="color:green"/>
                     </button>
                 </td>
@@ -106,9 +106,11 @@ else
         }
     }
 
-    private void EvaluateStudents()
+    private long sendId;
+    private void EvaluateStudents(long examId)
     {
-        throw new NotImplementedException();
+        sendId = examId;
+        <EvaluateStudents UserId="@sendId"></EvaluateStudents>
     }
 
 }
