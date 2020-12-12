@@ -644,7 +644,6 @@ public class QuestionSetsController {
             usersWrittenSetNotFound.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usersWrittenSetNotFound.getMessage());
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(usersWrittenSet);
     }
 

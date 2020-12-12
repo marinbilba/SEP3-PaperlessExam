@@ -66,11 +66,20 @@ public class ExaminationEvent {
         this.examDateAndTime = examDateAndTime;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     /**
      * Gets exam title.
      *
      * @return the exam title
      */
+
     public String getExamTitle() {
         return examTitle;
     }

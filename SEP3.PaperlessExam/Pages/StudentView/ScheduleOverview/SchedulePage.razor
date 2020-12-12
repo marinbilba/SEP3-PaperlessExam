@@ -1,11 +1,12 @@
-@page "/ReviewExamEvents"
-@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+﻿@page "/schedulePage"
 @using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Model.ExamEvent
 @using SEP3.PaperlessExam.Authentication
-@inject  IExamService ExamService;
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@inject IExamService ExamService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
+<h3>SchedulePage</h3>
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
 <h3>Review Exam Events</h3>
 @if (_passedExaminationEventsList != null)
@@ -19,7 +20,7 @@
             <th>Exam ID</th>
             <th>Exam Title</th>
             <th>Exam Date and Time</th>
-            <th>Evaluate students</th>
+            <th>View Results</th>
         </tr>
         </thead>
         <tbody>
@@ -31,8 +32,8 @@
                 <td>@exam.ExamTitle</td>
                 <td>@exam.ExamDateAndTime</td>
                 <td>
-                    <button @onclick="EvaluateStudents">
-                        <i class="oi oi-pencil" style="color:green"/>
+                    <button @onclick="ViewExamResults">
+                        <style class="fa fa-eye" style="color:green"/>
                     </button>
                 </td>
             </tr>
@@ -106,9 +107,10 @@ else
         }
     }
 
-    private void EvaluateStudents()
+    private void ViewExamResults()
     {
         throw new NotImplementedException();
     }
+
 
 }

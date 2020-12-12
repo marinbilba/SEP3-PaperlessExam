@@ -9,5 +9,8 @@ import java.util.List;
 public interface IExaminationEventService {
     ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable;
 
-    List<ExaminationEvent> getTeachersExaminationEvents(String teacherId) throws ServiceNotAvailable, ExaminationEventException;
+    List<ExaminationEvent> getTeachersUpcomingExamEvents(String teacherId) throws ServiceNotAvailable, ExaminationEventException;
+
+    List<ExaminationEvent> getTeachersPassedExamEvents(String teacherId) throws ExaminationEventException, ServiceNotAvailable;
+
 }

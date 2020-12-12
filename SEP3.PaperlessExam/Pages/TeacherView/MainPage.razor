@@ -9,11 +9,15 @@
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
  @if (_examinationEventsList != null)
  {
+     <div class="jumbotron text-center">
+         <h1>Upcoming Examination Events</h1>
+     </div>
      <table class="table">
          <thead>
-         <tr>
+         <tr>      
+             <th>Exam ID</th>
              <th>Exam Title</th>
-             <th>Exam Date and Time</th>
+             <th>Exam Date and Time(DD/MM/YYYY)</th>
          </tr>
          </thead>
          <tbody>
@@ -21,6 +25,7 @@
          @foreach (var exam in _examinationEventsList)
          {
              <tr>
+                 <td>@exam.Id</td>
                  <td>@exam.ExamTitle</td>
                  <td>@exam.ExamDateAndTime</td>
              </tr>
@@ -60,7 +65,7 @@
         _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
         try
         {
- _examinationEventsList = await ExamService.GetTeachersExamEvents(_currentUser.Id);
+ _examinationEventsList = await ExamService.GetTeachersUpcomingExamEvents(_currentUser.Id);
         }
         catch (Exception e)
         {

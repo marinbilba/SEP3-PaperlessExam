@@ -1,24 +1,16 @@
 package com.group10.paperlessexamwebservice.controller;
 
-import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.NetworkContainer;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
-import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
-import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.examinaationevents.IExaminationEventService;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.UsersWrittenSetNotFound;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
-
-import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.GET_USER_BY_USERNAME;
 
 /**
  * Controller for creating/find/delete of examination event
@@ -118,7 +110,7 @@ public class ExaminationEventController {
 
 
     /**
-     * Gets teachers examination events. It is processed as a GET request requesting <i>teacher id</i>
+     * Gets teachers upcoming examination events. It is processed as a GET request requesting <i>teacher id</i>
      * passed through the URI
      * <p>
      * <b>EXAMPLE</b>:
@@ -131,11 +123,41 @@ public class ExaminationEventController {
      * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
-    @RequestMapping(value = "/getTeachersExaminationEvents/{teacherId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getTeachersExaminationEvents(@PathVariable String teacherId) {
+    @RequestMapping(value = "/getTeachersUpcomingExamEvents/{teacherId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> GetTeachersUpcomingExamEvents(@PathVariable String teacherId) {
         List<ExaminationEvent> fetchedExaminationEvents = null;
         try {
-            fetchedExaminationEvents = examinationEventService.getTeachersExaminationEvents(teacherId);
+            fetchedExaminationEvents = examinationEventService.getTeachersUpcomingExamEvents(teacherId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (ExaminationEventException e) {
+            e.printStackTrace();
+            System.out.println(fetchedExaminationEvents.get(0).getId());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
+    }
+    /**
+     * Gets teachers passed examination events. It is processed as a GET request requesting <i>teacher id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/createExaminationEvent
+     * </p>
+     *
+     * @param teacherId the teacher id
+     * @return the teachers examination events
+     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getTeachersPassedExamEvents/{teacherId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> GetTeachersPassedExamEvents(@PathVariable String teacherId) {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        try {
+            fetchedExaminationEvents = examinationEventService.getTeachersPassedExamEvents(teacherId);
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());

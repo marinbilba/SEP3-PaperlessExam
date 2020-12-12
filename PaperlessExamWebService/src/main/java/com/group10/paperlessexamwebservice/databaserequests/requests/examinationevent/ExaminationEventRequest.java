@@ -7,8 +7,6 @@ import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.Net
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
-import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
-import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,7 +59,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
     }
 
     @Override
-    public List<ExaminationEvent> getTeachersExaminationEvents(String teacherId) throws ServiceNotAvailable {
+    public List<ExaminationEvent> getTeachersExamEvents(String teacherId) throws ServiceNotAvailable {
         List<ExaminationEvent> fetchedExaminationEvents = null;
         // Connect
         try {
@@ -69,7 +67,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             // Serialize the object
             String teacherIdSerialized = gson.toJson(teacherId);
             //            Send request
-            requestSharedMethods.sendRequest(teacherIdSerialized,  GET_TEACHER_EXAMINATION_EVENTS);
+            requestSharedMethods.sendRequest(teacherIdSerialized, GET_TEACHER_EXAMINATION_EVENTS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
