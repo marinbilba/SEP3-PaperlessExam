@@ -287,9 +287,9 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         try {
             socketConnector.connect();
             // Serialize the object
-            String userSerialized = gson.toJson(fetchedUser);
+            String multipleChoiceSetSerialized = gson.toJson(fetchedUser);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized,  GET_ALL_MULTIPLE_CHOICE_SETS);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,  GET_ALL_MULTIPLE_CHOICE_SETS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -312,9 +312,9 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         try {
             socketConnector.connect();
             // Serialize the object
-            String userSerialized = gson.toJson(fetchedUser);
+            String writtenSetListSerialized = gson.toJson(fetchedUser);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized,  GET_ALL_WRITTEN_SETS);
+            requestSharedMethods.sendRequest(writtenSetListSerialized,  GET_ALL_WRITTEN_SETS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -343,9 +343,9 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         try {
             socketConnector.connect();
             // Serialize the object
-            String userSerialized = gson.toJson(writtenSetToDelete);
+            String writtenSetSerialized = gson.toJson(writtenSetToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized,  DELETE_WRITTEN_SET);
+            requestSharedMethods.sendRequest(writtenSetSerialized,  DELETE_WRITTEN_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -373,9 +373,9 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         try {
             socketConnector.connect();
             // Serialize the object
-            String userSerialized = gson.toJson(multipleChoiceSetToDelete);
+            String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSetToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized,  DELETE_MULTIPLE_CHOICE_SET);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,  DELETE_MULTIPLE_CHOICE_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -388,6 +388,54 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return deletedMultipleChoiceSet;
+    }
+
+    @Override
+    public MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws ServiceNotAvailable {
+        MultipleChoiceQuestion deletedMultipleChoiceQuestion=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String multipleChoiceQuestionSerialized = gson.toJson(deletedMultipleChoiceQuestion);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceQuestionSerialized,  DELETE_MULTIPLE_CHOICE_SET_QUESTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedMultipleChoiceQuestion = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedMultipleChoiceQuestion;
+    }
+
+    @Override
+    public WrittenQuestion deleteWrittenSetQuestion(WrittenQuestion writtenQuestionToDelete) throws ServiceNotAvailable {
+        WrittenQuestion deletedWrittenQuestion=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String writtenQuestionToDeleteSerialized = gson.toJson(writtenQuestionToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(writtenQuestionToDeleteSerialized,  DELETE_WRITTEN_QUESTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedWrittenQuestion = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), WrittenQuestion.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedWrittenQuestion;
     }
 
 

@@ -1,10 +1,10 @@
-package com.group10.databaselayer.controller.socketmediator;
+package com.group10.databaselayer.network.socketmediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.group10.databaselayer.controller.*;
-import com.group10.databaselayer.controller.questions.MultipleChoiceQuestionsController;
-import com.group10.databaselayer.controller.questions.WrittenQuestionsController;
+import com.group10.databaselayer.dataaccessobject.*;
+import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuestionsDAO;
+import com.group10.databaselayer.dataaccessobject.questions.WrittenQuestionsDAO;
 
 import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
@@ -25,15 +25,15 @@ public class Server {
     private static final int SERVER_PORT = 8000;
 
     @Autowired
-    private RoleController roleController;
+    private RoleDAO roleDAO;
     @Autowired
-    private UserController userController;
+    private UserDAO userDAO;
 
     @Autowired
-    private WrittenQuestionsController writtenQuestionsController;
+    private WrittenQuestionsDAO writtenQuestionsDAO;
 
     @Autowired
-    private MultipleChoiceQuestionsController multipleChoiceQuestionsController;
+    private MultipleChoiceQuestionsDAO multipleChoiceQuestionsDAO;
     @Autowired
     private ExaminationEventDAO examinationEventDAO;
 
@@ -51,10 +51,10 @@ public class Server {
 
     @PostConstruct
     public void init() {
-        controllersSet.add(roleController);
-        controllersSet.add(userController);
-        controllersSet.add(multipleChoiceQuestionsController);
-        controllersSet.add(writtenQuestionsController);
+        controllersSet.add(roleDAO);
+        controllersSet.add(userDAO);
+        controllersSet.add(multipleChoiceQuestionsDAO);
+        controllersSet.add(writtenQuestionsDAO);
         controllersSet.add(examinationEventDAO);
 
         gson = new GsonBuilder();

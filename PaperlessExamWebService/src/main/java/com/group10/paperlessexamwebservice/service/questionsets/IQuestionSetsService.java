@@ -5,7 +5,6 @@ import com.group10.paperlessexamwebservice.model.questions.multiplechoice.Multip
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenQuestion;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
-import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
@@ -44,4 +43,8 @@ public interface IQuestionSetsService {
     WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable;
 
     MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable;
+
+    MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws UnexpectedError, ServiceNotAvailable;
+
+    WrittenQuestion deleteWrittenQuestion(WrittenQuestion writtenQuestionToDelete) throws UnexpectedError, ServiceNotAvailable;
 }

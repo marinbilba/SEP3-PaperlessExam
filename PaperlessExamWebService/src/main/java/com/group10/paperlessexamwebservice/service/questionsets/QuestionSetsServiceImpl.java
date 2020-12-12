@@ -197,6 +197,24 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         return questionSetsRequests.deleteMultipleChoiceSet(multipleChoiceSetToDelete);
     }
 
+    @Override
+    public MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws UnexpectedError, ServiceNotAvailable {
+        MultipleChoiceQuestion deletedMultipleChoiceQuestion= questionSetsRequests.deleteMultipleChoiceQuestion(multipleChoiceQuestionToDelete);
+    if(deletedMultipleChoiceQuestion==null){
+        throw new UnexpectedError("Something went wrong");
+    }
+    return deletedMultipleChoiceQuestion;
+    }
+
+    @Override
+    public WrittenQuestion deleteWrittenQuestion(WrittenQuestion writtenQuestionToDelete) throws UnexpectedError, ServiceNotAvailable {
+        WrittenQuestion deletedWrittenQuestion= questionSetsRequests.deleteWrittenSetQuestion(writtenQuestionToDelete);
+        if(deletedWrittenQuestion==null){
+            throw new UnexpectedError("Something went wrong");
+        }
+        return deletedWrittenQuestion;
+    }
+
     private boolean validateWrittenQuestionFields(WrittenQuestion writtenQuestion) throws NullQuestionSet, EmptyMultipleChoiceQuestion {
         if (Objects.requireNonNull(writtenQuestion).getQuestion() == null || Objects.requireNonNull(writtenQuestion).getWrittenSet() == null) {
             throw new NullQuestionSet("One or more multiple choice set questions fields are null");

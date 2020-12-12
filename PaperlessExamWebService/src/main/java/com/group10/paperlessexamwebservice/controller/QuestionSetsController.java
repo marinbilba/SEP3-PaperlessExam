@@ -679,6 +679,12 @@ public class QuestionSetsController {
     /**
      * Deletes the passed written sets of a user.
      * It is processed as a POST request requesting the <i>Written Set object to delete</i>
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/deleteWrittenSet
+     * </p>
+     *
      * <b>BODY</b>:
      *
      * @param writtenSetToDelete
@@ -696,5 +702,60 @@ public class QuestionSetsController {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(deletedWrittenSet);
+    }
+
+    /**
+     * Deletes the passed multiple choice question sets of a user.
+     * It is processed as a POST request requesting the <i>MultipleChoiceQuestion object to delete</i>
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/deleteMultipleChoiceQuestion
+     * </p>
+     *
+     * <b>BODY</b>:
+     *
+     * @param multipleChoiceQuestionToDelete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question
+     * *
+     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteMultipleChoiceQuestion", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteMultipleChoiceQuestion(@RequestBody MultipleChoiceQuestion multipleChoiceQuestionToDelete) {
+        MultipleChoiceQuestion deletedMultipleChoiceQuestion;
+        try {
+            deletedMultipleChoiceQuestion = questionSetsService.deleteMultipleChoiceQuestion(multipleChoiceQuestionToDelete);
+        } catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deletedMultipleChoiceQuestion);
+    }
+    /**
+     * Deletes the written set question of a user.
+     * It is processed as a POST request requesting the <i>WrittenQuestion object to delete</i>
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/deleteWrittenSetQuestion
+     * </p>
+     *
+     * <b>BODY</b>:
+     *
+     * @param writtenQuestionToDelete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question
+     * *
+     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteWrittenSetQuestion", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteWrittenSetQuestion(@RequestBody WrittenQuestion writtenQuestionToDelete) {
+        WrittenQuestion deletedWrittenQuestion;
+        try {
+            deletedWrittenQuestion = questionSetsService.deleteWrittenQuestion(writtenQuestionToDelete);
+        } catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deletedWrittenQuestion);
     }
 }

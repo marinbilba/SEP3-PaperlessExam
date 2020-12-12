@@ -1,4 +1,4 @@
-package com.group10.databaselayer.controller;
+package com.group10.databaselayer.dataaccessobject;
 
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;

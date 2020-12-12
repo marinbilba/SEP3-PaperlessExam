@@ -1,4 +1,4 @@
-package com.group10.databaselayer.controller.questions;
+package com.group10.databaselayer.dataaccessobject.questions;
 
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Component
-public class WrittenQuestionsController {
+public class WrittenQuestionsDAO {
 
     private IWrittenSetRepository writtenSetRepository;
     private IWrittenQuestionRepository writtenQuestionRepository;
@@ -35,7 +35,7 @@ public class WrittenQuestionsController {
      * @param writtenQuestionRepository the written question repository
      */
     @Autowired
-    public WrittenQuestionsController(IWrittenSetRepository writtenSetRepository, IWrittenQuestionRepository writtenQuestionRepository
+    public WrittenQuestionsDAO(IWrittenSetRepository writtenSetRepository, IWrittenQuestionRepository writtenQuestionRepository
             ) {
         this.writtenSetRepository = writtenSetRepository;
         this.writtenQuestionRepository = writtenQuestionRepository;
@@ -200,5 +200,10 @@ public class WrittenQuestionsController {
     public WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) {
         writtenSetRepository.delete(writtenSetToDelete);
         return writtenSetToDelete;
+    }
+
+    public WrittenQuestion deleteWrittenSetQuestion(WrittenQuestion writtenSetQuestionToDelete) {
+        writtenQuestionRepository.delete(writtenSetQuestionToDelete);
+        return writtenSetQuestionToDelete;
     }
 }

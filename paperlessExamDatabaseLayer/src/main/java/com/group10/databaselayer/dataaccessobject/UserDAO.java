@@ -1,6 +1,5 @@
-package com.group10.databaselayer.controller;
+package com.group10.databaselayer.dataaccessobject;
 
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UserController {
+public class UserDAO {
     @Autowired
     IUserRepository userRepository;
 

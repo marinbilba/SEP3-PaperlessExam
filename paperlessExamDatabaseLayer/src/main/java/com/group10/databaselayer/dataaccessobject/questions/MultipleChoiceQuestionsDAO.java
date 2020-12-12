@@ -1,4 +1,4 @@
-package com.group10.databaselayer.controller.questions;
+package com.group10.databaselayer.dataaccessobject.questions;
 
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
@@ -24,7 +24,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Component
-public class MultipleChoiceQuestionsController {
+public class MultipleChoiceQuestionsDAO {
 
     private IMultipleChoiceSetRepository multipleChoiceSetRepository;
     private IMultipleChoiceQuestionOptionRepository multipleChoiceQuestionOptionRepository;
@@ -39,7 +39,7 @@ public class MultipleChoiceQuestionsController {
      * @param multipleChoiceQuestionRepository       the multiple choice question repository
      */
     @Autowired
-    public MultipleChoiceQuestionsController(IMultipleChoiceSetRepository multipleChoiceSetRepository, IMultipleChoiceQuestionOptionRepository
+    public MultipleChoiceQuestionsDAO(IMultipleChoiceSetRepository multipleChoiceSetRepository, IMultipleChoiceQuestionOptionRepository
             multipleChoiceQuestionOptionRepository, IMultipleChoiceQuestionRepository multipleChoiceQuestionRepository
     ) {
         this.multipleChoiceSetRepository = multipleChoiceSetRepository;
@@ -210,6 +210,12 @@ public class MultipleChoiceQuestionsController {
 
     }
 
+    /**
+     * Gets multiple choice set question option.
+     *
+     * @param multipleChoiceSetQuestionOption the multiple choice set question option
+     * @return the multiple choice set question option
+     */
     public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
         MultipleChoiceQuestion multipleChoiceSetQuestion = multipleChoiceSetQuestionOption.getMultipleChoiceQuestion();
         MultipleChoiceSet multipleChoiceSet = multipleChoiceSetQuestion.getMultipleChoiceSet();
@@ -231,22 +237,57 @@ public class MultipleChoiceQuestionsController {
 
     }
 
+    /**
+     * Gets all questions by multiple choice set.
+     *
+     * @param multipleChoiceSet the multiple choice set
+     * @return the all questions by multiple choice set
+     */
     public List<MultipleChoiceQuestion> getAllQuestionsByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
         return multipleChoiceQuestionRepository.findByMultipleChoiceSet(multipleChoiceSet);
     }
 
+    /**
+     * Gets all question options by multiple choice question.
+     *
+     * @param multipleChoiceQuestion the multiple choice question
+     * @return the all question options by multiple choice question
+     */
     public List<QuestionOption> getAllQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) {
         return multipleChoiceQuestionOptionRepository.findByMultipleChoiceQuestion(multipleChoiceQuestion);
     }
 
 
+    /**
+     * Gets all users multiple choice set.
+     *
+     * @param userDeserialized the user deserialized
+     * @return the all users multiple choice set
+     */
     public List<MultipleChoiceSet> getAllUsersMultipleChoiceSet(User userDeserialized) {
         return multipleChoiceSetRepository.findByUserId(userDeserialized.getId());
     }
 
+    /**
+     * Delete multiple choice set multiple choice set.
+     *
+     * @param multipleChoiceSetToDelete the multiple choice set to delete
+     * @return the multiple choice set
+     */
     public MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) {
 
          multipleChoiceSetRepository.delete(multipleChoiceSetToDelete);
          return multipleChoiceSetToDelete;
+    }
+
+    /**
+     * Delete multiple choice question multiple choice question.
+     *
+     * @param multipleChoiceQuestionToDelete the multiple choice question to delete
+     * @return the multiple choice question
+     */
+    public MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) {
+        multipleChoiceQuestionRepository.delete(multipleChoiceQuestionToDelete);
+        return multipleChoiceQuestionToDelete;
     }
 }

@@ -1,9 +1,5 @@
-package com.group10.databaselayer.controller.networkcontainer;
+package com.group10.databaselayer.network.networkcontainer;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
 /**
  * NetworkContainer class is used to send objects across the network.
  * Request operation is used as an ENUM identifier of the container{@link RequestOperation}.

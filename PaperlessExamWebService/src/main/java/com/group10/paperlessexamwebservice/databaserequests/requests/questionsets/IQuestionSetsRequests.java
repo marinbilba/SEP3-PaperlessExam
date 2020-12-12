@@ -38,5 +38,8 @@ public interface IQuestionSetsRequests {
 
     MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable;
 
+    MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws ServiceNotAvailable;
+
+    WrittenQuestion deleteWrittenSetQuestion(WrittenQuestion writtenQuestionToDelete) throws ServiceNotAvailable;
 }
 

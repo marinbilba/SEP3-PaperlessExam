@@ -1,4 +1,4 @@
-package com.group10.databaselayer.controller;
+package com.group10.databaselayer.dataaccessobject;
 
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.repositories.user.IRoleRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class RoleController {
+public class RoleDAO {
     @Autowired
     IRoleRepository roleRepository;
 

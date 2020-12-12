@@ -1,4 +1,4 @@
-package com.group10.databaselayer.controller.questions;
+package com.group10.databaselayer.dataaccessobject.questions;
 
 
 import com.group10.databaselayer.repositories.questions.written.IWrittenQuestionRepository;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 
-class WrittenQuestionsControllerTest {
+class WrittenQuestionsDAOTest {
 @Autowired
     private IWrittenSetRepository writtenSetRepository;
 @Autowired
