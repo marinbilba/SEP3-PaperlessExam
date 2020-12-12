@@ -1,5 +1,8 @@
 package com.group10.databaselayer.entity.questions.multiplechoice;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -19,6 +22,7 @@ public class MultipleChoiceQuestion  {
 
     private double score;
     @ManyToOne()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private MultipleChoiceSet multipleChoiceSet;
 
     /**

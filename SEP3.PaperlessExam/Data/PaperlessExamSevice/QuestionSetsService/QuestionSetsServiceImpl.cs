@@ -168,13 +168,14 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             MultipleChoiceSet multipleChoiceSetDeserialize = null;
             HttpResponseMessage responseMessage;
             string multipleChoiceSetSerialized = JsonSerializer.Serialize(multipleChoiceSet);
+            Console.WriteLine(multipleChoiceSetSerialized);
             var content = new StringContent(multipleChoiceSetSerialized, Encoding.UTF8, "application/json");
             
             // 1. Send POST request
             try
             {
                 responseMessage =
-                    await client.PostAsync(uri + "/questionsets/DeleteMultipleChoiceSet", content);
+                    await client.PostAsync(uri + "/questionsets/deleteMultipleChoiceSet", content);
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {
@@ -201,11 +202,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 throw new Exception(serverMessage);
             }
-            else if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new Exception(serverMessage);
-            }
-            
+
             return multipleChoiceSetDeserialize;
             
         }
@@ -397,11 +394,11 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
         
         public async Task<WrittenSet> DeleteWrittenSet(WrittenSet writtenSet)
         {
-            WrittenSet writtenSetDeserealize = null;
+            WrittenSet deletedWrittenSet = null;
             HttpResponseMessage responseMessage;
             string writtenSetSerialize = JsonSerializer.Serialize(writtenSet);
+            Console.WriteLine(writtenSetSerialize);
             var content = new StringContent(writtenSetSerialize, Encoding.UTF8, "application/json");
-            Console.WriteLine(writtenSet);
             // 1. Send POST request
             try
             {
@@ -416,7 +413,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             // 3. Catch the exception in case the Server is not running
             catch (HttpRequestException e)
             {
-                throw new Exception("No connection... Gfckyourself2");
+                throw new Exception("No connection... ");
             }
 
             string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
@@ -426,19 +423,13 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             {
                 // 5. Deserialize the object
                 string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
-                writtenSetDeserealize = JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
-                Console.WriteLine(writtenSetSerialize);
+                deletedWrittenSet = JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
             }
             else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
                 throw new Exception(serverMessage);
             }
-            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
-            {
-                throw new Exception(serverMessage);
-            }
-            
-            return writtenSetDeserealize;
+            return deletedWrittenSet;
         }
         
         public async Task<WrittenQuestion> DeleteWrittenQuestion(WrittenQuestion writtenQuestion)
@@ -486,8 +477,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             
             return writtenQuestionDeserealize;
         }
-        
-        
         
     }
     

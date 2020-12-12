@@ -1,4 +1,8 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿
+<link rel="stylesheet" type="text/css" href="css/Navbar/style.css">
+
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="index">SEP3.PaperlessExam</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -15,20 +19,20 @@
         @* </li> *@
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="MainView">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Main View
+                <span class="iconify" data-icon="ic:baseline-home" data-inline="false"></span> Main View
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="ManageUsers">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Users
+               <span class="iconify" data-icon="ic:round-supervised-user-circle" data-inline="false"></span> Manage Users
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="ManageExaminationEvents">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Exams Admin
+               <span class="iconify" data-icon="ic:outline-insert-drive-file" data-inline="false"></span> Manage Exams Admin
             </NavLink>
         </li>
-        
+
         <AuthorizeView Policy="MustBeStudent">
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href="mainPage">
@@ -39,16 +43,21 @@
         @* Teacher *@
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="teacherMainPage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Main Page Teacher
+              <span class="iconify" data-icon="ic:baseline-home" data-inline="false"></span> Main Page Teacher
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="ExamManagement">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Manage Exams Teacher
+            <span class="iconify" data-icon="mdi:calendar-clock" data-inline="false"></span> Manage Exams Teacher
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="questionManagement">
+              <span class="iconify" data-icon="mdi:file-question-outline" data-inline="false"></span> Questions Management
             </NavLink>
         </li>
         @* Student views *@
-        
+
     </ul>
 </div>
 

@@ -9,8 +9,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 {
     public interface IExamService
     {
-        Task<WrittenSet> AddWrittenSet(WrittenSet set);
-        Task<MultipleChoiceSet> AddMultipleChoiceSet(MultipleChoiceSet set);
+ 
         Task<IList<WrittenSet>> GetWrittenSets(User currentUser);
         Task<IList<MultipleChoiceSet>> GetMultipleChoiceSets(User currentUser);
         Task<ExaminationEvent> CreateExaminationEvent(ExaminationEvent examinationEvent);

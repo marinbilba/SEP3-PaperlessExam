@@ -4,6 +4,8 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -33,6 +35,7 @@ public class MultipleChoiceSet {
 
     @ManyToOne()
     @JoinColumn(name = "user_id", updatable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
     @Hidden
     @ManyToMany(mappedBy = "multipleChoiceSets")

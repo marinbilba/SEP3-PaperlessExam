@@ -243,4 +243,10 @@ public class MultipleChoiceQuestionsController {
     public List<MultipleChoiceSet> getAllUsersMultipleChoiceSet(User userDeserialized) {
         return multipleChoiceSetRepository.findByUserId(userDeserialized.getId());
     }
+
+    public MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) {
+
+         multipleChoiceSetRepository.delete(multipleChoiceSetToDelete);
+         return multipleChoiceSetToDelete;
+    }
 }

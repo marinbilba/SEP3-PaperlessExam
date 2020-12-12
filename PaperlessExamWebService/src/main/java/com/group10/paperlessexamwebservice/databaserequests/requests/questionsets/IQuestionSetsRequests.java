@@ -33,5 +33,10 @@ public interface IQuestionSetsRequests {
     List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(User fetchedUser) throws ServiceNotAvailable;
 
     List<WrittenSet> getUsersAllWrittenSet(User fetchedUser) throws ServiceNotAvailable;
+
+    WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable;
+
+    MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable;
+
 }
 

@@ -40,4 +40,8 @@ public interface IQuestionSetsService {
     List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(String username) throws EmptyQuestionSetTitleOrTopic, NullQuestionSet, ServiceNotAvailable, UnexpectedError, UsersMultipleChoiceSetNotFound, UserNotFound;
 
     List<WrittenSet> getUsersAllWrittenSet(String username) throws ServiceNotAvailable, UsersWrittenSetNotFound, UserNotFound;
+
+    WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable;
+
+    MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable;
 }

@@ -113,7 +113,7 @@
             <RadzenButton Icon="" Text="Add question" Click=@(() =>done() )></RadzenButton>
             <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())>
                                                                 </RadzenButton>
-            <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
+            <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish" Click="Finish">
             </RadzenButton>
              
         </div>
@@ -296,6 +296,12 @@
         Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"   iobaniii caunter");
         Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question+"   "+_multipleChoiceSet);
         _stepper++;
+    }
+
+    private void Finish()
+    {
+        NavigationManager.NavigateTo("/questionManagement");
+        
     }
 
 }

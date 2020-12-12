@@ -129,6 +129,7 @@ public class ServerSocketHandler implements Runnable {
                     deleteUser(networkContainerRequestDeserialized);
                     break;
 //                    Questions request
+//                Multiple choice set
                 case GET_MULTIPLE_CHOICE_SET:
                     getMultipleChoiceSet(networkContainerRequestDeserialized);
                     break;
@@ -149,6 +150,13 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case CREATE_WRITTEN_SET:
                     createWrittenSet(networkContainerRequestDeserialized);
+                    break;
+                case DELETE_MULTIPLE_CHOICE_SET:
+                    deleteMultipleChoiceSet(networkContainerRequestDeserialized);
+                    break;
+//                    Written set
+                case DELETE_WRITTEN_SET:
+                    deleteWrittenSet(networkContainerRequestDeserialized);
                     break;
                 case GET_WRITTEN_SET:
                     getWrittenSet(networkContainerRequestDeserialized);
@@ -171,11 +179,35 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_TEACHER_EXAMINATION_EVENTS:
                     getTeachersExaminationEvents(networkContainerRequestDeserialized);
+break;
+
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteWrittenSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("DELETE_WRITTEN_SET start");
+        WrittenSet writtenSetToDelete = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenSet.class);
+        WrittenSet deletedWrittenSet = writtenQuestionsController.deleteWrittenSet(writtenSetToDelete);
+        objectSerialized = gson.toJson(deletedWrittenSet);
+        networkContainer = new NetworkContainer(DELETE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("DELETE_WRITTEN_SET end");
+    }
+
+    private void deleteMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("DELETE_MULTIPLE_CHOICE_SET start");
+        MultipleChoiceSet multipleChoiceSetToDelete = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
+        MultipleChoiceSet deletedMultipleChoiceSet = multipleChoiceQuestionsController.deleteMultipleChoiceSet(multipleChoiceSetToDelete);
+        objectSerialized = gson.toJson(deletedMultipleChoiceSet);
+        networkContainer = new NetworkContainer(DELETE_MULTIPLE_CHOICE_SET, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("DELETE_MULTIPLE_CHOICE_SET end");
     }
 
     private void getTeachersExaminationEvents(NetworkContainer networkContainerRequestDeserialized) throws IOException {

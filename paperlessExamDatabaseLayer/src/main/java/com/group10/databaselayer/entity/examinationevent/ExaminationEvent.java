@@ -4,6 +4,8 @@ import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceS
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.*;
@@ -17,6 +19,7 @@ public class ExaminationEvent {
     private String examTitle;
 
     @ManyToMany()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "examination_event_multiple_choice_sets",
             joinColumns = {@JoinColumn(name = "examination_event_id")},
             inverseJoinColumns = {@JoinColumn(name = "multiple_choice_set_id")})
@@ -24,12 +27,14 @@ public class ExaminationEvent {
 
 
     @ManyToMany()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "examination_event_written_sets",
             joinColumns = {@JoinColumn(name = "examination_event_id")},
             inverseJoinColumns = {@JoinColumn(name = "written_set_id")})
     private List<WrittenSet> writtenSets = new ArrayList<>();
 
     @ManyToMany()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "examination_event_users_assigned",
             joinColumns = {@JoinColumn(name = "examination_event_id")},
             inverseJoinColumns = {@JoinColumn(name = "written_set_id")})
@@ -42,6 +47,7 @@ public class ExaminationEvent {
     private Date updatedTimestamp;
 
     @ManyToOne()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "created_by", updatable = false)
     private User createdBy;
 

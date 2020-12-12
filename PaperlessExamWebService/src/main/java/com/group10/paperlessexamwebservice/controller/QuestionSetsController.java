@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -457,26 +459,27 @@ public class QuestionSetsController {
     /**
      * Create written question response entity.
      *
-     *  <p>
-     *   <b>EXAMPLE</b>:
-     *   <p>
-     *   http://{host}:8080/questionsets/createWrittenQuestion
-     *   </p>
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/createWrittenQuestion
+     * </p>
      *
-     *   <b>BODY</b>:
+     * <b>BODY</b>:
+     *
      * @param writtenQuestion the written question
      * @return the response entity
      */
     @RequestMapping(value = "/createWrittenQuestion", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createWrittenQuestion(@RequestBody WrittenQuestion writtenQuestion) {
-        WrittenQuestion createdWrittenQuestion=null;
+        WrittenQuestion createdWrittenQuestion = null;
         try {
-           createdWrittenQuestion= questionSetsService.addWrittenQuestion(writtenQuestion);
-        } catch (EmptyMultipleChoiceQuestion |NullQuestionSet |EmptyQuestionSetTitleOrTopic |UnexpectedError|QuestionSetAlreadyExists e) {
+            createdWrittenQuestion = questionSetsService.addWrittenQuestion(writtenQuestion);
+        } catch (EmptyMultipleChoiceQuestion | NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 
-        }  catch (ServiceNotAvailable serviceNotAvailable) {
+        } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
 
@@ -521,7 +524,7 @@ public class QuestionSetsController {
         WrittenSet createdWrittenSet = null;
         try {
             createdWrittenSet = questionSetsService.createWrittenSet(writtenSet);
-        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError |QuestionSetAlreadyExists e) {
+        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -583,28 +586,27 @@ public class QuestionSetsController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(foundMultipleChoiceSet);
     }
+
     /**
      * Finds all multiple choice sets of a user.
      * It is processed as a GET request requesting the <i>USERS username</i>
-
+     *
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
      * http://{host}:8080/questionsets/getAllUsersMultipleChoiceSets/{username123}
-
-
      *
      * @param username the multiple choice set that should be found
      * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i>
-
+     *
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getAllUsersMultipleChoiceSets/{username}", method = RequestMethod.GET)
     public ResponseEntity<Object> findAllMultipleChoiceSet(@PathVariable String username) {
-      List<MultipleChoiceSet> usersMultipleChoiceSet;
+        List<MultipleChoiceSet> usersMultipleChoiceSet;
         try {
-            usersMultipleChoiceSet=questionSetsService.getUsersAllMultipleChoiceSet(username);
-        } catch (EmptyQuestionSetTitleOrTopic|NullQuestionSet|UnexpectedError|UsersMultipleChoiceSetNotFound|UserNotFound e) {
+            usersMultipleChoiceSet = questionSetsService.getUsersAllMultipleChoiceSet(username);
+        } catch (EmptyQuestionSetTitleOrTopic | NullQuestionSet | UnexpectedError | UsersMultipleChoiceSetNotFound | UserNotFound e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -617,18 +619,16 @@ public class QuestionSetsController {
     /**
      * Finds all written sets of a user.
      * It is processed as a GET request requesting the <i>Users username</i>
-
+     *
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
      * http://{host}:8080/questionsets/getAllUsersWrittenSets/{username}
      * </p>
      *
-
-     *
      * @param username the user's username
      * @return <i>HTTP 200 - OK</i> with the found written set or <i>HTTP 400 - BAD_REQUEST</i>
-
+     *
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getAllUsersWrittenSets/{username}", method = RequestMethod.GET)
@@ -636,16 +636,65 @@ public class QuestionSetsController {
         List<WrittenSet> usersWrittenSet = null;
 
         try {
-            usersWrittenSet=questionSetsService.getUsersAllWrittenSet(username);
+            usersWrittenSet = questionSetsService.getUsersAllWrittenSet(username);
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (UsersWrittenSetNotFound|UserNotFound usersWrittenSetNotFound) {
+        } catch (UsersWrittenSetNotFound | UserNotFound usersWrittenSetNotFound) {
             usersWrittenSetNotFound.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usersWrittenSetNotFound.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(usersWrittenSet);
     }
 
+    /**
+     * Deletes the passed multiple choice set of a user.
+     * It is processed as a POST request requesting the <i>Written Set object to delete</i>
+     *
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/deleteMultipleChoiceSet
+     * </p>
+     *
+     * <b>BODY</b>:
+     *
+     * @param multipleChoiceSetToDelete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple choice set
+     * *
+     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteMultipleChoiceSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteMultipleChoiceSet(@RequestBody MultipleChoiceSet multipleChoiceSetToDelete) {
+        MultipleChoiceSet deletedMultipleChoiceSet;
+        try {
+            deletedMultipleChoiceSet = questionSetsService.deleteMultipleChoiceSet(multipleChoiceSetToDelete);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deletedMultipleChoiceSet);
+    }
 
+    /**
+     * Deletes the passed written sets of a user.
+     * It is processed as a POST request requesting the <i>Written Set object to delete</i>
+     * <b>BODY</b>:
+     *
+     * @param writtenSetToDelete
+     * @return <i>HTTP 200 - OK</i> with the deleted written set
+     * *
+     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/deleteWrittenSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> deleteWrittenSet(@RequestBody WrittenSet writtenSetToDelete) {
+        WrittenSet deletedWrittenSet;
+        try {
+            deletedWrittenSet = questionSetsService.deleteWrittenSet(writtenSetToDelete);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(deletedWrittenSet);
+    }
 }

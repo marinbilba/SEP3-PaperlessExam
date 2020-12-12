@@ -47,8 +47,13 @@ namespace SEP3.PaperlessExam
             services.AddAuthorization(options => {
                 options.AddPolicy("MustBeStudent",  a => 
                     a.RequireAuthenticatedUser().RequireClaim("Role", "Student"));
-               
+                options.AddPolicy("MustBeTeacher",  a => 
+                    a.RequireAuthenticatedUser().RequireClaim("Role", "Teacher"));
+                options.AddPolicy("MustBeAdmin",  a => 
+                    a.RequireAuthenticatedUser().RequireClaim("Role", "Admin"));
+
             });
+            
         }
         
 

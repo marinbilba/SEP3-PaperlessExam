@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The type Question sets requests.
+ */
 @Service
 public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
@@ -325,6 +328,66 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return fetchedWrittenSetList;
+    }
+
+    /**
+     *  Method makes a Delete for the given {@param writtenSetToDelete} request to tier 3
+     * @param writtenSetToDelete
+     * @return the deleted written set
+     * @throws ServiceNotAvailable
+     */
+    @Override
+    public WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable {
+        WrittenSet deletedWrittenSet=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String userSerialized = gson.toJson(writtenSetToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(userSerialized,  DELETE_WRITTEN_SET);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedWrittenSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), WrittenSet.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedWrittenSet;
+    }
+
+    /**
+     * Method makes a Delete for the given {@param multipleChoiceSetToDelete} request to tier 3
+     * @param multipleChoiceSetToDelete
+     * @return the deleted multiple choice set  set
+     * @throws ServiceNotAvailable
+     */
+    @Override
+    public MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable {
+        MultipleChoiceSet deletedMultipleChoiceSet=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String userSerialized = gson.toJson(multipleChoiceSetToDelete);
+            //            Send request
+            requestSharedMethods.sendRequest(userSerialized,  DELETE_MULTIPLE_CHOICE_SET);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            deletedMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return deletedMultipleChoiceSet;
     }
 
 

@@ -2,6 +2,8 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,6 +23,7 @@ public class QuestionOption {
 
     @Fetch(FetchMode.SELECT)
     @ManyToOne()
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private MultipleChoiceQuestion multipleChoiceQuestion;
 
     /**

@@ -51,7 +51,7 @@
     <div class="col-md-3 offset-9">
         <RadzenButton Icon="" Click=@(() => done()) Text="Add question"> </RadzenButton>
         <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())></RadzenButton>
-        <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish">
+        <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish" Click="Finish">
         </RadzenButton>
     </div>
     @* <div class="col-md-3"> *@
@@ -176,5 +176,9 @@
         }
         _stepper++;
     }
-
+    private void Finish()
+    {
+        NavigationManager.NavigateTo("/questionManagement");
+        
+    }
 }

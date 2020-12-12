@@ -64,7 +64,7 @@
                     <td>@item.Topic</td>
                     <td>@item.UpdatedTimestamp</td>
                     <td>
-                        <button @onclick="PreviewWrittenSet">
+                        <button @onclick="() => PreviewWrittenSet(item.Id)">
                             <i class="oi oi-pencil" style="color:green"/>
                         </button>
                     </td>
@@ -104,7 +104,7 @@
                     <td>@item.Topic</td>
                     <td>@item.UpdatedTimestamp</td>
                     <td>
-                        <button @onclick="PreviewMultipleChoiceSet">
+                        <button @onclick="() => PreviewMultipleChoiceSet(item.Id)">
                             <i class="oi oi-pencil" style="color:green"/>
                         </button>
                     </td>
@@ -143,7 +143,7 @@
                     <td>@item.Topic</td>
                     <td>@item.UpdatedTimestamp</td>
                     <td>
-                        <button @onclick="PreviewWrittenSet">
+                        <button @onclick="() => PreviewWrittenSet(item.Id)">
                             <i class="oi oi-pencil" style="color:green"/>
                         </button>
                     </td>
@@ -180,7 +180,7 @@
                     <td>@item.Topic</td>
                     <td>@item.UpdatedTimestamp</td>
                     <td>
-                        <button @onclick="PreviewWrittenSet">
+                        <button @onclick="()=>PreviewMultipleChoiceSet(item.Id)">
                             <i class="oi oi-pencil" style="color:green"/>
                         </button>
                     </td>
@@ -483,12 +483,12 @@
     }
 
 
-    private void PreviewWrittenSet()
+    private void PreviewWrittenSet(long itemId)
     {
         NavigationManager.NavigateTo("/");
     }
 
-    private void PreviewMultipleChoiceSet()
+    private void PreviewMultipleChoiceSet(long itemId)
     {
         NavigationManager.NavigateTo("/");
     }

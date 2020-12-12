@@ -196,4 +196,9 @@ public class WrittenQuestionsController {
     public List<WrittenSet> getAllWrittenSet(User userDeserialized) {
         return writtenSetRepository.findByUserId(userDeserialized.getId());
     }
+
+    public WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) {
+        writtenSetRepository.delete(writtenSetToDelete);
+        return writtenSetToDelete;
+    }
 }

@@ -2,6 +2,8 @@ package com.group10.databaselayer.entity.questions.written;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -23,6 +25,7 @@ public class WrittenQuestion {
 
     private double score;
     @ManyToOne()
+    @OnDelete(action = OnDeleteAction.CASCADE)
 //    @JoinColumns({
 //            @JoinColumn(name = "multiple_choice_set_id"),
 //            @JoinColumn(name = "multiple_choice_set_title"),
