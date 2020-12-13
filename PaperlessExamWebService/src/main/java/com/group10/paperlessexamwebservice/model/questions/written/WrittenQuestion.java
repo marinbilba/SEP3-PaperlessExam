@@ -83,15 +83,14 @@ public String getQuestion(){
     public void setScore(double score) {
         super.setScore(score);
     }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null) { return false; }
-        if (getClass() != o.getClass()) { return false; }
-        if (! super.equals(o)) return false;
-        else {
-            WrittenQuestion other=(WrittenQuestion) o;
-       return writtenSet.equals(other.writtenSet);
-        }
+        if (this == o) return true;
+        if (!(o instanceof WrittenQuestion)) return false;
+        if (!super.equals(o)) return false;
+        WrittenQuestion that = (WrittenQuestion) o;
+        return writtenSet.equals(that.writtenSet);
     }
 
     @Override

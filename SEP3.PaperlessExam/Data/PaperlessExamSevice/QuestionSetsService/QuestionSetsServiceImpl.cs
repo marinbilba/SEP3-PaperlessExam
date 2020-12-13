@@ -571,5 +571,51 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 
             return writtenSetDeserealize;
         }
+
+        public async Task<WrittenSet> UpdateWrittenSet(WrittenSet writtenSet)
+        {
+            WrittenSet writtenSetDeserealize = null;
+            HttpResponseMessage responseMessage;
+            string writtenSetSerialize = JsonSerializer.Serialize(writtenSet);
+            var content = new StringContent(writtenSetSerialize, Encoding.UTF8, "application/json");
+            Console.WriteLine(writtenSet);
+            // 1. Send POST request
+            try
+            {
+                responseMessage =
+                    await client.PostAsync(uri + "/questionsets/updateWrittenSet", content);
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection...");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                writtenSetDeserealize = JsonSerializer.Deserialize<WrittenSet>(readAsStringAsync);
+                Console.WriteLine(writtenSetSerialize);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return writtenSetDeserealize;
+        }
     }
 }

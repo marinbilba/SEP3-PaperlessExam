@@ -2,6 +2,7 @@
 @page "/asdffads"
 @using System.Reflection.Metadata
 @using Microsoft.AspNetCore.Razor.TagHelpers
+@using SEP3.PaperlessExam.Authentication
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 @using SEP3.PaperlessExam.Model
@@ -11,22 +12,21 @@
 @inject IQuestionSetsService QuestionSetsService
 @inject NavigationManager NavigationManager
 @inject IToastService toastService
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <h3 xmlns="">MultipleChoiceQuestions</h3>
 
 <link rel="stylesheet" type="text/css" href="css/TeacherView/QuestionManagement/CreateQuestionSet/MultipleChoice/multipleChoiceQuestions.css">
 
-<h3>Multiple-choice Questions Builder</h3>    
+<h3>Multiple-choice Questions Builder</h3>
 
 @if (_multipleChoiceSet != null)
 {
 <EditForm Model="_multipleChoiceSet">
-    
+
     @for (var _index1 = 0; _index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; _index1++)
     {
-
         var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[_index1];
-        _counter = _index1+1;
+        _counter = _index1 + 1;
         <div class="container-fluid questionContainer">
             @* Type question  *@
             <div class="row">
@@ -34,6 +34,7 @@
                     <div class="questionNumberBox d-flex">
                         <div class="d-flex">
                             <p class="questionNumber">@_counter</p>
+                            
                             @* <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber"> *@
                         </div>
                     </div>
@@ -53,21 +54,18 @@
             </div>
 
 
-
-
             <div class="row top-buffer justify-content-center">
                 <div class="col-md-1 offset-2">
-                </div> 
+                </div>
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-1"></div>
             </div>
-            
-            
-            @for (var i = 0; i < multipleChoiceQuestion.QuestionOptions.Count; i++)
+
+
+            @for (var i = 0; i < multipleChoiceQuestion.MultipleChoiceQuestionsOption.Count; i++)
             {
-                
-                var questionOption = multipleChoiceQuestion.QuestionOptions[i];
+                var questionOption = multipleChoiceQuestion.MultipleChoiceQuestionsOption[i];
                 Console.WriteLine(i);
                 <div class="form-group row top-buffer justify-content-center">
                     <div class="col-md-1 offset-2">
@@ -84,8 +82,7 @@
                     </div>
                 </div>
             }
-
-
+            
             <div class="row top-buffer justify-content-center">
                 <div class="col-md-1 offset-2">
                     <div class="additionalQuestionSelectBox">
@@ -98,47 +95,50 @@
                     </button>
                 </div>
             </div>
-    
+
 
             @* Add additional option *@
-           
-        </div>
 
+        </div>
+        <div class="row top-buffer justify-content-between">
+            <div class="col-md-3 offset-9">
+                <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => _multipleChoiceSet.MultipleChoiceQuestions.Remove(multipleChoiceQuestion))>
+                </RadzenButton>
+            </div>
+        </div>
+        multipleChoiceQuestion.QuestionNumber = _counter;
     }
 
 
     @* Add new question && Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-3 offset-9">
-            <RadzenButton Icon="" Text="Add question" Click=@(() =>done() )></RadzenButton>
-            <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())>
-                                                                </RadzenButton>
+            <RadzenButton Icon="" Text="Add question" Click=@(() => done())></RadzenButton>
             <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish" Click="Finish">
             </RadzenButton>
-             
+
         </div>
-        
+
         @* <div class="col-md-3"> *@
         @*    *@
         @* </div> *@
     </div>
 </EditForm>
 }
+
 @code {
-    
-    [Parameter]
-    public string Username { get; set; }
+
     [Parameter]
     public string Title { get; set; }
+
     [Parameter]
     public string Topic { get; set; }
-    
-    
+
 
     private User _updatedUser;
 
     private string _roleName;
-    
+
     private string _score;
 
     private string _question;
@@ -146,37 +146,39 @@
     private int _counter;
 
     private int _stepper;
-    
+
     private bool _disable;
-
-
+    private User _currentUser;
 
     private MultipleChoiceSet _multipleChoiceSet;
 
 
-    
-    
-    
     protected override async Task OnInitializedAsync()
-    {
-        
-        var user = await UserService.FindByUsername(Username);
-        
-        
-        _updatedUser = user;
-        Console.WriteLine(_updatedUser.Username+"  "+Title);
+    {  LogUsername();
+        try
+        {
+  var user = await UserService.FindByUsername(_currentUser.Username);  
+            _updatedUser = user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+      
+
+
+  
 
         _multipleChoiceSet =
-        new MultipleChoiceSet();
+            new MultipleChoiceSet(Title, Topic, _updatedUser);
+
         _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-        
+
         _stepper++;
         _disable = true;
-        Console.WriteLine(_stepper+"   stepper");
     }
 
-    
-    
+
     bool _correctAnswerValue;
 
     int _questionNumber;
@@ -186,133 +188,52 @@
     private void SetCorrectAnswer(bool? value)
     {
         _correctAnswer = value;
-        
     }
 
     private async Task delete()
     {
-        if (_stepper == 1)
-        {
-            _disable = true;
-        }
-        else
-        {
-            // todo SILVESTRU DELETE
-            try
-            {
- await QuestionSetsService.RemoveMultipleChoiceQuestion(multipleChoiceSetTemp.MultipleChoiceQuestions[^1]);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                
-            }
-          
-            _multipleChoiceSet.RemoveLastQuestion();
-            _stepper--;
-            _disable = false;
-            Console.WriteLine(_stepper+"   stepper");
-        }
-        
+        await QuestionSetsService.RemoveMultipleChoiceQuestion(multipleChoiceSetTemp.MultipleChoiceQuestions[^1]);
     }
 
     private MultipleChoiceSet multipleChoiceSetTemp;
-    
+
+    private async Task LogUsername()
+    {
+    // await  UserService.LoginUser(new User());
+        var user =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        
+        _currentUser = user;
+    }
+
     private async Task done()
     {
         _multipleChoiceSet.MultipleChoiceQuestions[_counter - 1].QuestionNumber = _counter;
         _disable = false;
-        Console.WriteLine(_stepper+"   stepper");
-        
-        if (_stepper == 1)
-        {
-            _disable = false;
-            
-            try
-            {
-                multipleChoiceSetTemp = new MultipleChoiceSet(Title, Topic, _updatedUser);
-                multipleChoiceSetTemp.MultipleChoiceQuestions = _multipleChoiceSet.MultipleChoiceQuestions;
-                await QuestionSetsService.CreateMultipleChoiceSet(new MultipleChoiceSet(multipleChoiceSetTemp.Title, multipleChoiceSetTemp.Topic, _updatedUser));
-                
-                var multipleChoiceQuestion = multipleChoiceSetTemp.MultipleChoiceQuestions[_stepper-1];
-            
-            
-                var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
-            
-                
-                try
-                {
-                    await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, multipleChoiceSetTemp));
-                    multipleChoiceQuestion.MultipleChoiceSet = multipleChoiceSetTemp;
-                    foreach (var option in multipleChoiceQuestionOptions)
-                    {
-                        
-                        try
-                        {
-                            await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(option.CorrectAnswer,option.Answer, multipleChoiceQuestion));
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
-                    }
-                 
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            Console.WriteLine("sdaasda");
-         
-            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-        }
-        else
-        {
-            var multipleChoiceQuestion = multipleChoiceSetTemp.MultipleChoiceQuestions[_stepper-1];
-            
-            
-            var multipleChoiceQuestionOptions= multipleChoiceQuestion.QuestionOptions;
-            
-                
-            try
-            {
-                await QuestionSetsService.AddMultipleChoiceQuestion(new MultipleChoiceQuestion(multipleChoiceQuestion.question, multipleChoiceQuestion.Score, multipleChoiceQuestion.QuestionNumber, multipleChoiceSetTemp));
-                multipleChoiceQuestion.MultipleChoiceSet = multipleChoiceSetTemp;
-                foreach (var option in multipleChoiceQuestionOptions)
-                {
-                        
-                    try
-                    {
-                        await QuestionSetsService.AddMultipleChoiceQuestionOption(new QuestionOption(option.CorrectAnswer,option.Answer, multipleChoiceQuestion));
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
-                 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-           // Request to add MultipleChoiceQuestion
-            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-        }
-        Console.WriteLine(_multipleChoiceSet.MultipleChoiceQuestions[0].QuestionNumber+"   iobaniii caunter");
-        Console.WriteLine(_multipleChoiceSet.Title+"   "+_multipleChoiceSet.Topic+"   "+_multipleChoiceSet.MultipleChoiceQuestions[0].question+"   "+_multipleChoiceSet);
+        Console.WriteLine(_stepper + "   stepper");
+
+
+        _disable = false;
+        _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
+
+
+    // Request to add MultipleChoiceQuestion
+
+
         _stepper++;
     }
 
-    private void Finish()
+    private async Task Finish()
     {
+        try
+        {
+            await QuestionSetsService.CreateMultipleChoiceSet(_multipleChoiceSet);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
         NavigationManager.NavigateTo("/questionManagement");
-        
     }
 
 }

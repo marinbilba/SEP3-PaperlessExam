@@ -8,15 +8,14 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
         [JsonPropertyName("correctAnswer")] public bool CorrectAnswer { get; set; }
         [JsonPropertyName("answer")] public string Answer { get; set; }
 
-        [JsonPropertyName("multipleChoiceQuestion")]public MultipleChoiceQuestion MultipleChoiceQuestion { get; set; }
+     
         
         public QuestionOption() {}
 
-        public QuestionOption(bool correctAnswer, string answer, MultipleChoiceQuestion multipleChoiceQuestion)
+        public QuestionOption(bool correctAnswer, string answer)
         {
             CorrectAnswer = correctAnswer;
             Answer = answer;
-            MultipleChoiceQuestion = multipleChoiceQuestion;
         }
         
     }

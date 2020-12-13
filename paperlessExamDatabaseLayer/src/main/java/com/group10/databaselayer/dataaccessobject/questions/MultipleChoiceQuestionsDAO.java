@@ -3,6 +3,7 @@ package com.group10.databaselayer.dataaccessobject.questions;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
+import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
@@ -290,4 +291,11 @@ public class MultipleChoiceQuestionsDAO {
         multipleChoiceQuestionRepository.delete(multipleChoiceQuestionToDelete);
         return multipleChoiceQuestionToDelete;
     }
+
+    public MultipleChoiceSet getMultipleChoiceSetById(long multipleChoiceSetId) {
+
+        return multipleChoiceSetRepository.getOne(multipleChoiceSetId);
+    }
+
+
 }

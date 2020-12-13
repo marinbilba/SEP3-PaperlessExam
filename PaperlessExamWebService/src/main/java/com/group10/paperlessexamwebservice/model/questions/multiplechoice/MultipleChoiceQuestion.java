@@ -15,8 +15,8 @@ import java.util.Objects;
 public class MultipleChoiceQuestion extends Question {
 
     private MultipleChoiceSet multipleChoiceSet;
-
-
+    @Hidden
+    private ArrayList<QuestionOption> questionOptions=new ArrayList<>();
 
 
     /**
@@ -26,9 +26,35 @@ public class MultipleChoiceQuestion extends Question {
 
     }
 
+    /**
+     * Instantiates a new Multiple choice question.
+     *
+     * @param question          the question
+     * @param score             the score
+     * @param questionNumber    the question number
+     * @param multipleChoiceSet the multiple choice set
+     */
     public MultipleChoiceQuestion(String question, double score, int questionNumber, MultipleChoiceSet multipleChoiceSet) {
         super(question, score, questionNumber);
         this.multipleChoiceSet = multipleChoiceSet;
+    }
+
+    /**
+     * Gets question options.
+     *
+     * @return the question options
+     */
+    public ArrayList<QuestionOption> getQuestionOptions() {
+        return questionOptions;
+    }
+
+    /**
+     * Sets question options.
+     *
+     * @param questionOptions the question options
+     */
+    public void setQuestionOptions(ArrayList<QuestionOption> questionOptions) {
+        this.questionOptions = questionOptions;
     }
 
     /**

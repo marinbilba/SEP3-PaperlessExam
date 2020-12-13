@@ -67,6 +67,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             if (createdMultipleChoiceQuestion == null) {
                 throw new UnexpectedError("Something went wrong");
             }
+
         }
 
         return createdMultipleChoiceQuestion;
@@ -105,17 +106,42 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             if (createdWrittenSet == null) {
                 throw new UnexpectedError("Something went wrong");
             }
+
             for (var question : writtenSet.getWrittenQuestions()) {
                 question.setWrittenSet(writtenSet);
                 addWrittenQuestion(question);
             }
-
-
         }
-
-
         return createdWrittenSet;
     }
+    @Override
+    //TODO A better aproch must be found. It is not a very good idea to delete data from database
+    public WrittenSet updateWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, UnexpectedError, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, EmptyMultipleChoiceQuestion, QuestionSetAlreadyExists {
+       // WrittenSet writtenSetToUpdate = getWrittenSet(writtenSet);
+        WrittenSet oldWrittenSet=getWrittenSetWithAllChildElements(writtenSet.getId());
+        if(writtenSet.getWrittenQuestions().equals(oldWrittenSet.getWrittenQuestions())){
+            return writtenSet;
+        }
+       else{
+//           Delete old questions
+           for (var question : oldWrittenSet.getWrittenQuestions()) {
+               question.setWrittenSet(writtenSet);
+               deleteWrittenQuestion(question);
+           }
+//           Populate db again
+            for (var question : writtenSet.getWrittenQuestions()) {
+                question.setWrittenSet(writtenSet);
+                addWrittenQuestion(question);
+            }
+       }
+//        for (var questionOld:oldWrittenSet.getWrittenQuestions()) {
+//            for (var questionNew:writtenSet.getWrittenQuestions()) {
+//                if(questionNew)
+//            }
+//        }
+        return writtenSet;
+    }
+
 
     @Override
     public WrittenSet getWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UnexpectedError {
@@ -221,6 +247,17 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         return deletedWrittenQuestion;
     }
 
+    @Override
+    public WrittenSet getWrittenSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable, UnexpectedError {
+        WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSetById(writtenSetId);
+        if (fetchedWrittenSet == null) {
+            throw new UnexpectedError("Something went wrong");
+        }
+        List<WrittenQuestion> fetchedWrittenQuestionList = questionSetsRequests.getWrittenSetQuestionsByWrittenSet(fetchedWrittenSet);
+        fetchedWrittenSet.setWrittenQuestions(fetchedWrittenQuestionList);
+        return fetchedWrittenSet;
+    }
+
     private boolean validateWrittenQuestionFields(WrittenQuestion writtenQuestion) throws NullQuestionSet, EmptyMultipleChoiceQuestion {
         if (Objects.requireNonNull(writtenQuestion).getQuestion() == null || Objects.requireNonNull(writtenQuestion).getWrittenSet() == null) {
             throw new NullQuestionSet("One or more multiple choice set questions fields are null");
@@ -231,7 +268,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet {
+    public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion {
         MultipleChoiceSet createdMultipleChoiceSet;
         validateMultipleChoiceSetFields(multipleChoiceSet);
         User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
@@ -250,6 +287,16 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         }
         if (createdMultipleChoiceSet == null) {
             throw new UnexpectedError("Something went wrong");
+        }
+
+        for (var multipleChoiceQuestion : multipleChoiceSet.getMultipleChoiceQuestionList()) {
+            multipleChoiceQuestion.setMultipleChoiceSet(createdMultipleChoiceSet);
+            addMultipleChoiceQuestion(multipleChoiceQuestion);
+            for (var multipleChoiceQuestionOption : multipleChoiceQuestion.getQuestionOptions()) {
+                multipleChoiceQuestionOption.setMultipleChoiceQuestion(multipleChoiceQuestion);
+                addMultipleChoiceQuestionOption(multipleChoiceQuestionOption);
+            }
+
         }
         return createdMultipleChoiceSet;
     }
@@ -332,6 +379,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         }
         return true;
     }
+
 
     private boolean validateMultipleChoiceQuestionOptionFields(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet {
         // Validate multiple choice questions option on null.

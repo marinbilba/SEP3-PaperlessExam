@@ -79,14 +79,14 @@
                 <RadzenStepsItem Text="Create question" Disabled="_thirdStepDisable">
                     @if (_displayWrittenQuestionBuilder)
                     {
-                        LogUsername();
-                        <WrittenQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></WrittenQuestions>
+                 
+                        <WrittenQuestions  Title="@_questionSetTitle" Topic="@_questionSetTopic"></WrittenQuestions>
                         
                     }
                     @if (_displayMultipleChoiceQuestionBuilder)
                     {
-                        LogUsername();
-                        <MultipleChoiceQuestions Username="@username" Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
+                   
+                        <MultipleChoiceQuestions  Title="@_questionSetTitle" Topic="@_questionSetTopic"></MultipleChoiceQuestions>;
                     }
                     else
                     {
@@ -102,16 +102,11 @@
     
     private string _authMessage;
     
-    private string username;
+
     
     private MultipleChoiceSet _multipleChoiceSet;
     
-    private async Task LogUsername()
-    {
-     // await  UserService.LoginUser(new User());
-        var authState =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
-        username = authState.Username;
-    }
+ 
     
     // After second step send multiplechoiceset with 3 args;
     

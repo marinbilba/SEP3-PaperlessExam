@@ -432,10 +432,7 @@ public class QuestionSetsController {
      * }
      *
      * @param multipleChoiceSet the multiple choice set
-     * @return <i>HTTP 200 - OK</i> with the created multiple choice set or
-     * <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected.
-     * <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set or <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected. <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/createMultipleChoiceSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createMultipleChoiceSet(@RequestBody MultipleChoiceSet multipleChoiceSet) {
@@ -444,8 +441,9 @@ public class QuestionSetsController {
         try {
             createdMultipleChoiceSet = questionSetsService.createMultipleChoiceSet(multipleChoiceSet);
         } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (UnexpectedError | QuestionSetAlreadyExists | NullQuestionSet | EmptyQuestionSetTitleOrTopic e) {
+        } catch (NegativeNumberException|EmptyMultipleChoiceQuestion|UnexpectedError | QuestionSetAlreadyExists | NullQuestionSet | EmptyQuestionSetTitleOrTopic|NullQuestionSetQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (UserNotFound userNotFound) {
@@ -520,7 +518,7 @@ public class QuestionSetsController {
      * @return the response entity <i>HTTP 200 - OK</i> with the written set or <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected. <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/createWrittenSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createMultipleWrittenSet(@RequestBody WrittenSet writtenSet) {
+    public ResponseEntity<Object> createWrittenSet(@RequestBody WrittenSet writtenSet) {
         WrittenSet createdWrittenSet = null;
         try {
             createdWrittenSet = questionSetsService.createWrittenSet(writtenSet);
@@ -533,6 +531,36 @@ public class QuestionSetsController {
         } catch (UserNotFound userNotFound) {
             userNotFound.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userNotFound.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(createdWrittenSet);
+    }
+
+    /**
+     * Update written set response entity.
+     * <p>
+     *
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/createWrittenSet
+     * </p>
+     *
+     * <b>BODY</b>:
+     *
+     * @param writtenSet the written set
+     * @return the response entity <i>HTTP 200 - OK</i> with the written set or <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected. <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/updateWrittenSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateWrittenSet(@RequestBody WrittenSet writtenSet) {
+        WrittenSet createdWrittenSet = null;
+        try {
+            createdWrittenSet = questionSetsService.updateWrittenSet(writtenSet);
+        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists|EmptyMultipleChoiceQuestion e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(createdWrittenSet);
@@ -598,9 +626,7 @@ public class QuestionSetsController {
      * http://{host}:8080/questionsets/getAllUsersMultipleChoiceSets/{username123}
      *
      * @param username the multiple choice set that should be found
-     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i>
-     *
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getAllUsersMultipleChoiceSets/{username}", method = RequestMethod.GET)
     public ResponseEntity<Object> findAllMultipleChoiceSet(@PathVariable String username) {
@@ -628,9 +654,7 @@ public class QuestionSetsController {
      * </p>
      *
      * @param username the user's username
-     * @return <i>HTTP 200 - OK</i> with the found written set or <i>HTTP 400 - BAD_REQUEST</i>
-     *
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the found written set or <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getAllUsersWrittenSets/{username}", method = RequestMethod.GET)
     public ResponseEntity<Object> findAllWrittenSets(@PathVariable String username) {
@@ -660,29 +684,27 @@ public class QuestionSetsController {
      *
      * <b>BODY</b>:
      * {
-     *    "user":{
-     *       "id":10,
-     *       "username":"silvmandrila",
-     *       "email":"silvmandr@va.cs",
-     *       "password":"111111",
-     *       "confirmPassword":null,
-     *       "firstName":"Silvestru",
-     *       "lastName":"Mandrila",
-     *       "role":{
-     *          "id":1,
-     *          "name":"Student"
-     *       }
-     *    },
-     *    "updatedtimestamp":"0001-01-01T00:00:00",
-     *    "id":2,
-     *    "title":"fddddddd",
-     *    "topic":"dffd"
+     * "user":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
+     * }
+     * },
+     * "updatedtimestamp":"0001-01-01T00:00:00",
+     * "id":2,
+     * "title":"fddddddd",
+     * "topic":"dffd"
      * }
      *
-     * @param multipleChoiceSetToDelete
-     * @return <i>HTTP 200 - OK</i> with the deleted multiple choice set
-     * *
-     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @param multipleChoiceSetToDelete the multiple choice set to delete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple choice set * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/deleteMultipleChoiceSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteMultipleChoiceSet(@RequestBody MultipleChoiceSet multipleChoiceSetToDelete) {
@@ -706,29 +728,28 @@ public class QuestionSetsController {
      * </p>
      *
      * <b>BODY</b>:
-     *{
-     *    "user":{
-     *       "id":10,
-     *       "username":"silvmandrila",
-     *       "email":"silvmandr@va.cs",
-     *       "password":"111111",
-     *       "confirmPassword":null,
-     *       "firstName":"Silvestru",
-     *       "lastName":"Mandrila",
-     *       "role":{
-     *          "id":1,
-     *          "name":"Student"
-     *       }
-     *    },
-     *    "updatedTimestamp":"2020-12-12T21:12:54+01:00",
-     *    "id":2,
-     *    "title":"War",
-     *    "topic":"WW2"
+     * {
+     * "user":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
      * }
-     * @param writtenSetToDelete
-     * @return <i>HTTP 200 - OK</i> with the deleted written set
-     * *
-     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * },
+     * "updatedTimestamp":"2020-12-12T21:12:54+01:00",
+     * "id":2,
+     * "title":"War",
+     * "topic":"WW2"
+     * }
+     *
+     * @param writtenSetToDelete the written set to delete
+     * @return <i>HTTP 200 - OK</i> with the deleted written set * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/deleteWrittenSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteWrittenSet(@RequestBody WrittenSet writtenSetToDelete) {
@@ -753,10 +774,8 @@ public class QuestionSetsController {
      *
      * <b>BODY</b>:
      *
-     * @param multipleChoiceQuestionToDelete
-     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question
-     * *
-     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @param multipleChoiceQuestionToDelete the multiple choice question to delete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/deleteMultipleChoiceQuestion", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteMultipleChoiceQuestion(@RequestBody MultipleChoiceQuestion multipleChoiceQuestionToDelete) {
@@ -769,6 +788,7 @@ public class QuestionSetsController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(deletedMultipleChoiceQuestion);
     }
+
     /**
      * Deletes the written set question of a user.
      * It is processed as a POST request requesting the <i>WrittenQuestion object to delete</i>
@@ -780,10 +800,8 @@ public class QuestionSetsController {
      *
      * <b>BODY</b>:
      *
-     * @param writtenQuestionToDelete
-     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question
-     * *
-     * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @param writtenQuestionToDelete the written question to delete
+     * @return <i>HTTP 200 - OK</i> with the deleted multiple Choice Question * * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/deleteWrittenSetQuestion", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> deleteWrittenSetQuestion(@RequestBody WrittenQuestion writtenQuestionToDelete) {
@@ -798,7 +816,6 @@ public class QuestionSetsController {
     }
 
 
-
     /**
      * Fetches the written set with all child elements.
      * It is processed as a GET request requesting the <i>written set id</i>
@@ -809,14 +826,21 @@ public class QuestionSetsController {
      * http://{host}:8080/questionsets/getWrittenSetWithAllChildElements/{username123}
      *
      * @param writtenSetId the multiple choice set that should be found
-     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i>
-     *
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i><i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getWrittenSetWithAllChildElements/{writtenSetId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getWrittenSetWithAllChildElements(@PathVariable long writtenSetId) {
         System.out.println(writtenSetId);
         WrittenSet fetchedWrittenSet;
-       return null;
+        try {
+            fetchedWrittenSet=questionSetsService.getWrittenSetWithAllChildElements(writtenSetId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (UnexpectedError unexpectedError) {
+            unexpectedError.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(unexpectedError.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedWrittenSet);
     }
 }

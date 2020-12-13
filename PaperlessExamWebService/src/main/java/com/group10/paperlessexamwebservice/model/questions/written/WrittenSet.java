@@ -75,21 +75,17 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof WrittenSet)) return false;
         if (!super.equals(o)) return false;
-        else {
-            WrittenSet other = (WrittenSet) o;
-            return user.equals(other.user);
-        }
+        WrittenSet that = (WrittenSet) o;
+        return updatedTimestamp.equals(that.updatedTimestamp) &&
+                user.equals(that.user) &&
+                writtenQuestions.equals(that.writtenQuestions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode());
+        return Objects.hash(super.hashCode(), updatedTimestamp, user, writtenQuestions);
     }
 }

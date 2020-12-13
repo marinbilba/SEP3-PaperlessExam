@@ -18,7 +18,7 @@ import java.util.List;
 public interface IQuestionSetsService {
     MultipleChoiceQuestion addMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, UnexpectedError, QuestionSetAlreadyExists;
 
-    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, NullQuestionSet, QuestionSetAlreadyExists;
+    MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, NullQuestionSet, QuestionSetAlreadyExists, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion;
 
     MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, QuestionSetAlreadyExists, EmptyQuestionSetTitleOrTopic, UnexpectedError;
 
@@ -47,4 +47,8 @@ public interface IQuestionSetsService {
     MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws UnexpectedError, ServiceNotAvailable;
 
     WrittenQuestion deleteWrittenQuestion(WrittenQuestion writtenQuestionToDelete) throws UnexpectedError, ServiceNotAvailable;
+
+    WrittenSet getWrittenSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable, UnexpectedError;
+
+    WrittenSet updateWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, UnexpectedError, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, EmptyMultipleChoiceQuestion, QuestionSetAlreadyExists;
 }

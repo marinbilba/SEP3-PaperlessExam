@@ -182,7 +182,6 @@ public class WrittenQuestionsDAO {
 
     public WrittenSet getWrittenSet(WrittenSet writtenSet) {
         return writtenSetRepository.findByTitleAndTopicAndUserId(writtenSet.getTitle(), writtenSet.getTopic(), writtenSet.getUser().getId());
-
     }
 
     public WrittenQuestion createUpdateWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
@@ -206,4 +205,10 @@ public class WrittenQuestionsDAO {
         writtenQuestionRepository.delete(writtenSetQuestionToDelete);
         return writtenSetQuestionToDelete;
     }
+
+    public Optional<WrittenSet> getWrittenSetById(long writtenSetId) {
+        return writtenSetRepository.findById(writtenSetId);
+    }
+
+
 }

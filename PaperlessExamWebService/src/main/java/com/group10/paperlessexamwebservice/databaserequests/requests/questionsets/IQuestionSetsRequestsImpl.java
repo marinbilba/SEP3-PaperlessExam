@@ -438,5 +438,54 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         return deletedWrittenQuestion;
     }
 
+    @Override
+    public WrittenSet getWrittenSetById(long writtenSetId) throws ServiceNotAvailable {
+        WrittenSet fetchedWrittenQuestion=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String idSerialized = gson.toJson(writtenSetId);
+            //            Send request
+            requestSharedMethods.sendRequest(idSerialized,  GET_WRITTEN_SET_BY_ID);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            fetchedWrittenQuestion = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), WrittenSet.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedWrittenQuestion;
+    }
+
+    @Override
+    public List<WrittenQuestion> getWrittenSetQuestionsByWrittenSet(WrittenSet fetchedWrittenSet) throws ServiceNotAvailable {
+        List<WrittenQuestion> fetchedWrittenSetQuestionsList=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String writtenSetSerialized = gson.toJson(fetchedWrittenSet);
+            //            Send request
+            requestSharedMethods.sendRequest(writtenSetSerialized,  GET_WRITTEN_SET_QUESTIONS_BY_WRITTEN_SET);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            WrittenQuestion[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), WrittenQuestion[].class);
+            fetchedWrittenSetQuestionsList = Arrays.asList(tempList);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedWrittenSetQuestionsList;
+    }
+
 
 }

@@ -10,17 +10,18 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
         
         [JsonPropertyName("user")]public User User { get; set; }
         
-        [JsonPropertyName("updatedtimestamp")] public DateTime UpdatedTimestamp { get; set; }
+        [JsonPropertyName("updatedTimestamp")] public DateTime UpdatedTimestamp { get; set; }
 
-        public List<MultipleChoiceQuestion> MultipleChoiceQuestions = new List<MultipleChoiceQuestion>();
-
+        [JsonPropertyName("multipleChoiceQuestionList")]  public List<MultipleChoiceQuestion> MultipleChoiceQuestions { get; set; }
+        
         public MultipleChoiceSet()
         {
-            
+            MultipleChoiceQuestions=new List<MultipleChoiceQuestion>();
+    
         }
 
         public MultipleChoiceSet(string title, string topic, User user) : base(title, topic)
-        {
+        { MultipleChoiceQuestions=new List<MultipleChoiceQuestion>();
             User = user;
         }
         
@@ -31,19 +32,11 @@ namespace SEP3.PaperlessExam.Model.Questions.MultipleChoice
 
         }
         
-        public void RemoveLastQuestion()
+        public void RemoveQuestion(MultipleChoiceQuestion multipleChoiceQuestion)
         {
-            MultipleChoiceQuestions.RemoveAt(MultipleChoiceQuestions.Count-1);
+            MultipleChoiceQuestions.Remove(multipleChoiceQuestion);
         }
-        
-        public MultipleChoiceQuestion GetLastQuestion()
-        {
-            return MultipleChoiceQuestions[MultipleChoiceQuestions.Count - 1];
-        }    
-        
-        public MultipleChoiceQuestion GetQuestionBeforeLastQuestion()
-        {
-            return MultipleChoiceQuestions[MultipleChoiceQuestions.Count-2];
-        }
+
+     
     }
 }

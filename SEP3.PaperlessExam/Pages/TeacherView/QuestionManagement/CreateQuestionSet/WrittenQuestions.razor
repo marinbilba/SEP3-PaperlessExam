@@ -5,12 +5,14 @@
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 @using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Pages.TeacherView.QuestionManagement.ReviewUpdateQuestions
+@using SEP3.PaperlessExam.Authentication
 
 @inject IJSRuntime JsRuntime
 @inject IUserService UserService
 @inject IQuestionSetsService QuestionSetsService
 @inject NavigationManager NavigationManager
 @inject IToastService toastService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <h3>Written Questions Builder</h3>
 
 
@@ -43,9 +45,12 @@
                     <label>points</label>
                 </div>
             </div>
-
-
         </div>
+        <div class="row top-buffer justify-content-between">
+    <div class="col-md-3 offset-9">
+        <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete"Click=@(() => _writtenSet.RemoveQuestion(writtenQuestion))></RadzenButton>
+    </div>
+    </div>
     }
 </EditForm>
 }
@@ -53,7 +58,6 @@
 <div class="row top-buffer justify-content-between">
     <div class="col-md-3 offset-9">
         <RadzenButton Icon="" Click=@(() => done()) Text="Add question"> </RadzenButton>
-        <RadzenButton Disabled="@_disable" style="width: auto; margin-right: 7px" Icon="delete" Click=@(() => delete())></RadzenButton>
         <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Finish" Click="Finish">
         </RadzenButton>
     </div>
@@ -64,11 +68,11 @@
 
 
 @code {
+    // If page is launched in edit format
+    private bool _updateMode;
     private WrittenSet _writtenSet;
 
-    [Parameter]
-    public string Username { get; set; }
-
+    private User _currentUser;
     [Parameter]
     public string Title { get; set; }
 
@@ -90,10 +94,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LogUsername();
+        var user = await UserService.FindByUsername(_currentUser.Username);
+        _updatedUser = user;
+        
     //----------------------------------------------------------------- Edit purpose
     // if WrittenSetId == this page has received a parameter for editing
         if (WrittenSetId != null)
         {
+            _updateMode = true;
             var writtenId = long.Parse(WrittenSetId);
 
             Console.WriteLine(WrittenSetId);
@@ -108,46 +117,24 @@
                 throw;
             }
         }
-
     //------------------------------------------------------------------ Edit End
-        var user = await UserService.FindByUsername(Username);
-
-
-        _updatedUser = user;
-        Console.WriteLine(_updatedUser.Username + "  " + Title);
-
-        _writtenSet =
-            new WrittenSet(Title, Topic, _updatedUser);
-        _writtenSet.AddQuestion(new WrittenQuestion());
-
-        _stepper++;
-        _disable = true;
-    }
-
-    private async Task delete()
-    {
-        if (_stepper == 1)
-        {
-            _disable = true;
-        }
         else
         {
-            try
-            {
-                var writtenQuestion = _writtenSet.GetLastQuestion();
+            _writtenSet =
+                new WrittenSet(Title, Topic, _updatedUser);
+            _writtenSet.AddQuestion(new WrittenQuestion());
 
-                await QuestionSetsService.DeleteWrittenQuestion(new WrittenQuestion(writtenQuestion.question, writtenQuestion.Score, writtenQuestion.QuestionNumber));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            _writtenSet.RemoveLastQuestion();
-            _stepper--;
-            _disable = false;
-            Console.WriteLine(_stepper + "   stepper");
+            _stepper++;
+            _disable = true;
         }
+    }
+
+    private async Task LogUsername()
+    {
+    // await  UserService.LoginUser(new User());
+        var user =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        
+        _currentUser = user;
     }
 
     private async Task done()
@@ -161,16 +148,21 @@
 
     private async Task Finish()
     {
-        try
+        if (_updateMode)
         {
-            await QuestionSetsService.CreateWrittenSet(_writtenSet);
+            QuestionSetsService.UpdateWrittenSet(_writtenSet);
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
+            try
+            {
+                await QuestionSetsService.CreateWrittenSet(_writtenSet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
-
-        Console.WriteLine(_writtenSet);
         NavigationManager.NavigateTo("/questionManagement");
     }
 

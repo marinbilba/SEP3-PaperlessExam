@@ -41,5 +41,9 @@ public interface IQuestionSetsRequests {
     MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws ServiceNotAvailable;
 
     WrittenQuestion deleteWrittenSetQuestion(WrittenQuestion writtenQuestionToDelete) throws ServiceNotAvailable;
+
+    WrittenSet getWrittenSetById(long writtenSetId) throws ServiceNotAvailable;
+
+    List<WrittenQuestion> getWrittenSetQuestionsByWrittenSet(WrittenSet fetchedWrittenSet) throws ServiceNotAvailable;
 }
 
