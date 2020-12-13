@@ -115,7 +115,7 @@ public class ExaminationEventController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/examinationevent/createExaminationEvent
+     * http://{host}:8080/examinationevent/getTeachersUpcomingExamEvents/32
      * </p>
      *
      * @param teacherId the teacher id
@@ -145,7 +145,7 @@ public class ExaminationEventController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/examinationevent/createExaminationEvent
+     * http://{host}:8080/examinationevent/getTeachersPassedExamEvents/21
      * </p>
      *
      * @param teacherId the teacher id
@@ -158,6 +158,96 @@ public class ExaminationEventController {
         List<ExaminationEvent> fetchedExaminationEvents = null;
         try {
             fetchedExaminationEvents = examinationEventService.getTeachersPassedExamEvents(teacherId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (ExaminationEventException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
+    }
+
+    /**
+     * Gets students upcoming examination events. It is processed as a GET request requesting <i>student id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getStudentsUpcomingExamEvents/32
+     * </p>
+     *
+     * @param studentId the teacher id
+     * @return the teachers examination events
+     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getStudentsUpcomingExamEvents/{studentId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getStudentsUpcomingExamEvents(@PathVariable String studentId) {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        try {
+            fetchedExaminationEvents = examinationEventService.getStudentsUpcomingExamEvents(studentId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (ExaminationEventException e) {
+            e.printStackTrace();
+            System.out.println(fetchedExaminationEvents.get(0).getId());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
+    }
+
+    /**
+     * Gets students passed examination events. It is processed as a GET request requesting <i>student id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getStudentsPassedExamEvents
+     * </p>
+     *
+     * @param studentId the teacher id
+     * @return the teachers examination events
+     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getStudentsPassedExamEvents/{studentId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getStudentsPassedExamEvents(@PathVariable String studentId) {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        try {
+            fetchedExaminationEvents = examinationEventService.getStudentsPassedExamEvents(studentId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (ExaminationEventException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
+    }
+    /**
+     * Gets students ongoing examination events. It is processed as a GET request requesting <i>student id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getStudentsOngoingExamEvents/2
+     * </p>
+     *
+     * @param studentId the teacher id
+     * @return the teachers examination events
+     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getStudentsOngoingExamEvents/{studentId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getStudentsOngoingExamEvents(@PathVariable String studentId) {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        try {
+            fetchedExaminationEvents = examinationEventService.getStudentsOngoingExamEvents(studentId);
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());

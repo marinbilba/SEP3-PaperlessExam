@@ -180,7 +180,7 @@
                     <td>@item.Topic</td>
                     <td>@item.UpdatedTimestamp</td>
                     <td>
-                        <button @onclick="()=>PreviewMultipleChoiceSet(item.Id)">
+                        <button @onclick="() => PreviewMultipleChoiceSet(item.Id)">
                             <i class="oi oi-pencil" style="color:green"/>
                         </button>
                     </td>
@@ -317,14 +317,22 @@
 
 @*Seventh step*@
 <RadzenStepsItem Text="Set date and time" Disabled="_seventhStepDisable">
-    <h1>Set date and time</h1>
+    <h4>Set date and time</h4>
 
     <RadzenDatePicker TValue="DateTime?" ShowTime="true" ShowSeconds="true" HoursStep="1.5" MinutesStep="5" SecondsStep="10" Change=@(args => OnChange(args)) DateFormat="MM/dd/yyyy HH:mm"/>
     <div class="col-md">
         <div style="color:red;padding:5px">@_errorMessage</div>
     </div>
-    <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Create examination event" Click=@(CreateExaminationEvent)>
-    </RadzenButton>
+
+    <h4 style="margin-top: 20px">Set the examination event duration</h4>
+    <RadzenDatePicker TValue="DateTime?" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" Change=@(args => SetExamEventTime(args))>
+   </RadzenDatePicker>
+    <div class="row">
+
+        <RadzenButton Icon="" style="background-color: #3eb02f;margin-top: 5px" Text="Create examination event" Click=@(CreateExaminationEvent)>
+        </RadzenButton>
+    </div>
+
 </RadzenStepsItem>
 </Steps>
 </RadzenSteps>
@@ -332,17 +340,17 @@
 </RadzenContent>
 
 @code {
-    // requeired
+    // required
     DateTime? value = DateTime.Now;
 
     private DateTime examinationDateTime;
-
+    private string _examEventTimeLenght;
     private bool _loadingShow;
 
     private ExaminationEvent _examinationEvent = new ExaminationEvent();
 
     private string _examTitle;
-    
+
     // Written sets displayed in UI
     private IList<WrittenSet> _writtenSetsToShow;
     private IList<WrittenSet> _selectedWrittenSets = new List<WrittenSet>();
@@ -356,10 +364,10 @@
     private IList<User> _selectedStudents = new List<User>();
     private string _searchedFirstName;
     private string _searchedUsername;
-    
+
 
     private MultipleChoiceSet _multipleChoiceSet;
-   
+
 
     private bool _examTitleIsSet;
 
@@ -544,7 +552,7 @@
     {
         if (value != null)
         {
-           _examTitle = value;
+            _examTitle = value;
     // examEventSet.ExamTitle = _examTitle;
             _examTitleIsSet = true;
         }
@@ -675,6 +683,11 @@
         examinationDateTime = (DateTime) args;
     }
 
+    private void SetExamEventTime(DateTime? args)
+    {
+        _examEventTimeLenght = args?.ToString("HH:mm");
+    }
+
     private async Task CreateExaminationEvent()
     {
         _examinationEvent = new ExaminationEvent()
@@ -684,6 +697,7 @@
             MultipleChoiceSets = _selectedMultipleChoiceSets,
             UsersAssigned = _selectedStudents,
             ExamDateAndTime = examinationDateTime,
+            ExamTimeDuration = _examEventTimeLenght,
             CreatedBy = _currentUser
         };
         try
@@ -697,5 +711,7 @@
             _errorMessage = e.Message;
         }
     }
+
+
 
 }

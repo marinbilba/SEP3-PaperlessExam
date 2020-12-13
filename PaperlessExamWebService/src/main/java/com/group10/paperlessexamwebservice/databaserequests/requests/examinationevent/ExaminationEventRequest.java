@@ -81,4 +81,30 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
         }
         return fetchedExaminationEvents;
     }
+
+
+    @Override
+    public List<ExaminationEvent> getStudentsExamEvents(String studentId) throws ServiceNotAvailable {
+        List<ExaminationEvent> fetchedExaminationEvents = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String teacherIdSerialized = gson.toJson(studentId);
+            //            Send request
+            requestSharedMethods.sendRequest(teacherIdSerialized, GET_STUDENT_EXAMINATION_EVENTS);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            ExaminationEvent[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), ExaminationEvent[].class);
+            fetchedExaminationEvents = Arrays.asList(tempList);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedExaminationEvents;
+    }
+
 }

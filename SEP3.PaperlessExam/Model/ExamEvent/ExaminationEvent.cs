@@ -12,6 +12,7 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
         [JsonPropertyName("id")] public long Id { get; set; }
 
         [JsonPropertyName("examTitle")] public string ExamTitle { get; set; }
+        [JsonPropertyName("examTimeDuration")] public string ExamTimeDuration { get; set; }
         [JsonPropertyName("writtenSets")] public IList<WrittenSet> WrittenSets { get; set; }
 
         [JsonPropertyName("multipleChoiceSets")]
@@ -20,13 +21,15 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
         [JsonPropertyName("usersAssigned")] public IList<User> UsersAssigned { get; set; }
         [JsonPropertyName("examDateAndTime")] public DateTime ExamDateAndTime { get; set; }
         [JsonPropertyName("updatedTimestamp")] private DateTime UpdatedTimestamp { get; set; }
-        [JsonPropertyName("createdBy")]public User CreatedBy { get; set; }
+        [JsonPropertyName("createdBy")] public User CreatedBy { get; set; }
 
         public ExaminationEvent()
         {
         }
 
-        public ExaminationEvent(long id, string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime, DateTime updatedTimestamp, User createdBy)
+        public ExaminationEvent(long id, string examTitle, IList<WrittenSet> writtenSets,
+            IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime,
+            DateTime updatedTimestamp, User createdBy)
         {
             Id = id;
             ExamTitle = examTitle;
@@ -38,13 +41,16 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
             CreatedBy = createdBy;
         }
 
-        public ExaminationEvent(string examTitle, IList<WrittenSet> writtenSets, IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime, User createdBy)
+        public ExaminationEvent(string examTitle, IList<WrittenSet> writtenSets,
+            IList<MultipleChoiceSet> multipleChoiceSets, IList<User> usersAssigned, DateTime examDateAndTime,string examTimeDuration, 
+            User createdBy)
         {
             ExamTitle = examTitle;
             WrittenSets = writtenSets;
             MultipleChoiceSets = multipleChoiceSets;
             UsersAssigned = usersAssigned;
             ExamDateAndTime = examDateAndTime;
+            ExamTimeDuration = examTimeDuration;
             this.CreatedBy = createdBy;
         }
     }

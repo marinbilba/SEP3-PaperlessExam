@@ -1,6 +1,179 @@
-﻿@page "/studentMain"
-<h3>StudentMain</h3>
+﻿@page "/studentMainPage"
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Model.ExamEvent
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@inject IExamService ExamService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<link rel="stylesheet" type="text/css" href="css/View/view.css">
+<div class="jumbotron text-center">
+    <h1>Examination Schedule</h1>
+</div>
+@if (_ongoingExaminationEventsList != null)
+{
+    <div class="jumbotron text-center">
+        <h1>Ongoing Examination Events</h1>
+    </div>
+    <table class="tableRed">
+        <thead>
+        <tr>
+            <th>Exam ID</th>
+            <th>Exam Title</th>
+            <th>Exam Date and Time</th>
+            <th>View Results</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach (var exam in _ongoingExaminationEventsList)
+        {
+            <tr>
+                <td>@exam.Id</td>
+                <td>@exam.ExamTitle</td>
+                <td>@exam.ExamDateAndTime</td>
+                <td>
+                    <button @onclick="(() => TakeExam(exam.Id))">
+                                             <i class="oi oi-pencil" style="color:green"/>
+                                         </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div style="color:red">@_errorMessage</div>
+}
+
+@if (_passedExaminationEventsList != null)
+{
+    <div class="jumbotron text-center">
+        <h1>Passed Examination Events</h1>
+    </div>
+    <table class="tableRed">
+        <thead>
+        <tr>
+            <th>Exam ID</th>
+            <th>Exam Title</th>
+            <th>Exam Date and Time</th>
+            <th>View Results</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach (var exam in _passedExaminationEventsList)
+        {
+            <tr>
+                <td>@exam.Id</td>
+                <td>@exam.ExamTitle</td>
+                <td>@exam.ExamDateAndTime</td>
+                <td>
+                    <button @onclick="ViewExamResults">
+                        <i class="fa fa-eye" style="color:green"/>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div style="color:red">@_errorMessage</div>
+}
+
+@if (_upcomingExaminationEventsList != null)
+{
+    <div class="jumbotron text-center">
+        <h1>Upcoming Examination Events</h1>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Exam ID</th>
+            <th>Exam Title</th>
+            <th>Exam Date and Time</th>
+            <td>Exam Duration</td>
+      
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach (var exam in _upcomingExaminationEventsList)
+        {
+            <tr>
+                <td>@exam.Id</td>
+                <td>@exam.ExamTitle</td>
+                <td>@exam.ExamDateAndTime</td>
+                <td>@exam.ExamTimeDuration</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div style="color:red">@_errorMessage</div>
+}
 
 @code {
-    
+    private IList<ExaminationEvent> _ongoingExaminationEventsList;
+    private bool _examIsAvailable;
+    private string _errorMessage;
+    private User _currentUser;
+    private IList<ExaminationEvent> _upcomingExaminationEventsList;
+    private IList<ExaminationEvent> _passedExaminationEventsList;
+
+    protected override async Task OnInitializedAsync()
+    {
+    // UserService.LoginUser(new User());
+        _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        try
+        {
+            _upcomingExaminationEventsList = await ExamService.GetStudentsUpcomingExamEvents(_currentUser.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _errorMessage = e.Message;
+        }
+        try
+        {
+            _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _errorMessage = e.Message;
+        }
+        try
+        {
+            _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+          
+        }
+    }
+
+    private void ViewExamResults()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    private void NotifyThatExamIsNotAvailable()
+    {
+      
+    }
+
+    private void TakeExam(in long examId)
+    {
+        throw new NotImplementedException();
+    }
+
 }

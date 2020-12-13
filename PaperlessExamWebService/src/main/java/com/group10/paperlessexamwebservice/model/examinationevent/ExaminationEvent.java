@@ -4,6 +4,7 @@ import com.group10.paperlessexamwebservice.model.questions.multiplechoice.Multip
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ public class ExaminationEvent {
 
     private Long id;
     private String examTitle;
+    private String examTimeDuration;
     private List<MultipleChoiceSet> multipleChoiceSets = new ArrayList<>();
     private List<WrittenSet> writtenSets = new ArrayList<>();
     private List<User> usersAssigned = new ArrayList<>();
@@ -33,14 +35,16 @@ public class ExaminationEvent {
      * Instantiates a new Examination event.
      *
      * @param examTitle          the exam title
+     * @param examTimeDuration   the exam time duration
      * @param multipleChoiceSets the multiple choice sets
      * @param writtenSets        the written sets
      * @param usersAssigned      the users assigned
      * @param examDateAndTime    the exam date and time
      * @param createdBy          the created by
      */
-    public ExaminationEvent(String examTitle, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
+    public ExaminationEvent(String examTitle, String examTimeDuration, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
         this.examTitle = examTitle;
+        this.examTimeDuration = examTimeDuration;
         this.multipleChoiceSets = multipleChoiceSets;
         this.writtenSets = writtenSets;
         this.usersAssigned = usersAssigned;
@@ -66,12 +70,40 @@ public class ExaminationEvent {
         this.examDateAndTime = examDateAndTime;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Gets exam time duration.
+     *
+     * @return the exam time duration
+     */
+    public String getExamTimeDuration() {
+        return examTimeDuration;
+    }
+
+    /**
+     * Sets exam time duration.
+     *
+     * @param examTimeDuration the exam time duration
+     */
+    public void setExamTimeDuration(String examTimeDuration) {
+        this.examTimeDuration = examTimeDuration;
     }
 
     /**
@@ -79,7 +111,6 @@ public class ExaminationEvent {
      *
      * @return the exam title
      */
-
     public String getExamTitle() {
         return examTitle;
     }
@@ -165,10 +196,20 @@ public class ExaminationEvent {
         this.updatedTimestamp = updatedTimestamp;
     }
 
+    /**
+     * Gets created by.
+     *
+     * @return the created by
+     */
     public User getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * Sets created by.
+     *
+     * @param createdBy the created by
+     */
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }

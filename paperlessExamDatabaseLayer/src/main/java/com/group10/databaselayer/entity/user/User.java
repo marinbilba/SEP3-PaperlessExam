@@ -41,8 +41,9 @@ public class User {
     @JoinColumn(name = "fk_role_id")
     private Role role;
 
+    @Hidden
     @ManyToMany(mappedBy = "usersAssigned")
-    transient private List<ExaminationEvent> examinationEvents = new ArrayList<>();
+     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
 
     /**

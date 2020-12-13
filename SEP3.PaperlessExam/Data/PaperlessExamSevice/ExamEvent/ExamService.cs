@@ -273,5 +273,130 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
             return fetchedExaminationEvents;
         }
 
+        public async Task<IList<ExaminationEvent>> GetStudentsUpcomingExamEvents(int currentUserId)
+        {
+            String idToSend = currentUserId.ToString();
+            IList<ExaminationEvent> fetchedExaminationEvents = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/examinationevent/getStudentsUpcomingExamEvents/{idToSend}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running 
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection could be made because the server is not responding");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                fetchedExaminationEvents = JsonSerializer.Deserialize<IList<ExaminationEvent>>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return fetchedExaminationEvents;  
+        }
+
+        public async   Task<IList<ExaminationEvent>> GetStudentsPassedExamEvents(int currentUserId)
+        {
+            String idToSend = currentUserId.ToString();
+            IList<ExaminationEvent> fetchedExaminationEvents = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/examinationevent/getStudentsPassedExamEvents/{idToSend}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running 
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection could be made because the server is not responding");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                fetchedExaminationEvents = JsonSerializer.Deserialize<IList<ExaminationEvent>>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return fetchedExaminationEvents; 
+        }
+
+        public async Task<IList<ExaminationEvent>> GetStudentsOngoingExamEvents(int currentUserId)
+        {
+            String idToSend = currentUserId.ToString();
+            IList<ExaminationEvent> fetchedExaminationEvents = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/examinationevent/getStudentsOngoingExamEvents/{idToSend}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running 
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection could be made because the server is not responding");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                fetchedExaminationEvents = JsonSerializer.Deserialize<IList<ExaminationEvent>>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return fetchedExaminationEvents; 
+        }
     }
 }
