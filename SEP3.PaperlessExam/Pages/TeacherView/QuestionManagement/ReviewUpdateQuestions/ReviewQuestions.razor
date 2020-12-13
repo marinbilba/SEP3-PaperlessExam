@@ -185,6 +185,6 @@
 
     private async Task PreviewMultipleChoiceSets(long itemId)
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo($"/MultipleChoiceQuestions/{itemId.ToString()}");
     }
 }

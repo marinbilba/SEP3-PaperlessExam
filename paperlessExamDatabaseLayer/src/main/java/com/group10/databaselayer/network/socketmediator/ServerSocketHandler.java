@@ -159,6 +159,9 @@ public class ServerSocketHandler implements Runnable {
                 case GET_MULTIPLE_CHOICE_SET_QUESTION_OPTION:
                     getMultipleChoiceSetQuestionOption(networkContainerRequestDeserialized);
                     break;
+                case GET_MULTIPLE_CHOICE_QUESTION_OPTIONS_BY_MULTIPLE_CHOICE_QUESTION:
+                    getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(networkContainerRequestDeserialized);
+                    break;
                 case CREATE_WRITTEN_SET:
                     createWrittenSet(networkContainerRequestDeserialized);
                     break;
@@ -208,6 +211,19 @@ break;
         }
     }
 
+    private void getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+
+        System.out.println("GET_MULTIPLE_CHOICE_QUESTION_OPTIONS_BY_MULTIPLE_CHOICE_QUESTION start");
+        MultipleChoiceQuestion question = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
+        List<QuestionOption>  fetchedMultipleChoiceQuestions = multipleChoiceQuestionsDAO.getAllQuestionOptionsByMultipleChoiceQuestion(question);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceQuestions);
+        networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_QUESTION_OPTIONS_BY_MULTIPLE_CHOICE_QUESTION, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_MULTIPLE_CHOICE_QUESTION_OPTIONS_BY_MULTIPLE_CHOICE_QUESTION end");
+    }
+
+
     private void getMultipleChoiceSetQuestionByMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
 
         System.out.println("GET_MULTIPLE_CHOICE_QUESTIONS_BY_MULTIPLE_CHOICE start");
@@ -247,8 +263,8 @@ break;
 
         System.out.println("GET_MULTIPLE_CHOICE_SET_BY_ID start");
         long multipleChoiceSetId = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), Long.class);
-        MultipleChoiceSet deletedMultipleChoiceSet = multipleChoiceQuestionsDAO.getMultipleChoiceSetById(multipleChoiceSetId);
-        objectSerialized = gson.toJson(deletedMultipleChoiceSet);
+        Optional<MultipleChoiceSet> fetchedMultipleChoiceSet = multipleChoiceQuestionsDAO.getMultipleChoiceSetById(multipleChoiceSetId);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSet.get());
         networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET_BY_ID, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
@@ -260,7 +276,7 @@ break;
         MultipleChoiceQuestion multipleChoiceQuestionToDelete = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
         MultipleChoiceQuestion deletedMultipleChoiceQuestion = multipleChoiceQuestionsDAO.deleteMultipleChoiceQuestion(multipleChoiceQuestionToDelete);
         objectSerialized = gson.toJson(deletedMultipleChoiceQuestion);
-        networkContainer = new NetworkContainer(DELETE_WRITTEN_QUESTION, objectSerialized);
+        networkContainer = new NetworkContainer(DELETE_MULTIPLE_CHOICE_SET_QUESTION, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
         System.out.println("DELETE_MULTIPLE_CHOICE_SET_QUESTION end");

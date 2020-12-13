@@ -30,6 +30,8 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
         Task<MultipleChoiceQuestion> RemoveMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestion);
         Task <WrittenSet> GetWrittenSetWithAllChildElements( long writtenSetId);
         Task<WrittenSet> UpdateWrittenSet(WrittenSet writtenSet);
+        Task<MultipleChoiceSet> GetMultipleChoiceSetWithAllChildElements(long multipleChoiceSetId);
+        Task<MultipleChoiceSet> UpdateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
     }
     
     

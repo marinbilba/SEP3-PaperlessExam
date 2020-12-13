@@ -23,7 +23,7 @@ public class MultipleChoiceSet extends QuestionsSet {
     private User user;
     private Date updatedTimestamp;
     @Hidden
-    private ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
 
     /**
      * Instantiates a new Multiple choice set.
@@ -71,11 +71,11 @@ public class MultipleChoiceSet extends QuestionsSet {
         this.user = user;
     }
 
-    public ArrayList<MultipleChoiceQuestion> getMultipleChoiceQuestionList() {
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestionList() {
         return multipleChoiceQuestionList;
     }
 
-    public void setMultipleChoiceQuestionList(ArrayList<MultipleChoiceQuestion> multipleChoiceQuestionList) {
+    public void setMultipleChoiceQuestionList(List<MultipleChoiceQuestion> multipleChoiceQuestionList) {
         this.multipleChoiceQuestionList = multipleChoiceQuestionList;
     }
 

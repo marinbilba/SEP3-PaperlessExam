@@ -1,4 +1,4 @@
-﻿@page "/MultipleChoiceQuestions"
+﻿@page "/MultipleChoiceQuestions/{MultipleChoiceSetId}"
 @page "/asdffads"
 @using System.Reflection.Metadata
 @using Microsoft.AspNetCore.Razor.TagHelpers
@@ -34,7 +34,7 @@
                     <div class="questionNumberBox d-flex">
                         <div class="d-flex">
                             <p class="questionNumber">@_counter</p>
-                            
+
                             @* <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber"> *@
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             }
-            
+
             <div class="row top-buffer justify-content-center">
                 <div class="col-md-1 offset-2">
                     <div class="additionalQuestionSelectBox">
@@ -127,6 +127,9 @@
 }
 
 @code {
+    // If page is launched in edit format
+    private bool _updateMode;
+    [Parameter] public string MultipleChoiceSetId{get; set; }
 
     [Parameter]
     public string Title { get; set; }
@@ -154,28 +157,48 @@
 
 
     protected override async Task OnInitializedAsync()
-    {  LogUsername();
+    {
+        await LogUsername();
         try
         {
-  var user = await UserService.FindByUsername(_currentUser.Username);  
+            var user = await UserService.FindByUsername(_currentUser.Username);
             _updatedUser = user;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
-      
+    //----------------------------------------------------------------- Edit purpose
+    // if WrittenSetId == this page has received a parameter for editing
+        if (MultipleChoiceSetId != null)
+        {
+            _updateMode = true;
+            var multipleChoiceSetId = long.Parse(MultipleChoiceSetId);
 
+            try
+            {
+                _multipleChoiceSet = await QuestionSetsService.GetMultipleChoiceSetWithAllChildElements(multipleChoiceSetId);
+                _stepper++;
+                _disable = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    //------------------------------------------------------------------ Edit End
+        else
+        {
 
-  
+            _multipleChoiceSet =
+                new MultipleChoiceSet(Title, Topic, _updatedUser);
 
-        _multipleChoiceSet =
-            new MultipleChoiceSet(Title, Topic, _updatedUser);
+            _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
 
-        _multipleChoiceSet.AddQuestion(new MultipleChoiceQuestion());
-
-        _stepper++;
-        _disable = true;
+            _stepper++;
+            _disable = true;
+        }
     }
 
 
@@ -200,8 +223,8 @@
     private async Task LogUsername()
     {
     // await  UserService.LoginUser(new User());
-        var user =((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
-        
+        var user = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+
         _currentUser = user;
     }
 
@@ -224,15 +247,21 @@
 
     private async Task Finish()
     {
-        try
+        if (_updateMode)
         {
-            await QuestionSetsService.CreateMultipleChoiceSet(_multipleChoiceSet);
+            await QuestionSetsService.UpdateMultipleChoiceSet(_multipleChoiceSet);
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
+            try
+            {
+                await QuestionSetsService.CreateMultipleChoiceSet(_multipleChoiceSet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
-
         NavigationManager.NavigateTo("/questionManagement");
     }
 

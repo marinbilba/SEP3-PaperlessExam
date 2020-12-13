@@ -397,7 +397,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
         try {
             socketConnector.connect();
             // Serialize the object
-            String multipleChoiceQuestionSerialized = gson.toJson(deletedMultipleChoiceQuestion);
+            String multipleChoiceQuestionSerialized = gson.toJson(multipleChoiceQuestionToDelete);
             //            Send request
             requestSharedMethods.sendRequest(multipleChoiceQuestionSerialized,  DELETE_MULTIPLE_CHOICE_SET_QUESTION);
             //            Read response
@@ -485,6 +485,80 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return fetchedWrittenSetQuestionsList;
+    }
+
+    @Override
+    public List<MultipleChoiceQuestion> getMultipleChoiceQuestionByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
+        List<MultipleChoiceQuestion> fetchedMultipleChoiceQuestionList=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String writtenSetSerialized = gson.toJson(multipleChoiceSet);
+            //            Send request
+            requestSharedMethods.sendRequest(writtenSetSerialized,  GET_MULTIPLE_CHOICE_QUESTIONS_BY_MULTIPLE_CHOICE);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            MultipleChoiceQuestion[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceQuestion[].class);
+            fetchedMultipleChoiceQuestionList = Arrays.asList(tempList);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedMultipleChoiceQuestionList;
+    }
+
+    @Override
+    public List<QuestionOption> getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion question) throws ServiceNotAvailable {
+        List<QuestionOption> fetchedQuestionOptionList=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String multipleChoiceQuestionSerialized = gson.toJson(question);
+            //            Send request
+            requestSharedMethods.sendRequest(multipleChoiceQuestionSerialized, GET_MULTIPLE_CHOICE_QUESTION_OPTIONS_BY_MULTIPLE_CHOICE_QUESTION);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            QuestionOption[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), QuestionOption[].class);
+            fetchedQuestionOptionList = Arrays.asList(tempList);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedQuestionOptionList;
+    }
+
+    @Override
+    public MultipleChoiceSet getMultipleChoiceSetById(long multipleChoiceSetId) throws ServiceNotAvailable {
+        MultipleChoiceSet fetchedMultipleChoiceSet=null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String idSerialized = gson.toJson(multipleChoiceSetId);
+            //            Send request
+            requestSharedMethods.sendRequest(idSerialized,  GET_MULTIPLE_CHOICE_SET_BY_ID);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            fetchedMultipleChoiceSet = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedMultipleChoiceSet;
     }
 
 

@@ -16,7 +16,7 @@ public class MultipleChoiceQuestion extends Question {
 
     private MultipleChoiceSet multipleChoiceSet;
     @Hidden
-    private ArrayList<QuestionOption> questionOptions=new ArrayList<>();
+    private List<QuestionOption> questionOptions=new ArrayList<>();
 
 
     /**
@@ -44,7 +44,7 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @return the question options
      */
-    public ArrayList<QuestionOption> getQuestionOptions() {
+    public List<QuestionOption> getQuestionOptions() {
         return questionOptions;
     }
 
@@ -53,7 +53,7 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @param questionOptions the question options
      */
-    public void setQuestionOptions(ArrayList<QuestionOption> questionOptions) {
+    public void setQuestionOptions(List<QuestionOption> questionOptions) {
         this.questionOptions = questionOptions;
     }
 

@@ -443,7 +443,7 @@ public class QuestionSetsController {
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (NegativeNumberException|EmptyMultipleChoiceQuestion|UnexpectedError | QuestionSetAlreadyExists | NullQuestionSet | EmptyQuestionSetTitleOrTopic|NullQuestionSetQuestion e) {
+        } catch (NegativeNumberException | EmptyMultipleChoiceQuestion | UnexpectedError | QuestionSetAlreadyExists | NullQuestionSet | EmptyQuestionSetTitleOrTopic | NullQuestionSetQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (UserNotFound userNotFound) {
@@ -452,6 +452,55 @@ public class QuestionSetsController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(createdMultipleChoiceSet);
+    }
+    /**
+     * Update existing multiple choice set.It is processed as a POST request requesting <i>MultipleChoiceSet object</i>
+     * in format of JSON as an argument.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/updateMultipleChoiceSet
+     * </p>
+     *
+     * <b>BODY</b>:
+     * {
+     * {
+     * "user": {
+     * "firstName": "Silvestru",
+     * "lastName": "Mandrila",
+     * "username": "silvmandrila",
+     * "email": "silvmandr@va.cs",
+     * "password": "111111",
+     * "role": {
+     * "id": 1,
+     * "name": "Student"
+     * }
+     * },
+     * "title": "Java",
+     * "topic": "Capitals"
+     * }
+     *
+     * @param multipleChoiceSet the multiple choice set to update
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set or <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected. <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/updateMultipleChoiceSet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateMultipleChoiceSet(@RequestBody MultipleChoiceSet multipleChoiceSet) {
+
+        MultipleChoiceSet updatedMultipleChoiceSet = null;
+        try {
+            updatedMultipleChoiceSet = questionSetsService.updateMultipleChoiceSet(multipleChoiceSet);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (NegativeNumberException | EmptyMultipleChoiceQuestion | UnexpectedError | QuestionSetAlreadyExists | NullQuestionSet | EmptyQuestionSetTitleOrTopic | NullQuestionSetQuestion e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (UserNotFound userNotFound) {
+            userNotFound.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(userNotFound.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedMultipleChoiceSet);
     }
 
     /**
@@ -497,21 +546,35 @@ public class QuestionSetsController {
      *
      * <b>BODY</b>:
      * {
-     * "user": {
-     * "id": 10,
-     * "firstName": "Silvestru",
-     * "lastName": "Mandrila",
-     * "username": "silvmandrila",
-     * "email": "silvmandr@va.cs",
-     * "password": "111111",
-     * "role": {
-     * "id": 1,
-     * "name": "Student"
+     * "user":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
      * }
      * },
-     * "id": 13,
-     * "title": "Romana",
-     * "topic": "Eseu"
+     * "updatedTimestamp":"2020-12-13T00:26:52+01:00",
+     * "writtenQuestions":[
+     * {
+     * "questionNumber":1,
+     * "question":"zzzzzzzz",
+     * "score":1221
+     * },
+     * {
+     * "questionNumber":2,
+     * "question":"asdads",
+     * "score":2
+     * }
+     * ],
+     * "id":8,
+     * "title":"SADAS",
+     * "topic":"DASSA"
      * }
      *
      * @param writtenSet the written set
@@ -522,7 +585,7 @@ public class QuestionSetsController {
         WrittenSet createdWrittenSet = null;
         try {
             createdWrittenSet = questionSetsService.createWrittenSet(writtenSet);
-        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists|EmptyMultipleChoiceQuestion e) {
+        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists | EmptyMultipleChoiceQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -546,6 +609,37 @@ public class QuestionSetsController {
      * </p>
      *
      * <b>BODY</b>:
+     * {
+     * "user":{
+     * "id":10,
+     * "username":"silvmandrila",
+     * "email":"silvmandr@va.cs",
+     * "password":"111111",
+     * "confirmPassword":null,
+     * "firstName":"Silvestru",
+     * "lastName":"Mandrila",
+     * "role":{
+     * "id":1,
+     * "name":"Student"
+     * }
+     * },
+     * "updatedTimestamp":"2020-12-13T00:26:52+01:00",
+     * "writtenQuestions":[
+     * {
+     * "questionNumber":1,
+     * "question":"zzzzzzzz",
+     * "score":1221
+     * },
+     * {
+     * "questionNumber":2,
+     * "question":"asdads",
+     * "score":2
+     * }
+     * ],
+     * "id":8,
+     * "title":"SADAS",
+     * "topic":"DASSA"
+     * }
      *
      * @param writtenSet the written set
      * @return the response entity <i>HTTP 200 - OK</i> with the written set or <i>HTTP 400 - BAD_REQUEST</i> if the set already exists,title or topic are empty or unexpected errors are detected. <i>HTTP 401 - UNAUTHORIZED</i> if the request does not contain the user object <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
@@ -555,7 +649,7 @@ public class QuestionSetsController {
         WrittenSet createdWrittenSet = null;
         try {
             createdWrittenSet = questionSetsService.updateWrittenSet(writtenSet);
-        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists|EmptyMultipleChoiceQuestion e) {
+        } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists | EmptyMultipleChoiceQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -833,7 +927,7 @@ public class QuestionSetsController {
         System.out.println(writtenSetId);
         WrittenSet fetchedWrittenSet;
         try {
-            fetchedWrittenSet=questionSetsService.getWrittenSetWithAllChildElements(writtenSetId);
+            fetchedWrittenSet = questionSetsService.getWrittenSetWithAllChildElements(writtenSetId);
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
@@ -842,5 +936,29 @@ public class QuestionSetsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(unexpectedError.getMessage());
         }
         return ResponseEntity.status(HttpStatus.OK).body(fetchedWrittenSet);
+    }
+    /**
+     * Fetches the written set with all child elements.
+     * It is processed as a GET request requesting the <i>written set id</i>
+     *
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/questionsets/getWrittenSetWithAllChildElements/{id}
+     *
+     * @param writtenSetId the multiple choice set that should be found
+     * @return <i>HTTP 200 - OK</i> with the found multiple choice set or <i>HTTP 400 - BAD_REQUEST</i><i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getMultipleChoiceSetWithAllChildElements/{writtenSetId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getMultipleChoiceSetWithAllChildElements(@PathVariable long writtenSetId) {
+        System.out.println(writtenSetId);
+        MultipleChoiceSet fetchedMultipleChoiceSet;
+        try {
+            fetchedMultipleChoiceSet = questionSetsService.getMultipleChoiceSetWithAllChildElements(writtenSetId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedMultipleChoiceSet);
     }
 }

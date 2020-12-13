@@ -51,4 +51,8 @@ public interface IQuestionSetsService {
     WrittenSet getWrittenSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable, UnexpectedError;
 
     WrittenSet updateWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, UnexpectedError, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, EmptyMultipleChoiceQuestion, QuestionSetAlreadyExists;
+
+    MultipleChoiceSet updateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, NegativeNumberException, NullQuestionSetQuestion, UserNotFound, QuestionSetAlreadyExists, EmptyMultipleChoiceQuestion;
+
+    MultipleChoiceSet getMultipleChoiceSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable;
 }

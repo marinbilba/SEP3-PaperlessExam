@@ -94,7 +94,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        LogUsername();
+       await LogUsername();
         var user = await UserService.FindByUsername(_currentUser.Username);
         _updatedUser = user;
         
@@ -150,7 +150,7 @@
     {
         if (_updateMode)
         {
-            QuestionSetsService.UpdateWrittenSet(_writtenSet);
+            await QuestionSetsService.UpdateWrittenSet(_writtenSet);
         }
         else
         {

@@ -45,5 +45,12 @@ public interface IQuestionSetsRequests {
     WrittenSet getWrittenSetById(long writtenSetId) throws ServiceNotAvailable;
 
     List<WrittenQuestion> getWrittenSetQuestionsByWrittenSet(WrittenSet fetchedWrittenSet) throws ServiceNotAvailable;
+
+    List<MultipleChoiceQuestion> getMultipleChoiceQuestionByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable;
+
+    List<QuestionOption> getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion question) throws ServiceNotAvailable;
+
+    MultipleChoiceSet getMultipleChoiceSetById(long multipleChoiceSetId) throws ServiceNotAvailable;
+
 }
 
