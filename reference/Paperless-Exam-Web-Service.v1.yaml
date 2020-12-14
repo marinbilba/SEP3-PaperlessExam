@@ -2,8 +2,1578 @@ openapi: 3.0.0
 info:
   title: Paperless Exam Web Service
   version: '1.0'
+  description: ''
 servers:
-  - url: 'http://localhost:3000'
-paths: {}
+  - url: 'http://localhost:8080'
+paths:
+  /user/login:
+    post:
+      summary: ''
+      operationId: post-user-login
+      responses:
+        '200':
+          description: OK code if credentials are verified.
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+      description: ' Post Method for login user. It is processing POST request with User object in format of JSON as an argument.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+              required:
+                - username
+                - password
+        description: ''
+    parameters: []
+  /user/createUser:
+    post:
+      summary: ''
+      operationId: post-user-createUser
+      responses:
+        '200':
+          description: OK code if the created user passes validation process
+        '401':
+          description: Unauthorized code if the password does not match with the confirm password field
+        '409':
+          description: 'Conflict code if the username already exists, the username does not match the substring of the email until the ''@'' char or email does not contain character ''@'''
+        '503':
+          description: 'Service Unavailable code if there are connection problems with the third tier '
+      description: Post Method for create user. It is processing POST request with User object in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                lastName:
+                  type: string
+                  minLength: 1
+                username:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+                confirmPassword:
+                  type: string
+                  minLength: 1
+                role:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      minLength: 1
+                  required:
+                    - name
+              required:
+                - firstName
+                - lastName
+                - username
+                - email
+                - password
+                - confirmPassword
+                - role
+        description: ''
+  '/user/getUsersByFirstName/{firstName}':
+    parameters:
+      - schema:
+          type: string
+        name: firstName
+        in: path
+        required: true
+        description: users firstname that should be filtered from the database
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK with the found list of users
+        '400':
+          description: Bad Request if the first name was not found in the system
+        '503':
+          description: Service Unavailable code if there are connection problems with the third tier
+      operationId: get-user-getUsersByFirstName-firstName
+      description: Get Method that fetches the users in the system by their firstname. Firstname should be pass as path parameter in the URI.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: firstName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  '/user/getUserByUsername/{username}':
+    parameters:
+      - schema:
+          type: string
+        name: username
+        in: path
+        required: true
+        description: the username that should be found
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: |
+            OK with the found user object if the passed username was found in the system
+        '400':
+          description: |-
+            Bad Request if the username was not found in the system
+                
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-user-getUserByUsername-username
+      description: |-
+        Get Method for user by username. Username should be pass as path parameter in the URI
+            
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+  '/user/getUserStudentByUsername/{username}':
+    parameters:
+      - schema:
+          type: string
+        name: username
+        in: path
+        required: true
+        description: the username that should be found
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: |-
+            OK with the found user object if the passed username was found in the system
+              
+        '400':
+          description: |
+            Bad Request if the username was not found in the system
+        '503':
+          description: |-
+            Service Unavailable code if there are connection problems with the third tier
+              
+      operationId: get-user-getUserStudentByUsername-username
+      description: |
+        Get Method for user <i>STUDENTS</i> by username. Username should be pass as path parameter in the URI
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+  '/user/getUsersStudentsByFirstName/{firstName}':
+    parameters:
+      - schema:
+          type: string
+        name: firstName
+        in: path
+        required: true
+        description: 'users firstname that should be filtered from the database   '
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK with the found list of users
+        '400':
+          description: |
+            Bad Request if the username was not found in the system
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-user-getUsersStudentsByFirstName-firstName
+      description: |-
+        Get Method that fetches only <i>STUDENT</i> users in the system by their firstname. Firstname should be pass as path parameter in the URI
+           
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: firstName
+  /user/updateUser:
+    post:
+      summary: ''
+      operationId: post-user-updateUser
+      responses:
+        '200':
+          description: |-
+            OK code if the updated user passes validation process
+                
+        '400':
+          description: 'Bad Request if the username was not found in the system, user object fields are null or any kind of unexpected error.'
+        '409':
+          description: |-
+            Conflict code if the username was not found in the system, the username does not match the substring of the email until the '@' char or email does not contain character '@'
+               
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Update user. Method processed as a POST request requiring a <i>User object</i> in format of JSON as an argument that should be updated.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                lastName:
+                  type: string
+                  minLength: 1
+                username:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+                confirmPassword:
+                  type: string
+                  minLength: 1
+                role:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      minLength: 1
+                  required:
+                    - name
+              required:
+                - firstName
+                - lastName
+                - username
+                - email
+                - password
+                - confirmPassword
+                - role
+  /user/deleteUser:
+    post:
+      summary: ''
+      operationId: post-user-deleteUser
+      responses:
+        '200':
+          description: |-
+            OK code if the updated user passes validation process
+                 
+        '409':
+          description: |-
+            Conflict code if the username was not found in the system
+             
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Delete user. Method processed as a POST request requiring a <i>User object</i> in format of JSON as an argument that should be deleted.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                lastName:
+                  type: string
+                  minLength: 1
+                username:
+                  type: string
+                  minLength: 1
+                email:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+                confirmPassword:
+                  type: string
+                  minLength: 1
+                role:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      minLength: 1
+                  required:
+                    - name
+              required:
+                - firstName
+                - lastName
+                - username
+                - email
+                - password
+                - confirmPassword
+                - role
+  /questionsets/addMultipleChoiceQuestion:
+    post:
+      summary: ''
+      operationId: post-questionsets-addMultipleChoiceQuestion
+      responses:
+        '200':
+          description: |
+            OK with the created multiple choice set question or
+        '400':
+          description: Bad Request
+        '401':
+          description: |-
+            Unauthorized if the request does not contain the user object
+             
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Create multiple choice set question.It is processed as a POST request requesting <i>MultipleChoiceSetQuestion object</i> in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                multipleChoiceSet:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      properties:
+                        firstName:
+                          type: string
+                          minLength: 1
+                        lastName:
+                          type: string
+                          minLength: 1
+                        username:
+                          type: string
+                          minLength: 1
+                        email:
+                          type: string
+                          minLength: 1
+                        password:
+                          type: string
+                          minLength: 1
+                        role:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            name:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - name
+                      required:
+                        - firstName
+                        - lastName
+                        - username
+                        - email
+                        - password
+                        - role
+                    title:
+                      type: string
+                      minLength: 1
+                    topic:
+                      type: string
+                      minLength: 1
+                  required:
+                    - user
+                    - title
+                    - topic
+                questionNumber:
+                  type: number
+                question:
+                  type: string
+                  minLength: 1
+                score:
+                  type: number
+              required:
+                - multipleChoiceSet
+                - questionNumber
+                - question
+                - score
+  /questionsets/addMultipleChoiceQuestionOption:
+    post:
+      summary: ''
+      operationId: post-questionsets-addMultipleChoiceQuestionOption
+      responses:
+        '200':
+          description: |-
+            OK with the created multiple choice set question or 
+               
+        '400':
+          description: Bad Request
+        '409':
+          description: |
+            Conflict if the question set was found was not found in the system
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: |-
+        Create multiple choice set question option.It is processed as a POST request requesting <i>QuestionOption object</i>
+           
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                id:
+                  type: number
+                correctAnswer:
+                  type: boolean
+                answer:
+                  type: string
+                  minLength: 1
+                multipleChoiceQuestion:
+                  type: object
+                  properties:
+                    multipleChoiceSet:
+                      type: object
+                      properties:
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            firstName:
+                              type: string
+                              minLength: 1
+                            lastName:
+                              type: string
+                              minLength: 1
+                            username:
+                              type: string
+                              minLength: 1
+                            email:
+                              type: string
+                              minLength: 1
+                            password:
+                              type: string
+                              minLength: 1
+                            role:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                name:
+                                  type: string
+                                  minLength: 1
+                              required:
+                                - id
+                                - name
+                          required:
+                            - id
+                            - firstName
+                            - lastName
+                            - username
+                            - email
+                            - password
+                            - role
+                        updatedTimestamp:
+                          type: string
+                          minLength: 1
+                        id:
+                          type: number
+                        title:
+                          type: string
+                          minLength: 1
+                        topic:
+                          type: string
+                          minLength: 1
+                      required:
+                        - user
+                        - updatedTimestamp
+                        - id
+                        - title
+                        - topic
+                    questionNumber:
+                      type: number
+                    question:
+                      type: string
+                      minLength: 1
+                    score:
+                      type: number
+                  required:
+                    - multipleChoiceSet
+                    - questionNumber
+                    - question
+                    - score
+              required:
+                - id
+                - correctAnswer
+                - answer
+                - multipleChoiceQuestion
+  /questionsets/createMultipleChoiceSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-createMultipleChoiceSet
+      responses:
+        '200':
+          description: 'OK with the created multiple choice set or '
+        '400':
+          description: |
+            Bad Request if the set already exists,title or topic are empty or unexpected errors are detected.
+        '401':
+          description: |
+            Unauthorized if the request does not contain the user object
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Create multiple choice set.It is processed as a POST request requesting <i>MultipleChoiceSet object</i> in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - firstName
+                    - lastName
+                    - username
+                    - email
+                    - password
+                    - role
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - title
+                - topic
+  /questionsets/updateMultipleChoiceSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-updateMultipleChoiceSet
+      responses:
+        '200':
+          description: OK with the created multiple choice set
+        '400':
+          description: |
+            Bad Request if the set already exists,title or topic are empty or unexpected errors are detected.
+        '401':
+          description: |
+            Unauthorized if the request does not contain the user object
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Update existing multiple choice set.It is processed as a POST request requesting <i>MultipleChoiceSet object</i> in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - firstName
+                    - lastName
+                    - username
+                    - email
+                    - password
+                    - role
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - title
+                - topic
+  /questionsets/createWrittenQuestion:
+    post:
+      summary: ''
+      operationId: post-questionsets-createWrittenQuestion
+      responses:
+        '200':
+          description: OK
+      description: Create written question response entity.
+  /questionsets/createWrittenSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-createWrittenSet
+      responses:
+        '200':
+          description: OK with the written set
+        '400':
+          description: |
+            Bad Request if the set already exists,title or topic are empty or unexpected errors are detected.
+        '401':
+          description: |
+            Unauthorized  if the request does not contain the user object
+        '503':
+          description: |
+            Service Unavailable  code if there are connection problems with the third tier
+      description: Create written set response entity.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    confirmPassword: {}
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - username
+                    - email
+                    - password
+                    - firstName
+                    - lastName
+                    - role
+                updatedTimestamp:
+                  type: string
+                  minLength: 1
+                writtenQuestions:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - questionNumber
+                      - question
+                      - score
+                    properties:
+                      questionNumber:
+                        type: number
+                      question:
+                        type: string
+                        minLength: 1
+                      score:
+                        type: number
+                id:
+                  type: number
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - updatedTimestamp
+                - writtenQuestions
+                - id
+                - title
+                - topic
+  /questionsets/updateWrittenSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-updateWrittenSet
+      responses:
+        '200':
+          description: OK with the written set or
+        '400':
+          description: |
+            Bad Request if the set already exists,title or topic are empty or unexpected errors are detected.
+        '401':
+          description: |
+            Unauthorized if the request does not contain the user object
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Update written set response entity.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    confirmPassword: {}
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - username
+                    - email
+                    - password
+                    - firstName
+                    - lastName
+                    - role
+                updatedTimestamp:
+                  type: string
+                  minLength: 1
+                writtenQuestions:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - questionNumber
+                      - question
+                      - score
+                    properties:
+                      questionNumber:
+                        type: number
+                      question:
+                        type: string
+                        minLength: 1
+                      score:
+                        type: number
+                id:
+                  type: number
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - updatedTimestamp
+                - writtenQuestions
+                - id
+                - title
+                - topic
+  /questionsets/findMultipleChoiceSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-findMultipleChoiceSet
+      responses:
+        '200':
+          description: |
+            OK with the found multiple choice set
+        '400':
+          description: |-
+            Bad Request if the question set's title or topic are empty or an unexpected error
+             
+        '409':
+          description: |
+            Conflict if the question set was found was not found in the system
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Finds a multiple choice set. It is processed as a POST request requesting the <i>MultipleChoiceSet object</i> in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - firstName
+                    - lastName
+                    - username
+                    - email
+                    - password
+                    - role
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - title
+                - topic
+  '/questionsets/getAllUsersMultipleChoiceSets/{username}':
+    parameters:
+      - schema:
+          type: string
+        name: username
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: 'OK with the found multiple choice set '
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-questionsets-getAllUsersMultipleChoiceSets-username123
+      description: Finds all multiple choice sets of a user.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+  '/questionsets/getAllUsersWrittenSets/{username}':
+    parameters:
+      - schema:
+          type: string
+        name: username
+        in: path
+        required: true
+        description: the user's username
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK with the found written set
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-questionsets-getAllUsersWrittenSets-username
+      description: Finds all written sets of a user.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+  /questionsets/deleteMultipleChoiceSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-deleteMultipleChoiceSet
+      responses:
+        '200':
+          description: 'OK with the deleted multiple choice set '
+        '503':
+          description: |-
+            Service Unavailable code if there are connection problems with the third tier
+              
+      description: Deletes the passed multiple choice set of a user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    confirmPassword: {}
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - username
+                    - email
+                    - password
+                    - firstName
+                    - lastName
+                    - role
+                updatedtimestamp:
+                  type: string
+                  minLength: 1
+                id:
+                  type: number
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - updatedtimestamp
+                - id
+                - title
+                - topic
+  /questionsets/deleteWrittenSet:
+    post:
+      summary: ''
+      operationId: post-questionsets-deleteWrittenSet
+      responses:
+        '200':
+          description: OK with the deleted written set
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Deletes the passed written sets of a user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    confirmPassword: {}
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - username
+                    - email
+                    - password
+                    - firstName
+                    - lastName
+                    - role
+                updatedTimestamp:
+                  type: string
+                  minLength: 1
+                id:
+                  type: number
+                title:
+                  type: string
+                  minLength: 1
+                topic:
+                  type: string
+                  minLength: 1
+              required:
+                - user
+                - updatedTimestamp
+                - id
+                - title
+                - topic
+  /questionsets/deleteMultipleChoiceQuestion:
+    post:
+      summary: ''
+      operationId: post-questionsets-deleteMultipleChoiceQuestion
+      responses:
+        '200':
+          description: |-
+            OK  with the deleted multiple Choice Question 
+             
+        '503':
+          description: Service Unavailable code if there are connection problems with the third tier
+      description: Deletes the passed multiple choice question sets of a user.
+  /questionsets/deleteWrittenSetQuestion:
+    post:
+      summary: ''
+      operationId: post-questionsets-deleteWrittenSetQuestion
+      responses:
+        '200':
+          description: OK  with the deleted written Question
+        '503':
+          description: |
+            Service Unavailable  code if there are connection problems with the third tier
+      description: Deletes the written set question of a user.
+  '/questionsets/getWrittenSetWithAllChildElements/{writtenSetId}':
+    parameters:
+      - schema:
+          type: string
+        name: writtenSetId
+        in: path
+        required: true
+        description: the multiple choice set that should be found
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK with the found multiple choice set
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-questionsets-getWrittenSetWithAllChildElements-writtenSetId
+      description: Fetches the written set with all child elements.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: writtenSetId
+  '/questionsets/getMultipleChoiceSetWithAllChildElements/{multipleChoiceId}':
+    parameters:
+      - schema:
+          type: string
+        name: multipleChoiceId
+        in: path
+        required: true
+        description: the multiple choice set that should be found
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK with the found multiple choice set
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-questionsets-getMultipleChoiceSetWithAllChildElements-multipleChoiceId
+      description: Fetches the multiple choice set with all child elements.
+  /examinationevent/createExaminationEvent:
+    post:
+      summary: ''
+      operationId: post-examinationevent-createExaminationEvent
+      responses:
+        '200':
+          description: |
+            OK with the created multiple choice set question
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable  code if there are connection problems with the third tier
+      description: Create the examination event .It is processed as a POST request requesting <i>ExaminationEvent object</i> in format of JSON as an argument.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                examTitle:
+                  type: string
+                  minLength: 1
+                writtenSets:
+                  type: array
+                  items:
+                    required: []
+                    properties: {}
+                multipleChoiceSets:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - updatedtimestamp
+                      - id
+                      - title
+                      - topic
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                          username:
+                            type: string
+                            minLength: 1
+                          email:
+                            type: string
+                            minLength: 1
+                          password:
+                            type: string
+                            minLength: 1
+                          confirmPassword: {}
+                          firstName:
+                            type: string
+                            minLength: 1
+                          lastName:
+                            type: string
+                            minLength: 1
+                          role:
+                            type: object
+                            properties:
+                              id:
+                                type: number
+                              name:
+                                type: string
+                                minLength: 1
+                            required:
+                              - id
+                              - name
+                        required:
+                          - id
+                          - username
+                          - email
+                          - password
+                          - firstName
+                          - lastName
+                          - role
+                      updatedtimestamp:
+                        type: string
+                        minLength: 1
+                      id:
+                        type: number
+                      title:
+                        type: string
+                        minLength: 1
+                      topic:
+                        type: string
+                        minLength: 1
+                usersAssigned:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - id
+                      - username
+                      - email
+                      - password
+                      - firstName
+                      - lastName
+                    properties:
+                      id:
+                        type: number
+                      username:
+                        type: string
+                        minLength: 1
+                      email:
+                        type: string
+                        minLength: 1
+                      password:
+                        type: string
+                        minLength: 1
+                      confirmPassword: {}
+                      firstName:
+                        type: string
+                        minLength: 1
+                      lastName:
+                        type: string
+                        minLength: 1
+                      role:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                          name:
+                            type: string
+                            minLength: 1
+                        required:
+                          - id
+                          - name
+                examDateAndTime:
+                  type: string
+                  minLength: 1
+                createdBy:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    username:
+                      type: string
+                      minLength: 1
+                    email:
+                      type: string
+                      minLength: 1
+                    password:
+                      type: string
+                      minLength: 1
+                    confirmPassword: {}
+                    firstName:
+                      type: string
+                      minLength: 1
+                    lastName:
+                      type: string
+                      minLength: 1
+                    role:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - name
+                  required:
+                    - id
+                    - username
+                    - email
+                    - password
+                    - firstName
+                    - lastName
+                    - role
+              required:
+                - examTitle
+                - writtenSets
+                - multipleChoiceSets
+                - usersAssigned
+                - examDateAndTime
+                - createdBy
+  '/examinationevent/getTeachersUpcomingExamEvents/{teacherId}':
+    parameters:
+      - schema:
+          type: string
+        name: teacherId
+        in: path
+        required: true
+        description: the teacher id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '400':
+          description: |
+            Bad Request  if no scheduled examination events were found
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examinationevent-getTeachersUpcomingExamEvents-teacherId
+      description: Gets teachers upcoming examination events. It is processed as a GET request requesting <i>teacher id</i> passed through the URI
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: teacherId
+  '/examinationevent/getTeachersPassedExamEvents/{teacherId}':
+    parameters:
+      - schema:
+          type: string
+        name: teacherId
+        in: path
+        required: true
+        description: the teacher id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '400':
+          description: |
+            Bad Request if no scheduled examination events were found
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examinationevent-getTeachersPassedExamEvents-teacherId
+      description: Gets teachers passed examination events. It is processed as a GET request requesting <i>teacher id</i> passed through the URI
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: teacherId
+  '/examinationevent/getStudentsUpcomingExamEvents/{studentId}':
+    parameters:
+      - schema:
+          type: string
+        name: studentId
+        in: path
+        required: true
+        description: the student id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '400':
+          description: |-
+            Bad Request if no scheduled examination events were found
+              
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examinationevent-getStudentsUpcomingExamEvents-studentId
+      description: ' Gets students upcoming examination events. It is processed as a GET request requesting <i>student id</i> passed through the URI'
+  '/examinationevent/getStudentsPassedExamEvents/{studentId}':
+    parameters:
+      - schema:
+          type: string
+        name: studentId
+        in: path
+        required: true
+        description: the student id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '400':
+          description: |
+            Bad Request if no scheduled examination events were found
+        '503':
+          description: |-
+            Service Unavailable code if there are connection problems with the third tier
+             
+      operationId: get-examinationevent-getStudentsPassedExamEvents-studentId
+      description: ' Gets students passed examination events. It is processed as a GET request requesting <i>student id</i> passed through the URI'
+  '/examinationevent/getStudentsOngoingExamEvents/{studentId}':
+    parameters:
+      - schema:
+          type: string
+        name: studentId
+        in: path
+        required: true
+        description: the student id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '400':
+          description: |
+            Bad Request if no scheduled examination events were found
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examinationevent-getStudentsOngoingExamEvents-studentId
+      description: ' Gets students ongoing examination events. It is processed as a GET request requesting <i>student id</i> passed through the URI'
+  '/examiantionevent/getExaminationPaper/{examinationEventId}':
+    parameters:
+      - schema:
+          type: string
+        name: examinationEventId
+        in: path
+        required: true
+        description: the exam event id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examiantionevent-getExaminationPaper-examinationEventId
+      description: Gets examination event with all child components ongoing examination events. It is processed as a GET request requesting <i>exam id</i> passed through the URI
+  /examinationevent/submitStudentExaminationPaper:
+    post:
+      summary: ''
+      operationId: post-examinationevent-submitStudentExaminationPaper
+      responses:
+        '200':
+          description: |
+            OK with the created multiple choice set question
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      description: Submit the  examination "paper" .It is processed as a POST request requesting <i>StudentSubmitExaminationPaper object</i> in format of JSON as an argument.
+  '/examinationevent/getStudentSubmittedPaper/{studentId}/{examId}':
+    parameters:
+      - schema:
+          type: string
+        name: studentId
+        in: path
+        required: true
+        description: the student id
+      - schema:
+          type: string
+        name: examId
+        in: path
+        required: true
+        description: the exam id
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: |
+            OK with the created multiple choice set question
+        '400':
+          description: Bad Request
+        '503':
+          description: |
+            Service Unavailable code if there are connection problems with the third tier
+      operationId: get-examinationevent-getStudentSubmittedPaper-studentId-examId
+      description: Get student examination "paper" .It is processed as a GET request requesting <i>Student id and exam id in URI</i> in format of JSON as an argument.
 components:
   schemas: {}
