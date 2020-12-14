@@ -324,28 +324,42 @@ public class ExaminationEventController {
         StudentSubmitExaminationPaper submittedPaper = null;
         try {
             submittedPaper = examinationEventService.submitStudentExaminationPaper(paperToSubmit);
-        } catch (ServiceNotAvailable serviceNotAvailable) {
+        }  catch (NullQuestionSet | SubmitExaminationPaperException | NegativeNumberException | UnexpectedError | EmptyMultipleChoiceQuestion | EmptyQuestionSetTitleOrTopic | QuestionSetAlreadyExists  | NullQuestionSetQuestion | UserNotFound e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (NullQuestionSetQuestion nullQuestionSetQuestion) {
-            nullQuestionSetQuestion.printStackTrace();
-        } catch (NullQuestionSet nullQuestionSet) {
-            nullQuestionSet.printStackTrace();
-        } catch (NegativeNumberException e) {
-            e.printStackTrace();
-        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
-            emptyQuestionSetTitleOrTopic.printStackTrace();
-        } catch (SubmitExaminationPaperException e) {
-            e.printStackTrace();
-        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
-            questionSetAlreadyExists.printStackTrace();
-        } catch (UnexpectedError unexpectedError) {
-            unexpectedError.printStackTrace();
-        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
-            emptyMultipleChoiceQuestion.printStackTrace();
-        } catch (UserNotFound userNotFound) {
-            userNotFound.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.OK).body(submittedPaper);
+    }
+
+    /**
+     * Get student examination "paper" .It is processed as a GET request requesting <i>Student id and exam id in URI</i>
+     * in format of JSON as an argument.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getStudentSubmittedPaper/12
+
+
+     *
+     * @param studentId the student id
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
+     * <i>HTTP 400 - BAD_REQUEST</i>
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getStudentSubmittedPaper/{studentId}/{examId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getStudentSubmittedPaper(@PathVariable String studentId,@PathVariable String examId) {
+        StudentSubmitExaminationPaper studentExamPaper = null;
+        try {
+            studentExamPaper = examinationEventService.getStudentSubmittedPaper(studentId,examId);
+        }
+        catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(studentExamPaper);
     }
 }

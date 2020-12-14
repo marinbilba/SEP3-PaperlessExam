@@ -14,7 +14,8 @@ namespace SEP3.PaperlessExam.Model
         [JsonPropertyName("firstName")] public string FirstName { get; set; }
          [JsonPropertyName("lastName")] public string LastName { get; set; }
         [JsonPropertyName("role")] public Role Role { get; set; }
-        
+        // required for evaluate exam for teacher
+        public bool CanEvaluate { get; set; }
         
         public User()
         {  }

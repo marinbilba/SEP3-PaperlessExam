@@ -206,4 +206,30 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
         return submittedExaminationPaper;
     }
 
+    @Override
+    public StudentSubmitExaminationPaper getStudentSubmittedPaperByStudentIdAndExamId(String studentId, String examId) throws ServiceNotAvailable {
+        StudentSubmitExaminationPaper studentExamPaper = null;
+        // Connect
+        try {
+            socketConnector.connect();
+           // append studntId and examId to form one string and send it
+            String newString=studentId+"&"+examId;
+            // Serialize the object
+            String newStringSerialized = gson.toJson(newString);
+            //            Send request
+            requestSharedMethods.sendRequest(newStringSerialized,  GET_STUDENT_EXAM_PAPER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            studentExamPaper = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), StudentSubmitExaminationPaper.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return studentExamPaper;
+    }
+
 }

@@ -17,7 +17,7 @@
     <div class="jumbotron text-center">
         <h1>Ongoing Examination Events</h1>
     </div>
-    <table class="tableRed">
+    <table class="table">
         <thead>
         <tr>
             <th>Exam ID</th>
@@ -36,8 +36,8 @@
                 <td>@exam.ExamDateAndTime</td>
                 <td>
                     <button @onclick="(() => TakeExam(exam.Id))">
-                                             <i class="oi oi-pencil" style="color:green"/>
-                                         </button>
+                        <i class="oi oi-pencil" style="color:green"/>
+                    </button>
                 </td>
             </tr>
         }
@@ -71,9 +71,10 @@ else
                 <td>@exam.Id</td>
                 <td>@exam.ExamTitle</td>
                 <td>@exam.ExamDateAndTime</td>
-                <td>    <button @onclick="(() => TakeExam(exam.Id))">
-                    @* <button @onclick="ViewExamResults"> *@
-                   <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green" ></span>
+                <td>
+                    <button @onclick="(() => TakeExam(exam.Id))">
+                        @* <button @onclick="ViewExamResults"> *@
+                        <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green"></span>
                     </button>
                 </td>
             </tr>
@@ -98,7 +99,7 @@ else
             <th>Exam Title</th>
             <th>Exam Date and Time</th>
             <td>Exam Duration</td>
-      
+
         </tr>
         </thead>
         <tbody>
@@ -157,7 +158,6 @@ else
         catch (Exception e)
         {
             Console.WriteLine(e);
-          
         }
     }
 
@@ -169,7 +169,6 @@ else
 
     private void NotifyThatExamIsNotAvailable()
     {
-      
     }
 
     private void TakeExam(in long examId)

@@ -37,6 +37,7 @@ public class ExaminationEventService implements IExaminationEventService {
     @Autowired
     private IQuestionSetsService questionSetsService;
 
+
     //todo check if only students were assigned
     @Override
     public ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable {
@@ -178,6 +179,13 @@ public class ExaminationEventService implements IExaminationEventService {
 
 
         return submittedPaper;
+    }
+
+    @Override
+    public StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable {
+        return examinationEventRequest.getStudentSubmittedPaperByStudentIdAndExamId(studentId,examId);
+
+
     }
 
     private List<WrittenSet> submitWrittenSet(List<WrittenSet> writtenSetsToSubmit) throws UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UserNotFound, ServiceNotAvailable, QuestionSetAlreadyExists {

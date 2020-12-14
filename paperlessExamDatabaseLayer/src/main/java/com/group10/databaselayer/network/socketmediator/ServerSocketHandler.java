@@ -220,11 +220,25 @@ public class ServerSocketHandler implements Runnable {
                 case SUBMIT_EXAM_PAPER:
                     submitStudentExaminationPaper(networkContainerRequestDeserialized);
                     break;
+                case GET_STUDENT_EXAM_PAPER:
+                    getStudentSubmittedPaperByStudentIdAndExamId(networkContainerRequestDeserialized);
+                    break;
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getStudentSubmittedPaperByStudentIdAndExamId(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_STUDENT_EXAM_PAPER start");
+        String studentIdAndExamId = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
+        StudentSubmitExaminationPaper studentExamPaper = examinationEventDAO.getStudentSubmittedPaperByStudentIdAndExamId(studentIdAndExamId);
+        objectSerialized = gson.toJson(studentExamPaper);
+        networkContainer = new NetworkContainer(GET_STUDENT_EXAM_PAPER, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_STUDENT_EXAM_PAPER end");
     }
 
     private void submitStudentExaminationPaper(NetworkContainer networkContainerRequestDeserialized) throws IOException {

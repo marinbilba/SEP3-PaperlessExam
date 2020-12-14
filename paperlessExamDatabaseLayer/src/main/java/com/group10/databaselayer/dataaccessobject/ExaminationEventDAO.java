@@ -44,7 +44,7 @@ public class ExaminationEventDAO {
      * @return the examination event
      */
     public ExaminationEvent createUpdate(ExaminationEvent examinationEvent) {
-     return examinationEventRepository.save(examinationEvent);
+        return examinationEventRepository.save(examinationEvent);
 
     }
 
@@ -65,7 +65,7 @@ public class ExaminationEventDAO {
      * @return the student examination events
      */
     public List<ExaminationEvent> getStudentExaminationEvents(User user) {
-     return examinationEventRepository.findUsersExaminationEvents(user.getId());
+        return examinationEventRepository.findUsersExaminationEvents(user.getId());
     }
 
     /**
@@ -88,4 +88,34 @@ public class ExaminationEventDAO {
     public StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper examinationPaperToSubmit) {
         return submitExaminationPaper.save(examinationPaperToSubmit);
     }
+
+    public StudentSubmitExaminationPaper getStudentSubmittedPaperByStudentIdAndExamId(String studentIdAndExamId) {
+        long submitById = Long.parseLong(parseStudentId(studentIdAndExamId));
+        long examinationEventId = Long.parseLong(parseExamId(studentIdAndExamId));
+//        Optional<User> submitBy = userRepository.findById(submitById);
+//        Optional<ExaminationEvent> examinationEvent = examinationEventRepository.findById(examinationEventId);
+
+        return submitExaminationPaper.findByExaminationEvent_IdAndSubmitBy_Id(examinationEventId, submitById);
+
+    }
+
+    private String parseExamId(String studentIdAndExamId) {
+
+        String parsedSting = null;
+        if (studentIdAndExamId.contains("&")) {
+            parsedSting = studentIdAndExamId.substring(studentIdAndExamId.lastIndexOf("&") + 1);
+        }
+        return parsedSting;
+    }
+
+
+    private String parseStudentId(String studentIdAndExamId) {
+        String parsedSting = null;
+        if (studentIdAndExamId.contains("&")) {
+            int i = studentIdAndExamId.indexOf("&");
+            parsedSting = studentIdAndExamId.substring(0, i);
+        }
+        return parsedSting;
+    }
+
 }

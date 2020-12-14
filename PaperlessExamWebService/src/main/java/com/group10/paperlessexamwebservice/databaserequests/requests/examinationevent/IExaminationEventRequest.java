@@ -23,4 +23,5 @@ public interface IExaminationEventRequest {
 
     StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws ServiceNotAvailable;
 
+    StudentSubmitExaminationPaper getStudentSubmittedPaperByStudentIdAndExamId(String studentId, String examId) throws ServiceNotAvailable;
 }

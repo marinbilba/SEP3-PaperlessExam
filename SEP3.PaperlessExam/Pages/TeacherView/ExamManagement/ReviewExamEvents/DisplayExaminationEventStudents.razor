@@ -1,0 +1,80 @@
+﻿@page "/evaluateStudents/{examId}"
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Model.ExamEvent
+@using SEP3.PaperlessExam.Model.StudentSubmitPaper
+@inject IExamService ExamService;
+<div class="jumbotron text-center">
+        <h1>Evaluate Students</h1>
+    </div>
+@* Users Table *@
+@if (_studentsToEvalaute == null)
+{
+    <p>
+        <em>Use the filter to find users</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Student Id</th>
+            <th>Evaluate</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in _studentsToEvalaute)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>
+                    @if (item.CanEvaluate)
+                    {
+                        <button @onclick="@(() => EvaluateStudent(item))">
+                            <i class="oi oi-pencil" style="color:green"/>
+                        </button>
+                    }
+                    else
+                    {
+                        <RadzenTextBox Style="color: red">Not submitted</RadzenTextBox>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+@code {
+    [Parameter] public string examId { get; set; }
+    private IList<User> _studentsToEvalaute;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (examId != null)
+        {
+           ExaminationEvent examinationEvent= await ExamService.GetExaminationPaper(examId);
+            _studentsToEvalaute = examinationEvent.UsersAssigned;
+           await CheckStudentSubmittedPaper(_studentsToEvalaute);
+        }
+       
+    }
+
+    private async Task CheckStudentSubmittedPaper(IList<User> studentsToEvaluate)
+    {
+        foreach (var student in studentsToEvaluate)
+        {
+         StudentSubmitExaminationPaper studentSubmitExaminationPaper=   await ExamService.GetStudentSubmittedPaper(student.Id,examId);
+            if (studentSubmitExaminationPaper != null)
+            {
+                student.CanEvaluate = true;
+            }
+        }
+    }
+
+    private void EvaluateStudent(User item)
+    {
+        throw new NotImplementedException();
+    }
+
+}

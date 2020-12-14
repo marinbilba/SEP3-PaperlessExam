@@ -62,6 +62,7 @@ public enum RequestOperation {
     GET_EXAMINATION_EVENT_WRITTEN_SETS,
     // Student paper
     SUBMIT_EXAM_PAPER,
+    GET_STUDENT_EXAM_PAPER,
 
 
 }

@@ -22,5 +22,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
         Task<IList<ExaminationEvent>> GetStudentsOngoingExamEvents(int currentUserId);
         Task<ExaminationEvent> GetExaminationPaper(string examId);
         Task<StudentSubmitExaminationPaper> SubmitStudentPaper(StudentSubmitExaminationPaper studentSubmitExaminationPaper);
+        Task<StudentSubmitExaminationPaper> GetStudentSubmittedPaper(int studentId, string examId);
     }
 }

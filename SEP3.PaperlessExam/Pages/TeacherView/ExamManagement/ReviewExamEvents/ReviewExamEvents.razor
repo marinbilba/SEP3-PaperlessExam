@@ -5,7 +5,7 @@
 @using SEP3.PaperlessExam.Authentication
 @inject  IExamService ExamService;
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject NavigationManager NavigationManager
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
 <h3>Review Exam Events</h3>
 @if (_passedExaminationEventsList != null)
@@ -108,11 +108,10 @@ else
         }
     }
 
-    private long sendId;
+
     private void EvaluateStudents(long examId)
     {
-        sendId = examId;
-@*         <EvaluateStudents UserId="@sendId"></EvaluateStudents> *@
+        NavigationManager.NavigateTo($"/evaluateStudents/{examId}");
     }
 
 }
