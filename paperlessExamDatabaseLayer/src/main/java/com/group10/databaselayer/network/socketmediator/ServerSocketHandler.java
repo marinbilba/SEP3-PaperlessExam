@@ -7,6 +7,7 @@ import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStr
 import com.group10.databaselayer.dataaccessobject.ExaminationEventDAO;
 import com.group10.databaselayer.dataaccessobject.RoleDAO;
 import com.group10.databaselayer.dataaccessobject.UserDAO;
+import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.databaselayer.network.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.network.networkcontainer.RequestOperation;
 import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuestionsDAO;
@@ -215,7 +216,10 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case GET_EXAMINATION_EVENT_WRITTEN_SETS:
                     getExaminationEventWrittenSets(networkContainerRequestDeserialized);
-break;
+                    break;
+                case SUBMIT_EXAM_PAPER:
+                    submitStudentExaminationPaper(networkContainerRequestDeserialized);
+                    break;
 
             }
         } catch (IOException e) {
@@ -223,10 +227,22 @@ break;
         }
     }
 
+    private void submitStudentExaminationPaper(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("SUBMIT_EXAM_PAPER start");
+        StudentSubmitExaminationPaper examinationPaperToSubmit = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), StudentSubmitExaminationPaper.class);
+
+        StudentSubmitExaminationPaper submittedExaminationPaper = examinationEventDAO.submitStudentExaminationPaper(examinationPaperToSubmit);
+        objectSerialized = gson.toJson(submittedExaminationPaper);
+        networkContainer = new NetworkContainer(SUBMIT_EXAM_PAPER, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("SUBMIT_EXAM_PAPER end");
+    }
+
     private void getExaminationEventWrittenSets(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_EXAMINATION_EVENT_WRITTEN_SETS start");
-        ExaminationEvent examinationEventWrittenSets= gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), ExaminationEvent.class);
-        long examEventId =examinationEventWrittenSets.getId();
+        ExaminationEvent examinationEventWrittenSets = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), ExaminationEvent.class);
+        long examEventId = examinationEventWrittenSets.getId();
 
         List<WrittenSet> fetchedWrittenSets = writtenQuestionsDAO.getExaminationEventWrittenSets(examEventId);
         objectSerialized = gson.toJson(fetchedWrittenSets);
@@ -239,7 +255,7 @@ break;
     private void getExaminationEventMultipleChoiceSets(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_EXAMINATION_EVENT_MULTIPLE_CHOICE_SETS start");
         ExaminationEvent examinationEventMultipleChoiceSets = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), ExaminationEvent.class);
-        long examId =examinationEventMultipleChoiceSets.getId();
+        long examId = examinationEventMultipleChoiceSets.getId();
 
         List<MultipleChoiceSet> fetchedMultipleChoiceSets = multipleChoiceQuestionsDAO.getExaminationEventMultipleChoiceSets(examId);
         objectSerialized = gson.toJson(fetchedMultipleChoiceSets);
@@ -253,8 +269,8 @@ break;
 
         System.out.println("GET_EXAMINATION_EVENT_BY_ID start");
         String examinationEventId = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
-      long examinationEventIdParsed= Long.parseLong(examinationEventId);
-        Optional<ExaminationEvent> fetchedExaminationEvent= examinationEventDAO.getExaminationEventById(examinationEventIdParsed);
+        long examinationEventIdParsed = Long.parseLong(examinationEventId);
+        Optional<ExaminationEvent> fetchedExaminationEvent = examinationEventDAO.getExaminationEventById(examinationEventIdParsed);
         objectSerialized = gson.toJson(fetchedExaminationEvent.get());
         networkContainer = new NetworkContainer(GET_EXAMINATION_EVENT_BY_ID, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
@@ -484,9 +500,9 @@ break;
     private void getMultipleChoiceSetQuestionOption(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTION_OPTION start");
         QuestionOption multipleChoiceSetQuestionOption = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), QuestionOption.class);
-        QuestionOption fetchedMultipleChoiceSetQuestionOption = null;
+        Optional<QuestionOption> fetchedMultipleChoiceSetQuestionOption = null;
         fetchedMultipleChoiceSetQuestionOption = multipleChoiceQuestionsDAO.getMultipleChoiceSetQuestionOption(multipleChoiceSetQuestionOption);
-        objectSerialized = gson.toJson(fetchedMultipleChoiceSetQuestionOption);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSetQuestionOption.get());
         networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
@@ -510,10 +526,10 @@ break;
     private void getMultipleChoiceSetQuestion(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_MULTIPLE_CHOICE_SET_QUESTIONS start");
         MultipleChoiceQuestion multipleChoiceSetQuestion = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceQuestion.class);
-        MultipleChoiceQuestion fetchedMultipleChoiceSet = null;
+        Optional<MultipleChoiceQuestion> fetchedMultipleChoiceSet = null;
 
         fetchedMultipleChoiceSet = multipleChoiceQuestionsDAO.getMultipleChoiceSetQuestion(multipleChoiceSetQuestion);
-        objectSerialized = gson.toJson(fetchedMultipleChoiceSet);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSet.get());
         networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);
@@ -576,10 +592,10 @@ break;
     private void getMultipleChoiceSet(NetworkContainer networkContainerRequestDeserialized) throws IOException {
         System.out.println("GET_MULTIPLE_CHOICE_SET start");
         MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
-        MultipleChoiceSet fetchedMultipleChoiceSet = null;
+        Optional<MultipleChoiceSet> fetchedMultipleChoiceSet = null;
 
         fetchedMultipleChoiceSet = multipleChoiceQuestionsDAO.getMultipleChoiceSet(multipleChoiceSet);
-        objectSerialized = gson.toJson(fetchedMultipleChoiceSet);
+        objectSerialized = gson.toJson(fetchedMultipleChoiceSet.get());
         networkContainer = new NetworkContainer(GET_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);

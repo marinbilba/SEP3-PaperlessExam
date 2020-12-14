@@ -10,7 +10,7 @@ public class QuestionOption {
     private boolean correctAnswer;
     private String answer;
     private MultipleChoiceQuestion multipleChoiceQuestion;
-
+    private boolean submittedQuestionOption;
     /**
      * Instantiates a new Question option.
      */
@@ -28,6 +28,26 @@ public class QuestionOption {
         this.correctAnswer = correctAnswer;
         this.answer = answer;
         this.multipleChoiceQuestion=multipleChoiceQuestion;
+    }
+
+    public boolean isSubmittedQuestionOption() {
+        return submittedQuestionOption;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public boolean isCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSubmittedQuestionOption(boolean submittedQuestionOption) {
+        this.submittedQuestionOption = submittedQuestionOption;
     }
 
     public boolean getCorrectAnswer() {

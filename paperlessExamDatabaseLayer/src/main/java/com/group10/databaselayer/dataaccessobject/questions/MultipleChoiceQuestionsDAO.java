@@ -84,10 +84,11 @@ public class MultipleChoiceQuestionsDAO {
      * @return boolean value true if the set was found and false if it was not.
      * @throws TitleOrTopicAreNull in case the title or topic are empty
      */
+    //todo not sure this is working anymore
     public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
         Optional<MultipleChoiceSet> queriedMultipleChoiceSet = Optional.empty();
         if (checkTitleTopicNotNull(multipleChoiceSet)) {
-            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId()));
+            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserIdAndSubmittedMultipleChoiceSet(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId(),multipleChoiceSet.isSubmittedMultipleChoiceSet()));
         }
         return queriedMultipleChoiceSet.isPresent();
     }
@@ -184,8 +185,8 @@ public class MultipleChoiceQuestionsDAO {
      * @param multipleChoiceSet the multiple choice set
      * @return the multiple choice set or null if not found
      */
-    public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
-        return multipleChoiceSetRepository.findByTitleAndTopicAndUserId(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId());
+    public Optional<MultipleChoiceSet> getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) {
+        return multipleChoiceSetRepository.findById(multipleChoiceSet.getId());
     }
 
     /**
@@ -204,9 +205,9 @@ public class MultipleChoiceQuestionsDAO {
      * @param multipleChoiceSetQuestion the multiple choice set question
      * @return the multiple choice set question
      */
-    public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) {
+    public Optional<MultipleChoiceQuestion> getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) {
         MultipleChoiceSet multipleChoiceSet = multipleChoiceSetQuestion.getMultipleChoiceSet();
-        return multipleChoiceQuestionRepository.findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndQuestionNumberAndQuestionAndScore(multipleChoiceSet.getTopic(), multipleChoiceSet.getTitle(), multipleChoiceSet.getId(), multipleChoiceSetQuestion.getQuestionNumber(), multipleChoiceSetQuestion.getQuestion(), multipleChoiceSetQuestion.getScore());
+        return multipleChoiceQuestionRepository.findById(multipleChoiceSetQuestion.getId());
 
     }
 
@@ -216,13 +217,12 @@ public class MultipleChoiceQuestionsDAO {
      * @param multipleChoiceSetQuestionOption the multiple choice set question option
      * @return the multiple choice set question option
      */
-    public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
+    public Optional<QuestionOption> getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceSetQuestionOption) {
         MultipleChoiceQuestion multipleChoiceSetQuestion = multipleChoiceSetQuestionOption.getMultipleChoiceQuestion();
         MultipleChoiceSet multipleChoiceSet = multipleChoiceSetQuestion.getMultipleChoiceSet();
         // multipleChoiceQuestionOptionRepository.findAll((Pageable) multipleChoiceSetQuestion);
-        QuestionOption qw = multipleChoiceQuestionOptionRepository.findByAnswerAndCorrectAnswerAndMultipleChoiceQuestion_QuestionAndMultipleChoiceQuestion_ScoreAndMultipleChoiceQuestion_QuestionNumber(multipleChoiceSetQuestionOption.getAnswer(), multipleChoiceSetQuestionOption.setCorrectAnswer(), multipleChoiceSetQuestion.getQuestion(), multipleChoiceSetQuestion.getScore(), multipleChoiceSetQuestion.getQuestionNumber());
+        return multipleChoiceQuestionOptionRepository.findById(multipleChoiceSetQuestionOption.getId());
 
-        return qw;
 
     }
 

@@ -20,7 +20,7 @@ public class QuestionOption {
     private Long id;
     private boolean correctAnswer;
     private String answer;
-
+    private boolean submittedQuestionOption;
     @Fetch(FetchMode.SELECT)
     @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -44,6 +44,14 @@ public class QuestionOption {
         this.correctAnswer = correctAnswer;
         this.answer = answer;
         this.multipleChoiceQuestion = multipleChoiceQuestion;
+    }
+
+    public boolean isSubmittedQuestionOption() {
+        return submittedQuestionOption;
+    }
+
+    public void setSubmittedQuestionOption(boolean submittedQuestionOption) {
+        this.submittedQuestionOption = submittedQuestionOption;
     }
 
     /**

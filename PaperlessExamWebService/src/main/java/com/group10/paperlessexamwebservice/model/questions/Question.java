@@ -61,6 +61,14 @@ public class Question implements Serializable {
         this.questionAnswer = questionAnswer;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     /**
      * Gets question.
      *

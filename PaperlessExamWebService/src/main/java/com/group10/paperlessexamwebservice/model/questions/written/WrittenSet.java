@@ -22,8 +22,10 @@ public class WrittenSet extends QuestionsSet {
 
     private Date updatedTimestamp;
     private User user;
+    private boolean submittedWrittenSet;
     @Hidden
 private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
+
     /**
      * Instantiates a new Written set.
      */
@@ -42,10 +44,20 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
         this.user=user;
     }
 
+    /**
+     * Gets updated timestamp.
+     *
+     * @return the updated timestamp
+     */
     public Date getUpdatedTimestamp() {
         return updatedTimestamp;
     }
 
+    /**
+     * Sets updated timestamp.
+     *
+     * @param updatedTimestamp the updated timestamp
+     */
     public void setUpdatedTimestamp(Date updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
     }
@@ -57,18 +69,56 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
         return super.getTopic();
     }
 
+    /**
+     * Gets written questions.
+     *
+     * @return the written questions
+     */
     public List<WrittenQuestion> getWrittenQuestions() {
         return writtenQuestions;
     }
 
+    /**
+     * Is submitted written set boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isSubmittedWrittenSet() {
+        return submittedWrittenSet;
+    }
+
+    /**
+     * Sets submitted written set.
+     *
+     * @param submittedWrittenSet the submitted written set
+     */
+    public void setSubmittedWrittenSet(boolean submittedWrittenSet) {
+        this.submittedWrittenSet = submittedWrittenSet;
+    }
+
+    /**
+     * Sets written questions.
+     *
+     * @param writtenQuestions the written questions
+     */
     public void setWrittenQuestions(List<WrittenQuestion> writtenQuestions) {
         this.writtenQuestions = writtenQuestions;
     }
 
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
     public void setUser(User user) {
         this.user = user;
     }

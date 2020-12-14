@@ -3,6 +3,7 @@ package com.group10.paperlessexamwebservice.databaserequests.requests.examinatio
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
+import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 
 import java.util.List;
@@ -19,4 +20,7 @@ public interface IExaminationEventRequest {
     List<MultipleChoiceSet> getExaminationEventMultipleChoiceSets(ExaminationEvent fetchedExaminationEvent) throws ServiceNotAvailable;
 
     List<WrittenSet> getExaminationEventWrittenSets(ExaminationEvent fetchedExaminationEvent) throws ServiceNotAvailable;
+
+    StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws ServiceNotAvailable;
+
 }

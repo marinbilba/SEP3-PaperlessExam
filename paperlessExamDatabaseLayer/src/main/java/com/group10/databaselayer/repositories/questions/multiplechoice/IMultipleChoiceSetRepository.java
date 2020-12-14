@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Repository
 public interface IMultipleChoiceSetRepository extends JpaRepository<MultipleChoiceSet, Long> {
-   MultipleChoiceSet findByTitleAndTopicAndUserId(String title, String topic, Long user);
+   MultipleChoiceSet findByTitleAndTopicAndUserIdAndSubmittedMultipleChoiceSet(String title, String topic, Long user, boolean submittedMultipleChoiceSet);
 
    List<MultipleChoiceSet> findByUserId(Long id);
    @Query("select distinct multipleSets \n" +

@@ -10,7 +10,7 @@ public interface IMultipleChoiceQuestionRepository extends JpaRepository<Multipl
     List<MultipleChoiceQuestion> findByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet);
 
 
-    MultipleChoiceQuestion findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndQuestionNumberAndQuestionAndScore(String topic, String title, Long id, int questionNumber, String question, double questionScore);
+  //  MultipleChoiceQuestion findByMultipleChoiceSetTopicAndMultipleChoiceSetTitleAndMultipleChoiceSetIdAndMultipleChoiceSetSubmittedMultipleChoiceSetAndQuestionNumberAndQuestionAndScoreAndSubmittedMultipleChoiceQuestion(Long id, int questionNumber, String question, double questionScore,boolean submittedMultipleChoiceQuestion);
 
 
 }

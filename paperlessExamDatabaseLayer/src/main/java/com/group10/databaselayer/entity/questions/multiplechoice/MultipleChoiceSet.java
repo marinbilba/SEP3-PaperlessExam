@@ -31,7 +31,7 @@ public class MultipleChoiceSet {
     private Long id;
     private String title;
     private String topic;
-
+private boolean submittedMultipleChoiceSet;
     @UpdateTimestamp
     private Date updatedTimestamp;
 
@@ -59,6 +59,14 @@ public class MultipleChoiceSet {
         this.title = title;
         this.topic = topic;
         this.user = user;
+    }
+
+    public boolean isSubmittedMultipleChoiceSet() {
+        return submittedMultipleChoiceSet;
+    }
+
+    public void setSubmittedMultipleChoiceSet(boolean submittedMultipleChoiceSet) {
+        this.submittedMultipleChoiceSet = submittedMultipleChoiceSet;
     }
 
     public List<ExaminationEvent> getExaminationEvents() {

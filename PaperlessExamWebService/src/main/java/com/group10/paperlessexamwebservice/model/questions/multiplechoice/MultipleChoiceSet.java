@@ -22,6 +22,7 @@ public class MultipleChoiceSet extends QuestionsSet {
 
     private User user;
     private Date updatedTimestamp;
+    private boolean submittedMultipleChoiceSet;
     @Hidden
     private List<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
 
@@ -51,6 +52,14 @@ public class MultipleChoiceSet extends QuestionsSet {
      */
     public MultipleChoiceSet(String title, String topic) {
         super(title, topic);
+    }
+
+    public boolean isSubmittedMultipleChoiceSet() {
+        return submittedMultipleChoiceSet;
+    }
+
+    public void setSubmittedMultipleChoiceSet(boolean submittedMultipleChoiceSet) {
+        this.submittedMultipleChoiceSet = submittedMultipleChoiceSet;
     }
 
     /**

@@ -12,6 +12,7 @@ import com.group10.paperlessexamwebservice.service.exceptions.questionsets.Quest
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.submitpaper.SubmitExaminationPaperException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 
 import java.util.List;
 
@@ -30,5 +31,5 @@ public interface IExaminationEventService {
 
     ExaminationEvent getExaminationPaper(String examinationEventId) throws Exception;
 
-    ExaminationEvent submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion;
+    StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion, UserNotFound;
 }

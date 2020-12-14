@@ -36,6 +36,7 @@ public class WrittenSet {
     private User user;
     @UpdateTimestamp
     private Date updatedTimestamp;
+    private boolean submittedWrittenSet;
 @Hidden
     @ManyToMany(mappedBy = "writtenSets")
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
@@ -45,71 +46,165 @@ public class WrittenSet {
     private List<StudentSubmitExaminationPaper> submitMultipleChoiceSets = new ArrayList<>();
 
 
-
     /**
      * Instantiates a new Written set.
      */
     public WrittenSet() {
     }
 
+    /**
+     * Instantiates a new Written set.
+     *
+     * @param title the title
+     * @param topic the topic
+     * @param user  the user
+     */
     public WrittenSet(String title, String topic, User user) {
         this.title = title;
         this.topic = topic;
         this.user = user;
     }
 
+    /**
+     * Gets examination events.
+     *
+     * @return the examination events
+     */
     public List<ExaminationEvent> getExaminationEvents() {
         return examinationEvents;
     }
 
+    /**
+     * Sets examination events.
+     *
+     * @param examinationEvents the examination events
+     */
     public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
     }
 
+    /**
+     * Gets submit multiple choice sets.
+     *
+     * @return the submit multiple choice sets
+     */
     public List<StudentSubmitExaminationPaper> getSubmitMultipleChoiceSets() {
         return submitMultipleChoiceSets;
     }
 
+    /**
+     * Is submitted written set boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isSubmittedWrittenSet() {
+        return submittedWrittenSet;
+    }
+
+    /**
+     * Sets submitted written set.
+     *
+     * @param submittedWrittenSet the submitted written set
+     */
+    public void setSubmittedWrittenSet(boolean submittedWrittenSet) {
+        this.submittedWrittenSet = submittedWrittenSet;
+    }
+
+    /**
+     * Sets submit multiple choice sets.
+     *
+     * @param submitMultipleChoiceSets the submit multiple choice sets
+     */
     public void setSubmitMultipleChoiceSets(List<StudentSubmitExaminationPaper> submitMultipleChoiceSets) {
         this.submitMultipleChoiceSets = submitMultipleChoiceSets;
     }
 
+    /**
+     * Gets updated timestamp.
+     *
+     * @return the updated timestamp
+     */
     public Date getUpdatedTimestamp() {
         return updatedTimestamp;
     }
 
+    /**
+     * Sets updated timestamp.
+     *
+     * @param updatedTimestamp the updated timestamp
+     */
     public void setUpdatedTimestamp(Date updatedTimestamp) {
         this.updatedTimestamp = updatedTimestamp;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets title.
+     *
+     * @param title the title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Gets topic.
+     *
+     * @return the topic
+     */
     public String getTopic() {
         return topic;
     }
 
+    /**
+     * Sets topic.
+     *
+     * @param topic the topic
+     */
     public void setTopic(String topic) {
         this.topic = topic;
     }
 
+    /**
+     * Gets user.
+     *
+     * @return the user
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets user.
+     *
+     * @param user the user
+     */
     public void setUser(User user) {
         this.user = user;
     }

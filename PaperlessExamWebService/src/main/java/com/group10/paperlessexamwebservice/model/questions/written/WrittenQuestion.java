@@ -1,7 +1,6 @@
 package com.group10.paperlessexamwebservice.model.questions.written;
 
 
-
 import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.Question;
 
@@ -15,7 +14,7 @@ import java.util.Objects;
 public class WrittenQuestion extends Question {
 
     private WrittenSet writtenSet;
-
+    private boolean submittedQuestion;
 
     /**
      * Instantiates a new Written question.
@@ -51,17 +50,49 @@ public class WrittenQuestion extends Question {
         super(questionNumber, question, questionAnswer, score);
         this.writtenSet = writtenSet;
     }
-public String getQuestionAnswer(){
+
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
+    public void setId(long id) {
+        super.setId(id);
+    }
+
+    public Long getId() {
+        return super.getId();
+    }
+
+    public String getQuestionAnswer() {
         return super.getQuestionAnswer();
-}
+    }
+
+    /**
+     * Is submitted question boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isSubmittedQuestion() {
+        return submittedQuestion;
+    }
+
+    /**
+     * Sets submitted question.
+     *
+     * @param submittedQuestion the submitted question
+     */
+    public void setSubmittedQuestion(boolean submittedQuestion) {
+        this.submittedQuestion = submittedQuestion;
+    }
 
     /**
      * Get question answer.
      *
      * @param answer the answer
      */
-    public void getQuestionAnswer(String answer){
-         super.setQuestion(answer);
+    public void getQuestionAnswer(String answer) {
+        super.setQuestion(answer);
     }
 
     /**
@@ -81,18 +112,20 @@ public String getQuestionAnswer(){
     public void setWrittenSet(WrittenSet writtenSet) {
         this.writtenSet = writtenSet;
     }
-public String getQuestion(){
+
+    public String getQuestion() {
         return super.getQuestion();
-}
+    }
 
     /**
      * Get question score double.
      *
      * @return the double
      */
-    public double getQuestionScore(){
+    public double getQuestionScore() {
         return super.getScore();
     }
+
     /**
      * Sets question.
      *
@@ -101,6 +134,7 @@ public String getQuestion(){
     public void setQuestion(String question) {
         super.setQuestion(question);
     }
+
     /**
      * Sets score.
      *

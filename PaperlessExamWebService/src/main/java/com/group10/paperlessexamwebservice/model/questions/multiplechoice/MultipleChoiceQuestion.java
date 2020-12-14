@@ -16,8 +16,8 @@ public class MultipleChoiceQuestion extends Question {
 
     private MultipleChoiceSet multipleChoiceSet;
     @Hidden
-    private List<QuestionOption> questionOptions=new ArrayList<>();
-
+    private List<QuestionOption> questionOptions = new ArrayList<>();
+    private boolean submittedMultipleChoiceQuestion;
 
     /**
      * Instantiates a new Multiple choice question.
@@ -37,6 +37,22 @@ public class MultipleChoiceQuestion extends Question {
     public MultipleChoiceQuestion(String question, double score, int questionNumber, MultipleChoiceSet multipleChoiceSet) {
         super(question, score, questionNumber);
         this.multipleChoiceSet = multipleChoiceSet;
+    }
+
+    public void setId(long id) {
+        super.setId(id);
+    }
+
+    public Long getId() {
+        return super.getId();
+    }
+
+    public boolean isSubmittedMultipleChoiceQuestion() {
+        return submittedMultipleChoiceQuestion;
+    }
+
+    public void setSubmittedMultipleChoiceQuestion(boolean submittedMultipleChoiceQuestion) {
+        this.submittedMultipleChoiceQuestion = submittedMultipleChoiceQuestion;
     }
 
     /**
@@ -76,8 +92,7 @@ public class MultipleChoiceQuestion extends Question {
     }
 
 
-
-    public String getQuestion(){
+    public String getQuestion() {
         return super.getQuestion();
     }
 
@@ -86,9 +101,10 @@ public class MultipleChoiceQuestion extends Question {
      *
      * @return the double
      */
-    public double getQuestionScore(){
+    public double getQuestionScore() {
         return super.getScore();
     }
+
     /**
      * Sets question.
      *
@@ -97,6 +113,7 @@ public class MultipleChoiceQuestion extends Question {
     public void setQuestion(String question) {
         super.setQuestion(question);
     }
+
     /**
      * Sets score.
      *

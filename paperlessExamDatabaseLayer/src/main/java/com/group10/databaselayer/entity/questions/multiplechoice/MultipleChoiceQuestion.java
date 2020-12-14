@@ -21,6 +21,7 @@ public class MultipleChoiceQuestion  {
     private String question;
 
     private double score;
+    private boolean submittedMultipleChoiceQuestion;
     @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
     private MultipleChoiceSet multipleChoiceSet;
@@ -37,6 +38,14 @@ public class MultipleChoiceQuestion  {
         this.question = question;
         this.score = score;
         this.multipleChoiceSet = multipleChoiceSet;
+    }
+
+    public boolean isSubmittedMultipleChoiceQuestion() {
+        return submittedMultipleChoiceQuestion;
+    }
+
+    public void setSubmittedMultipleChoiceQuestion(boolean submittedMultipleChoiceQuestion) {
+        this.submittedMultipleChoiceQuestion = submittedMultipleChoiceQuestion;
     }
 
     /**

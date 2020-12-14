@@ -15,6 +15,7 @@ import com.group10.paperlessexamwebservice.service.exceptions.questionsets.Quest
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.submitpaper.SubmitExaminationPaperException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -154,25 +155,73 @@ public class ExaminationEventService implements IExaminationEventService {
     }
 
     @Override
-    public ExaminationEvent submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion {
+    public StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion, UserNotFound {
         validateStudentExaminationPaper(paperToSubmit);
         List<MultipleChoiceSet> multipleChoiceSetsToSubmit = paperToSubmit.getSubmitMultipleChoiceSets();
         List<WrittenSet> writtenSetsToSubmit = paperToSubmit.getSubmitWrittenSets();
 
-        List<MultipleChoiceSet> submittedMultipleChoiceSets = new ArrayList<>();
-        List<WrittenSet> submittedWrittenSets = new ArrayList<>();
+
         if (multipleChoiceSetsToSubmit != null && !multipleChoiceSetsToSubmit.isEmpty()) {
-            for (var multipleChoiceSet : multipleChoiceSetsToSubmit) {
-                for (var submitQuestion : multipleChoiceSet.getMultipleChoiceQuestionList()) {
-                    questionSetsService.addMultipleChoiceQuestion(submitQuestion);
-                    for (var submitQuestionOption : submitQuestion.getQuestionOptions()) {
-                        questionSetsService.addMultipleChoiceQuestionOption(submitQuestionOption);
-                    }
+            List<MultipleChoiceSet> multipleChoiceSetsUpdatedState = submitMultipleChoice(multipleChoiceSetsToSubmit);
+            List<MultipleChoiceSet> submittedMultipleChoiceSets = getSubmittedMultipleChoiceSet(multipleChoiceSetsUpdatedState);
+            paperToSubmit.setSubmitMultipleChoiceSets(submittedMultipleChoiceSets);
+        }
+        if (writtenSetsToSubmit != null && writtenSetsToSubmit.isEmpty()) {
+            List<WrittenSet> writtenSetsUpdatedState = submitWrittenSet(writtenSetsToSubmit);
+            paperToSubmit.setSubmitWrittenSets(writtenSetsUpdatedState);
+        }
+
+        StudentSubmitExaminationPaper submittedPaper = examinationEventRequest.submitStudentExaminationPaper(paperToSubmit);
+        if (submittedPaper == null) {
+            throw new UnexpectedError("Something went wrong");
+        }
+
+
+        return submittedPaper;
+    }
+
+    private List<WrittenSet> submitWrittenSet(List<WrittenSet> writtenSetsToSubmit) throws UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UserNotFound, ServiceNotAvailable, QuestionSetAlreadyExists {
+        List<WrittenSet> writtenSetUpdatedState = new ArrayList<>();
+        for (var writtenSet : writtenSetsToSubmit) {
+            writtenSet.setSubmittedWrittenSet(true);
+            writtenSet.setId(null);
+            for (var question : writtenSet.getWrittenQuestions()) {
+                question.setSubmittedQuestion(true);
+                question.setId(null);
+            }
+            WrittenSet temp = questionSetsService.createWrittenSet(writtenSet);
+            writtenSetUpdatedState.add(temp);
+        }
+        return writtenSetUpdatedState;
+    }
+
+    private List<MultipleChoiceSet> submitMultipleChoice(List<MultipleChoiceSet> multipleChoiceSetsToSubmit) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, NullQuestionSet, QuestionSetAlreadyExists, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion {
+        List<MultipleChoiceSet> multipleChoiceSetsUpdatedState = new ArrayList<>();
+        for (var multipleChoiceSet : multipleChoiceSetsToSubmit) {
+            multipleChoiceSet.setSubmittedMultipleChoiceSet(true);
+            multipleChoiceSet.setId(null);
+            for (var submitQuestion : multipleChoiceSet.getMultipleChoiceQuestionList()) {
+                submitQuestion.setSubmittedMultipleChoiceQuestion(true);
+                submitQuestion.setId(null);
+                // questionSetsService.addMultipleChoiceQuestion(submitQuestion);
+                for (var submitQuestionOption : submitQuestion.getQuestionOptions()) {
+                    submitQuestionOption.setSubmittedQuestionOption(true);
+                    submitQuestionOption.setId(null);
+                    //   questionSetsService.addMultipleChoiceQuestionOption(submitQuestionOption);
                 }
             }
+            MultipleChoiceSet temp = questionSetsService.createMultipleChoiceSet(multipleChoiceSet);
+            multipleChoiceSetsUpdatedState.add(temp);
         }
-        if()
-        return null;
+        return multipleChoiceSetsUpdatedState;
+    }
+
+    private List<MultipleChoiceSet> getSubmittedMultipleChoiceSet(List<MultipleChoiceSet> multipleChoiceSetsUpdatedState) throws ServiceNotAvailable {
+        List<MultipleChoiceSet> fetchedMultipleChoiceSets = new ArrayList<>();
+        for (var multipleChoiceSet : multipleChoiceSetsUpdatedState) {
+            fetchedMultipleChoiceSets.add(questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId()));
+        }
+        return fetchedMultipleChoiceSets;
     }
 
     private boolean validateStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException {

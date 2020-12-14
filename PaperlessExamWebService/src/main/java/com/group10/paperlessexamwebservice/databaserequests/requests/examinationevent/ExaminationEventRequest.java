@@ -9,6 +9,7 @@ import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISock
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
+import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -179,6 +180,30 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return fetchedWrittenSets;
+    }
+
+    @Override
+    public StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws ServiceNotAvailable {
+        StudentSubmitExaminationPaper submittedExaminationPaper = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String teacherIdSerialized = gson.toJson(paperToSubmit);
+            //            Send request
+            requestSharedMethods.sendRequest(teacherIdSerialized,  SUBMIT_EXAM_PAPER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            submittedExaminationPaper = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), StudentSubmitExaminationPaper.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return submittedExaminationPaper;
     }
 
 }

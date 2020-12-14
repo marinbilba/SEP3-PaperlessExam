@@ -13,6 +13,7 @@ import com.group10.paperlessexamwebservice.service.exceptions.questionsets.Quest
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
 import com.group10.paperlessexamwebservice.service.exceptions.submitpaper.SubmitExaminationPaperException;
+import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -320,7 +321,7 @@ public class ExaminationEventController {
      */
     @RequestMapping(value = "/submitStudentExaminationPaper", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> submitStudentExaminationPaper(@RequestBody StudentSubmitExaminationPaper paperToSubmit) {
-        ExaminationEvent submittedPaper = null;
+        StudentSubmitExaminationPaper submittedPaper = null;
         try {
             submittedPaper = examinationEventService.submitStudentExaminationPaper(paperToSubmit);
         } catch (ServiceNotAvailable serviceNotAvailable) {
@@ -342,6 +343,8 @@ public class ExaminationEventController {
             unexpectedError.printStackTrace();
         } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
             emptyMultipleChoiceQuestion.printStackTrace();
+        } catch (UserNotFound userNotFound) {
+            userNotFound.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.OK).body(submittedPaper);
     }

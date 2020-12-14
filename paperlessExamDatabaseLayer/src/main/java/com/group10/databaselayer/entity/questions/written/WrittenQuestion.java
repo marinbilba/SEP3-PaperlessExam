@@ -22,15 +22,12 @@ public class WrittenQuestion {
     private int questionNumber;
 
     private String question;
-private String questionAnswer;
+    private String questionAnswer;
     private double score;
+    private boolean submittedQuestion;
+
     @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JoinColumns({
-//            @JoinColumn(name = "multiple_choice_set_id"),
-//            @JoinColumn(name = "multiple_choice_set_title"),
-//            @JoinColumn(name = "multiple_choice_set_topic"),
-//    })
     @Fetch(FetchMode.SELECT)
     private WrittenSet writtenSet;
 
@@ -73,10 +70,38 @@ private String questionAnswer;
         this.writtenSet = writtenSet;
     }
 
+    /**
+     * Is submitted question boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isSubmittedQuestion() {
+        return submittedQuestion;
+    }
+
+    /**
+     * Sets submitted question.
+     *
+     * @param submittedQuestion the submitted question
+     */
+    public void setSubmittedQuestion(boolean submittedQuestion) {
+        this.submittedQuestion = submittedQuestion;
+    }
+
+    /**
+     * Gets question answer.
+     *
+     * @return the question answer
+     */
     public String getQuestionAnswer() {
         return questionAnswer;
     }
 
+    /**
+     * Sets question answer.
+     *
+     * @param questionAnswer the question answer
+     */
     public void setQuestionAnswer(String questionAnswer) {
         this.questionAnswer = questionAnswer;
     }
