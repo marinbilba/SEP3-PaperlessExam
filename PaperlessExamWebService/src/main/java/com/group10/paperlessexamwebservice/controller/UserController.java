@@ -120,7 +120,7 @@ public class UserController {
 
 
     /**
-     * Get Method that fetches the users ix x`n the system by their firstname. Firstname should be pass as path parameter in the URI
+     * Get Method that fetches the users in the system by their firstname. Firstname should be pass as path parameter in the URI
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
@@ -130,7 +130,7 @@ public class UserController {
      * @param firstName users firstname that should be filtered from the database
      * @return <i>HTTP 200 - OK</i> with the found list of users
      * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
-     * <i>HTTP 400 - BAD_REQUEST</i> if the username was not found in the system
+     * <i>HTTP 400 - BAD_REQUEST</i> if the first name was not found in the system
      */
     @RequestMapping(value = "/getUsersByFirstName/{firstName}", method = RequestMethod.GET)
     public ResponseEntity<Object> getUsersByFirstName(@PathVariable String firstName) {

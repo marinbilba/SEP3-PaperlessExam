@@ -356,7 +356,7 @@ public class ExaminationEventController {
         try {
             studentExamPaper = examinationEventService.getStudentSubmittedPaper(studentId,examId);
         }
-        catch (ServiceNotAvailable serviceNotAvailable) {
+        catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }

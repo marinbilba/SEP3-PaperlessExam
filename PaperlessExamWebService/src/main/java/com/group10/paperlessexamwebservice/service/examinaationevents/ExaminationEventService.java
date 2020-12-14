@@ -167,7 +167,7 @@ public class ExaminationEventService implements IExaminationEventService {
             List<MultipleChoiceSet> submittedMultipleChoiceSets = getSubmittedMultipleChoiceSet(multipleChoiceSetsUpdatedState);
             paperToSubmit.setSubmitMultipleChoiceSets(submittedMultipleChoiceSets);
         }
-        if (writtenSetsToSubmit != null && writtenSetsToSubmit.isEmpty()) {
+        if (writtenSetsToSubmit != null && !writtenSetsToSubmit.isEmpty()) {
             List<WrittenSet> writtenSetsUpdatedState = submitWrittenSet(writtenSetsToSubmit);
             paperToSubmit.setSubmitWrittenSets(writtenSetsUpdatedState);
         }
@@ -182,10 +182,30 @@ public class ExaminationEventService implements IExaminationEventService {
     }
 
     @Override
-    public StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable {
-        return examinationEventRequest.getStudentSubmittedPaperByStudentIdAndExamId(studentId,examId);
+    public StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable, UnexpectedError {
+        StudentSubmitExaminationPaper submitExaminationPaper = examinationEventRequest.getStudentSubmittedPaperByStudentIdAndExamId(studentId, examId);
+        if (submitExaminationPaper == null) {
+            throw new UnexpectedError("Something went wrong");
+        }
+        List<MultipleChoiceSet> multipleChoiceSetsWithQuestions = new ArrayList<>();
+        List<WrittenSet> writtenSetsWithQuestions = new ArrayList<>();
+        // Get question sets questions
+        if (!submitExaminationPaper.getSubmitMultipleChoiceSets().isEmpty() && submitExaminationPaper.getSubmitMultipleChoiceSets() != null) {
+            for (var multipleChoiceSet : submitExaminationPaper.getSubmitMultipleChoiceSets()) {
+                MultipleChoiceSet temp = questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
+                multipleChoiceSetsWithQuestions.add(temp);
+            }
+            submitExaminationPaper.setSubmitMultipleChoiceSets(multipleChoiceSetsWithQuestions);
+        }
+        if (!submitExaminationPaper.getSubmitWrittenSets().isEmpty() && submitExaminationPaper.getSubmitWrittenSets() != null) {
+            for (var writtenSet : submitExaminationPaper.getSubmitWrittenSets()) {
+                WrittenSet temp = questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
+                writtenSetsWithQuestions.add(temp);
 
-
+            }
+            submitExaminationPaper.setSubmitWrittenSets(writtenSetsWithQuestions);
+        }
+        return submitExaminationPaper;
     }
 
     private List<WrittenSet> submitWrittenSet(List<WrittenSet> writtenSetsToSubmit) throws UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UserNotFound, ServiceNotAvailable, QuestionSetAlreadyExists {

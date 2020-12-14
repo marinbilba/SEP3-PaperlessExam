@@ -9,7 +9,7 @@
 @using SEP3.PaperlessExam.Model.StudentSubmitPaper
 @using SEP3.PaperlessExam.Authentication
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject NavigationManager NavigationManager
 <link rel="stylesheet" type="text/css" href="css/Student/takeExam.css">
 @if (examinationEvent != null)
 {
@@ -134,7 +134,7 @@
     }
 }
 
-@* Add new question && Finish buttons *@
+@* Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-12">
             <button type="button" class="btn btn-success btn-lg btn-block" @onclick="Finish" >Finish</button>
@@ -217,7 +217,7 @@
             SubmitBy = _currentUser
         };
         ExamService.SubmitStudentPaper(studentSubmitExaminationPaper);
-        Console.WriteLine("finish");
+     NavigationManager.NavigateTo("/studentMainPage");
     }
 
 }

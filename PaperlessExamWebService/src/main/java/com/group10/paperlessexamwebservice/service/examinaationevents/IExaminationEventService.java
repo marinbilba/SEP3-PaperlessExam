@@ -33,5 +33,5 @@ public interface IExaminationEventService {
 
     StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion, UserNotFound;
 
-    StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable;
+    StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable, UnexpectedError;
 }

@@ -108,7 +108,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
             }
 
             for (var question : writtenSet.getWrittenQuestions()) {
-                question.setWrittenSet(writtenSet);
+                question.setWrittenSet(createdWrittenSet);
                 addWrittenQuestion(question);
             }
         }

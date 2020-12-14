@@ -490,9 +490,9 @@ public class ServerSocketHandler implements Runnable {
 
         System.out.println("GET_WRITTEN_SET start");
         WrittenSet writtenSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), WrittenSet.class);
-        WrittenSet fetchedWrittenSet = null;
+        Optional<WrittenSet> fetchedWrittenSet = null;
         fetchedWrittenSet = writtenQuestionsDAO.getWrittenSet(writtenSet);
-        objectSerialized = gson.toJson(fetchedWrittenSet);
+        objectSerialized = gson.toJson(fetchedWrittenSet.get());
         networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
         stringResponseSerialized = gson.toJson(networkContainer);
         sendResponse(stringResponseSerialized);

@@ -54,5 +54,5 @@ public interface IQuestionSetsService {
 
     MultipleChoiceSet updateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, NegativeNumberException, NullQuestionSetQuestion, UserNotFound, QuestionSetAlreadyExists, EmptyMultipleChoiceQuestion;
 
-    MultipleChoiceSet getMultipleChoiceSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable;
+    MultipleChoiceSet getMultipleChoiceSetWithAllChildElements(long multipleChoiceSetId) throws ServiceNotAvailable;
 }

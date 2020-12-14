@@ -605,7 +605,7 @@ public class QuestionSetsController {
      *
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/questionsets/createWrittenSet
+     * http://{host}:8080/questionsets/updateWrittenSet
      * </p>
      *
      * <b>BODY</b>:

@@ -1,9 +1,10 @@
-﻿@page "/evaluateStudents/{examId}"
+﻿@page "/displayExaminationEventStudents/{examId}"
 @using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 @using SEP3.PaperlessExam.Model.ExamEvent
 @using SEP3.PaperlessExam.Model.StudentSubmitPaper
 @inject IExamService ExamService;
+@inject NavigationManager NavigationManager
 <div class="jumbotron text-center">
         <h1>Evaluate Students</h1>
     </div>
@@ -37,7 +38,7 @@ else
                     }
                     else
                     {
-                        <RadzenTextBox Style="color: red">Not submitted</RadzenTextBox>
+                        <RadzenTextBox Style="text-decoration-color: red" Disabled="true" Placeholder="Not submitted"></RadzenTextBox>
                     }
                 </td>
             </tr>
@@ -61,20 +62,27 @@ else
     }
 
     private async Task CheckStudentSubmittedPaper(IList<User> studentsToEvaluate)
-    {
+    { 
         foreach (var student in studentsToEvaluate)
         {
-         StudentSubmitExaminationPaper studentSubmitExaminationPaper=   await ExamService.GetStudentSubmittedPaper(student.Id,examId);
-            if (studentSubmitExaminationPaper != null)
+            try
             {
-                student.CanEvaluate = true;
+    await ExamService.GetStudentSubmittedPaper(student.Id,examId);
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e); 
+                student.CanEvaluate = false;
+               
+            }
+     
+         
         }
     }
 
-    private void EvaluateStudent(User item)
+    private void EvaluateStudent(User student)
     {
-        throw new NotImplementedException();
+       NavigationManager.NavigateTo($"/evaluateStudent/{examId}/{student.Username}");
     }
 
 }

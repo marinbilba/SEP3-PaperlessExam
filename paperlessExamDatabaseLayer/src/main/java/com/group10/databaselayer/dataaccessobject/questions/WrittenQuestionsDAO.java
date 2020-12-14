@@ -180,8 +180,8 @@ public class WrittenQuestionsDAO {
         throw new QuestionSetNotFound("Written set with given title and topic was not found");
     }
 
-    public WrittenSet getWrittenSet(WrittenSet writtenSet) {
-        return writtenSetRepository.findByTitleAndTopicAndUserId(writtenSet.getTitle(), writtenSet.getTopic(), writtenSet.getUser().getId());
+    public Optional<WrittenSet> getWrittenSet(WrittenSet writtenSet) {
+        return writtenSetRepository.findById(writtenSet.getId());
     }
 
     public WrittenQuestion createUpdateWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {

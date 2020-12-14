@@ -3,10 +3,11 @@
 @using SEP3.PaperlessExam.Model.ExamEvent
 @using SEP3.PaperlessExam.Authentication
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Model.StudentSubmitPaper
 @inject IExamService ExamService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-
+@inject IToastService toastService
 
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
 <div class="jumbotron text-center">
@@ -120,8 +121,13 @@ else
 {
     <div style="color:red">@_errorMessage</div>
 }
+@if (_showRestrictNotification)
+{
+    toastService.ShowError($"You have submitted one paper already");
+}
 
 @code {
+    private bool _showRestrictNotification;
     private IList<ExaminationEvent> _ongoingExaminationEventsList;
     private bool _examIsAvailable;
     private string _errorMessage;
@@ -135,29 +141,14 @@ else
         _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
         try
         {
+            _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
+            _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
             _upcomingExaminationEventsList = await ExamService.GetStudentsUpcomingExamEvents(_currentUser.Id);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             _errorMessage = e.Message;
-        }
-        try
-        {
-            _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _errorMessage = e.Message;
-        }
-        try
-        {
-            _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
         }
     }
 
@@ -171,9 +162,28 @@ else
     {
     }
 
-    private void TakeExam(in long examId)
+    private async Task TakeExam(long examId)
     {
-        NavigationManager.NavigateTo($"takeExam/{examId}");
+        StudentSubmitExaminationPaper studentSubmitExaminationPaper = null;
+        try
+        {
+             studentSubmitExaminationPaper = await ExamService.GetStudentSubmittedPaper(_currentUser.Id, examId.ToString());
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+           
+        }
+       
+        if (studentSubmitExaminationPaper != null)
+        {
+            _showRestrictNotification = true;
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"takeExam/{examId}");
+        }
     }
 
 }
