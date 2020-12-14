@@ -7,6 +7,8 @@ import com.group10.paperlessexamwebservice.databaserequests.networkcontainer.Net
 import com.group10.paperlessexamwebservice.databaserequests.requests.shared.RequestSharedMethods;
 import com.group10.paperlessexamwebservice.databaserequests.socketmediator.ISocketConnector;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -105,6 +107,78 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return fetchedExaminationEvents;
+    }
+
+    @Override
+    public ExaminationEvent getExaminationEventById(String examinationEventId) throws ServiceNotAvailable {
+        ExaminationEvent fetchedExaminationEvent = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String teacherIdSerialized = gson.toJson(examinationEventId);
+            //            Send request
+            requestSharedMethods.sendRequest(teacherIdSerialized,  GET_EXAMINATION_EVENT_BY_ID);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            fetchedExaminationEvent = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), ExaminationEvent.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedExaminationEvent;
+    }
+
+    @Override
+    public List<MultipleChoiceSet> getExaminationEventMultipleChoiceSets(ExaminationEvent fetchedExaminationEvent) throws ServiceNotAvailable {
+        List<MultipleChoiceSet> fetchedMultipleChoiceSets = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String fetchedExaminationEventSerialized = gson.toJson(fetchedExaminationEvent);
+            //            Send request
+            requestSharedMethods.sendRequest(fetchedExaminationEventSerialized, GET_EXAMINATION_EVENT_MULTIPLE_CHOICE_SETS);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            MultipleChoiceSet[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), MultipleChoiceSet[].class);
+            fetchedMultipleChoiceSets = Arrays.asList(tempList);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedMultipleChoiceSets;
+    }
+
+    @Override
+    public List<WrittenSet> getExaminationEventWrittenSets(ExaminationEvent fetchedExaminationEvent) throws ServiceNotAvailable {
+        List<WrittenSet> fetchedWrittenSets = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String fetchedExaminationEventSerialized = gson.toJson(fetchedExaminationEvent);
+            //            Send request
+            requestSharedMethods.sendRequest(fetchedExaminationEventSerialized, GET_EXAMINATION_EVENT_WRITTEN_SETS);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            WrittenSet[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), WrittenSet[].class);
+            fetchedWrittenSets = Arrays.asList(tempList);
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return fetchedWrittenSets;
     }
 
 }

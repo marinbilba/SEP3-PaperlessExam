@@ -2,22 +2,21 @@ package com.group10.paperlessexamwebservice.service.examinaationevents;
 
 import com.group10.paperlessexamwebservice.databaserequests.requests.examinationevent.IExaminationEventRequest;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import org.joda.time.DateTime;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
+import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The type Examination event service.
@@ -26,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class ExaminationEventService implements IExaminationEventService {
     @Autowired
     private IExaminationEventRequest examinationEventRequest;
+    @Autowired
+    private IQuestionSetsService questionSetsService;
 
     //todo check if only students were assigned
     @Override
@@ -103,6 +104,47 @@ public class ExaminationEventService implements IExaminationEventService {
         return ongoingEvents;
     }
 
+    @Override
+    public ExaminationEvent getExaminationPaper(String examinationEventId) throws ServiceNotAvailable, UnexpectedError {
+        ExaminationEvent fetchedExaminationEvent = examinationEventRequest.getExaminationEventById(examinationEventId);
+        List<WrittenSet> fetchedWrittenSet = examinationEventRequest.getExaminationEventWrittenSets(fetchedExaminationEvent);
+
+        List<WrittenSet> writtenSetWithAllQuestions=new ArrayList<>();
+        List<MultipleChoiceSet> multipleChoiceSetWithAllQuestions=new ArrayList<>();
+        if (fetchedWrittenSet.isEmpty()) {
+            try {
+//                Just to log this fact
+                throw new Exception("Written Sets for this exam event were NOT FOUND");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            for (var writtenSet: fetchedWrittenSet ) {
+               WrittenSet temp= questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
+               writtenSetWithAllQuestions.add(temp);
+            }
+
+        }
+        List<MultipleChoiceSet> fetchedMultipleChoiceSet = examinationEventRequest.getExaminationEventMultipleChoiceSets(fetchedExaminationEvent);
+        if (fetchedMultipleChoiceSet.isEmpty()) {
+            try {
+                //                Just to log this fact
+                throw new Exception("Multiple Choice Sets for this exam event were NOT FOUND");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            for (var multipleChoiceSet: fetchedMultipleChoiceSet ) {
+                MultipleChoiceSet temp= questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
+                multipleChoiceSetWithAllQuestions.add(temp);
+            }
+        }
+        fetchedExaminationEvent.setMultipleChoiceSets(multipleChoiceSetWithAllQuestions);
+        fetchedExaminationEvent.setWrittenSets(writtenSetWithAllQuestions);
+        System.out.println("te");
+        return fetchedExaminationEvent;
+    }
+
     private List<ExaminationEvent> showOnlyPassedExaminationEvents(List<ExaminationEvent> fetchedExaminationEvents) {
         List<ExaminationEvent> passedEvents = new ArrayList<>();
         for (var exam : fetchedExaminationEvents) {
@@ -123,36 +165,39 @@ public class ExaminationEventService implements IExaminationEventService {
         return upcomingEvents;
     }
 
+    // todo bug here, when examDuration is 1h or less the system can not calculate the passed milliseconds
     private List<ExaminationEvent> showOnlyOngoingExaminationEvents(List<ExaminationEvent> fetchedExaminationEvents) {
         List<ExaminationEvent> ongoingExaminationEvents = new ArrayList<>();
         Date date = null;
         for (var exam : fetchedExaminationEvents) {
-            Date startDate=null;
-            Date endDate=null;
+            Date startDate = null;
+            Date endDate = null;
             try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
-                Date parsedDate = dateFormat.parse(exam.getExamTimeDuration());
+                String examDuration = exam.getExamTimeDuration();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                Date parsedDate = dateFormat.parse(examDuration);
+                System.out.println(parsedDate.getTime());
                 Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
 
-                 startDate = (Date) exam.getExamDateAndTime().clone();
+                startDate = (Date) exam.getExamDateAndTime().clone();
+                endDate = (Date) exam.getExamDateAndTime().clone();
 
-                 endDate = (Date) exam.getExamDateAndTime().clone();
-                 endDate.setTime(timestamp.getTime()+startDate.getTime());
+                long originalTime = timestamp.getTime();
+                long addTime = startDate.getTime();
+                long result = originalTime + addTime;
+                endDate.setTime(result);
             } catch (Exception e) { //this generic but you can control another types of exception
                 // look the origin of excption
                 e.printStackTrace();
             }
             Date currentTimeDate = new Date();
-            long currentTime=currentTimeDate.getTime();
-            long startTimeInMils=startDate.getTime();
-            long endTimeInMils=endDate.getTime();
-            if(currentTime>=startTimeInMils&&currentTime<=endTimeInMils){
+            long currentTime = currentTimeDate.getTime();
+            long startTimeInMils = startDate.getTime();
+            long endTimeInMils = endDate.getTime();
+            if (currentTime >= startTimeInMils && currentTime <= endTimeInMils) {
                 ongoingExaminationEvents.add(exam);
             }
-
-
-
-
         }
         return ongoingExaminationEvents;
     }

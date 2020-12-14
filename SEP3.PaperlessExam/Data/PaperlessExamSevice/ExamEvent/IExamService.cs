@@ -19,5 +19,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
         Task<IList<ExaminationEvent>> GetStudentsUpcomingExamEvents(int currentUserId);
         Task<IList<ExaminationEvent>> GetStudentsPassedExamEvents(int currentUserId);
         Task<IList<ExaminationEvent>> GetStudentsOngoingExamEvents(int currentUserId);
+        Task<ExaminationEvent> GetExaminationPaper(string examId);
     }
 }

@@ -398,5 +398,46 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 
             return fetchedExaminationEvents; 
         }
+
+        public async Task<ExaminationEvent> GetExaminationPaper(string examId)
+        {
+           ExaminationEvent fetchedExaminationEventPaper = null;
+            HttpResponseMessage responseMessage;
+            // 1. Send GET request
+            try
+            {
+                responseMessage =
+                    await client.GetAsync($"{uri}/examinationevent/getExaminationPaper/{examId}");
+                // 2. Check if the resource was found, else throw exception to the client
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Ooops, resource not found");
+                }
+            }
+            // 3. Catch the exception in case the Server is not running 
+            catch (HttpRequestException e)
+            {
+                throw new Exception("No connection could be made because the server is not responding");
+            }
+
+            string serverMessage = responseMessage.Content.ReadAsStringAsync().Result;
+            // 4. Check the response status codes, else throws the error message to the client
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                // 5. Deserialize the object
+                string readAsStringAsync = await responseMessage.Content.ReadAsStringAsync();
+                fetchedExaminationEventPaper = JsonSerializer.Deserialize<ExaminationEvent>(readAsStringAsync);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                throw new Exception(serverMessage);
+            }
+            else if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception(serverMessage);
+            }
+
+            return fetchedExaminationEventPaper; 
+        }
     }
 }

@@ -5,6 +5,7 @@
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 @inject IExamService ExamService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 
 <link rel="stylesheet" type="text/css" href="css/View/view.css">
@@ -70,9 +71,9 @@ else
                 <td>@exam.Id</td>
                 <td>@exam.ExamTitle</td>
                 <td>@exam.ExamDateAndTime</td>
-                <td>
-                    <button @onclick="ViewExamResults">
-                        <i class="fa fa-eye" style="color:green"/>
+                <td>    <button @onclick="(() => TakeExam(exam.Id))">
+                    @* <button @onclick="ViewExamResults"> *@
+                   <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green" ></span>
                     </button>
                 </td>
             </tr>
@@ -173,7 +174,7 @@ else
 
     private void TakeExam(in long examId)
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo($"takeExam/{examId}");
     }
 
 }

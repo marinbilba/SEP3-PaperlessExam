@@ -22,7 +22,7 @@ public class WrittenQuestion {
     private int questionNumber;
 
     private String question;
-
+private String questionAnswer;
     private double score;
     @ManyToOne()
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -33,6 +33,7 @@ public class WrittenQuestion {
 //    })
     @Fetch(FetchMode.SELECT)
     private WrittenSet writtenSet;
+
     /**
      * Instantiates a new Written question.
      */
@@ -40,11 +41,44 @@ public class WrittenQuestion {
 
     }
 
+    /**
+     * Instantiates a new Written question.
+     *
+     * @param questionNumber the question number
+     * @param question       the question
+     * @param score          the score
+     * @param writtenSet     the written set
+     */
     public WrittenQuestion(int questionNumber, String question, double score, WrittenSet writtenSet) {
         this.questionNumber = questionNumber;
         this.question = question;
         this.score = score;
         this.writtenSet = writtenSet;
+    }
+
+    /**
+     * Instantiates a new Written question.
+     *
+     * @param questionNumber the question number
+     * @param question       the question
+     * @param questionAnswer the question answer
+     * @param score          the score
+     * @param writtenSet     the written set
+     */
+    public WrittenQuestion(int questionNumber, String question, String questionAnswer, double score, WrittenSet writtenSet) {
+        this.questionNumber = questionNumber;
+        this.question = question;
+        this.questionAnswer = questionAnswer;
+        this.score = score;
+        this.writtenSet = writtenSet;
+    }
+
+    public String getQuestionAnswer() {
+        return questionAnswer;
+    }
+
+    public void setQuestionAnswer(String questionAnswer) {
+        this.questionAnswer = questionAnswer;
     }
 
     /**
@@ -65,34 +99,74 @@ public class WrittenQuestion {
         this.writtenSet = writtenSet;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets question number.
+     *
+     * @return the question number
+     */
     public int getQuestionNumber() {
         return questionNumber;
     }
 
+    /**
+     * Sets question number.
+     *
+     * @param questionNumber the question number
+     */
     public void setQuestionNumber(int questionNumber) {
         this.questionNumber = questionNumber;
     }
 
+    /**
+     * Gets question.
+     *
+     * @return the question
+     */
     public String getQuestion() {
         return question;
     }
 
+    /**
+     * Sets question.
+     *
+     * @param question the question
+     */
     public void setQuestion(String question) {
         this.question = question;
     }
 
+    /**
+     * Gets score.
+     *
+     * @return the score
+     */
     public double getScore() {
         return score;
     }
 
+    /**
+     * Sets score.
+     *
+     * @param score the score
+     */
     public void setScore(double score) {
         this.score = score;
     }

@@ -18,4 +18,6 @@ public interface IExaminationEventService {
     List<ExaminationEvent> getStudentsPassedExamEvents(String studentId) throws ExaminationEventException, ServiceNotAvailable;
 
     List<ExaminationEvent> getStudentsOngoingExamEvents(String studentId) throws ExaminationEventException, ServiceNotAvailable;
+
+    ExaminationEvent getExaminationPaper(String examinationEventId) throws Exception;
 }

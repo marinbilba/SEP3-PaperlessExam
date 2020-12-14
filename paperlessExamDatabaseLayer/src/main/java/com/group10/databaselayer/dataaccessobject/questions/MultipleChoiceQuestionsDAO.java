@@ -297,5 +297,7 @@ public class MultipleChoiceQuestionsDAO {
     }
 
 
-
+    public List<MultipleChoiceSet> getExaminationEventMultipleChoiceSets(long examId) {
+        return multipleChoiceSetRepository.getExaminationEventMultipleChoiceSet(examId);
+    }
 }

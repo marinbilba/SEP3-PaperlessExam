@@ -21,5 +21,8 @@ public interface IExaminationEventRepository extends JpaRepository<ExaminationEv
     List<ExaminationEvent> findUsersExaminationEvents(long id);
 
 
+
+
+
 //    List <ExaminationEvent> findByExaminationEvent()
 }

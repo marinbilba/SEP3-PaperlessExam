@@ -259,4 +259,38 @@ public class ExaminationEventController {
         return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
     }
 
+    /**
+     * Gets examination event with all child components ongoing examination events.
+     * It is processed as a GET request requesting <i>exam id</i>
+     * passed through the URI
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getExaminationPaper/2
+     * </p>
+     *
+     * @param examinationEventId the exam event id
+     * @return  examination events
+     *
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getExaminationPaper/{examinationEventId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getExaminationPaper(@PathVariable String examinationEventId) {
+        ExaminationEvent fetchedExaminationEventPaper = null;
+        try {
+            fetchedExaminationEventPaper = examinationEventService.getExaminationPaper(examinationEventId);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        catch (ExaminationEventException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEventPaper);
+    }
+
 }

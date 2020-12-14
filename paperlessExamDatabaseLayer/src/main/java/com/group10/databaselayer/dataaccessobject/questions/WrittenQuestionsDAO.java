@@ -211,4 +211,7 @@ public class WrittenQuestionsDAO {
     }
 
 
+    public List<WrittenSet> getExaminationEventWrittenSets(long examinationEventWrittenSetsId) {
+        return writtenSetRepository.getExaminationEventWrittenSets(examinationEventWrittenSetsId);
+    }
 }

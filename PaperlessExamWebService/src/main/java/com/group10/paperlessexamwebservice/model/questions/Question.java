@@ -17,6 +17,7 @@ public class Question implements Serializable {
     private Long id;
     private int questionNumber;
     private String question;
+    private String questionAnswer;
     private double score;
 
     /**
@@ -43,6 +44,21 @@ public class Question implements Serializable {
         this.question = question;
         this.score = score;
         this.questionNumber = questionNumber;
+    }
+
+    public Question(int questionNumber, String question, String questionAnswer, double score) {
+        this.questionNumber = questionNumber;
+        this.question = question;
+        this.questionAnswer = questionAnswer;
+        this.score = score;
+    }
+
+    public String getQuestionAnswer() {
+        return questionAnswer;
+    }
+
+    public void setQuestionAnswer(String questionAnswer) {
+        this.questionAnswer = questionAnswer;
     }
 
     /**

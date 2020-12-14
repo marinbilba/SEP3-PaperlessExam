@@ -39,6 +39,32 @@ public class WrittenQuestion extends Question {
     }
 
     /**
+     * Instantiates a new Written question.
+     *
+     * @param questionNumber the question number
+     * @param question       the question
+     * @param questionAnswer the question answer
+     * @param score          the score
+     * @param writtenSet     the written set
+     */
+    public WrittenQuestion(int questionNumber, String question, String questionAnswer, double score, WrittenSet writtenSet) {
+        super(questionNumber, question, questionAnswer, score);
+        this.writtenSet = writtenSet;
+    }
+public String getQuestionAnswer(){
+        return super.getQuestionAnswer();
+}
+
+    /**
+     * Get question answer.
+     *
+     * @param answer the answer
+     */
+    public void getQuestionAnswer(String answer){
+         super.setQuestion(answer);
+    }
+
+    /**
      * Gets written set.
      *
      * @return the written set
