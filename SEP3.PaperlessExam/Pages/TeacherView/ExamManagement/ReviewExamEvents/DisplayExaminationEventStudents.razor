@@ -68,6 +68,7 @@ else
             try
             {
     await ExamService.GetStudentSubmittedPaper(student.Id,examId);
+                student.CanEvaluate = true;
             }
             catch (Exception e)
             {

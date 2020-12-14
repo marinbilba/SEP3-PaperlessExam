@@ -197,7 +197,7 @@ public class ExaminationEventService implements IExaminationEventService {
             }
             submitExaminationPaper.setSubmitMultipleChoiceSets(multipleChoiceSetsWithQuestions);
         }
-        if (!submitExaminationPaper.getSubmitWrittenSets().isEmpty() && submitExaminationPaper.getSubmitWrittenSets() != null) {
+         if (!submitExaminationPaper.getSubmitWrittenSets().isEmpty() && submitExaminationPaper.getSubmitWrittenSets() != null) {
             for (var writtenSet : submitExaminationPaper.getSubmitWrittenSets()) {
                 WrittenSet temp = questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
                 writtenSetsWithQuestions.add(temp);

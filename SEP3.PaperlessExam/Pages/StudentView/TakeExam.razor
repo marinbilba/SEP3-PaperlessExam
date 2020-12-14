@@ -100,20 +100,8 @@
                         Console.WriteLine(i);
                         <div class="form-group row top-buffer justify-content-center">
                             <div class="col-md-1 offset-2">
-                                @* <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.CorrectAnswer")> *@
-                                @* </RadzenCheckBox> *@
-                                <label class="container">
-                                    <input type="checkbox" @bind-value="@questionOption.CorrectAnswer">
-                                    <span class="checkmark"></span>
-                                </label>
-
-                                @* <input type="checkbox" name="check" id="check" @bind-value="@questionOption.CorrectAnswer"> *@
-                                @* <label for="check"> *@
-                                @*     <span> *@
-                                @*         <i class="fas fa-check"></i> *@
-                                @*     </span> *@
-                                @* </label> *@
-
+                                <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.CorrectAnswer" Change=@(args => SetCorrectAnswer(args))>
+                                </RadzenCheckBox>
                             </div>
                             <div class="col-md-7">
                                 <input type="text" class="form-control" placeholder="Type your question" @bind="questionOption.Answer" readonly/>
@@ -137,8 +125,8 @@
 @* Finish buttons *@
     <div class="row top-buffer justify-content-between">
         <div class="col-md-12">
-            <button type="button" class="btn btn-success btn-lg btn-block" @onclick="Finish" >Finish</button>
-    
+            <button type="button" class="btn btn-success btn-lg btn-block" @onclick="Finish">Finish</button>
+
         </div>
         @* <div class="col-md-3"> *@
         @*    *@
@@ -156,6 +144,8 @@
     private IList<WrittenSet> _writtenSets;
     private IList<MultipleChoiceSet> _multipleChoiceSets;
     private int _counter;
+
+
     private bool? _correctAnswer;
 
     protected override async Task OnInitializedAsync()
@@ -206,9 +196,8 @@
         _currentUser = user;
     }
 
-    private void Finish()
+    private async Task Finish()
     {
-      
         StudentSubmitExaminationPaper studentSubmitExaminationPaper = new StudentSubmitExaminationPaper()
         {
             ExaminationEvent = examinationEvent,
@@ -216,8 +205,14 @@
             MultipleChoiceSet = _multipleChoiceSets,
             SubmitBy = _currentUser
         };
-        ExamService.SubmitStudentPaper(studentSubmitExaminationPaper);
-     NavigationManager.NavigateTo("/studentMainPage");
+        await ExamService.SubmitStudentPaper(studentSubmitExaminationPaper);
+        NavigationManager.NavigateTo("/studentMainPage");
+    }
+
+
+    private void SetCorrectAnswer(bool? value)
+    {
+        _correctAnswer = value;
     }
 
 }
