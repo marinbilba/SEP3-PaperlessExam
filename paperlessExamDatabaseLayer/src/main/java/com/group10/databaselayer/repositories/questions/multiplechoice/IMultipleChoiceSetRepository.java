@@ -19,9 +19,11 @@ public interface IMultipleChoiceSetRepository extends JpaRepository<MultipleChoi
 
    List<MultipleChoiceSet> findByUserId(Long id);
    @Query("select distinct multipleSets \n" +
-           "from MultipleChoiceSet multC  \n" +
-           "join multC.examinationEvents examEvents \n" +
-           "join examEvents.multipleChoiceSets multipleSets \n" +
-           "where multipleSets.id = :id")
+           "from MultipleChoiceSet multipleSets  \n" +
+           "join multipleSets.examinationEvents examEvents \n" +
+           "join examEvents.multipleChoiceSets multipleSet \n" +
+           "where examEvents.id = :id")
    List<MultipleChoiceSet>getExaminationEventMultipleChoiceSet(long id);
+
+  
 }
