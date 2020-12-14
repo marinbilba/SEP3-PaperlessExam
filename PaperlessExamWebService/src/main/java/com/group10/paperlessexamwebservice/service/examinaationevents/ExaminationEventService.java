@@ -4,9 +4,17 @@ import com.group10.paperlessexamwebservice.databaserequests.requests.examination
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
+import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
+import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.EmptyQuestionSetTitleOrTopic;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.NullQuestionSet;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.QuestionSetAlreadyExists;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
+import com.group10.paperlessexamwebservice.service.exceptions.submitpaper.SubmitExaminationPaperException;
 import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,8 +117,8 @@ public class ExaminationEventService implements IExaminationEventService {
         ExaminationEvent fetchedExaminationEvent = examinationEventRequest.getExaminationEventById(examinationEventId);
         List<WrittenSet> fetchedWrittenSet = examinationEventRequest.getExaminationEventWrittenSets(fetchedExaminationEvent);
 
-        List<WrittenSet> writtenSetWithAllQuestions=new ArrayList<>();
-        List<MultipleChoiceSet> multipleChoiceSetWithAllQuestions=new ArrayList<>();
+        List<WrittenSet> writtenSetWithAllQuestions = new ArrayList<>();
+        List<MultipleChoiceSet> multipleChoiceSetWithAllQuestions = new ArrayList<>();
         if (fetchedWrittenSet.isEmpty()) {
             try {
 //                Just to log this fact
@@ -118,10 +126,10 @@ public class ExaminationEventService implements IExaminationEventService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            for (var writtenSet: fetchedWrittenSet ) {
-               WrittenSet temp= questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
-               writtenSetWithAllQuestions.add(temp);
+        } else {
+            for (var writtenSet : fetchedWrittenSet) {
+                WrittenSet temp = questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
+                writtenSetWithAllQuestions.add(temp);
             }
 
         }
@@ -133,9 +141,9 @@ public class ExaminationEventService implements IExaminationEventService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-            for (var multipleChoiceSet: fetchedMultipleChoiceSet ) {
-                MultipleChoiceSet temp= questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
+        } else {
+            for (var multipleChoiceSet : fetchedMultipleChoiceSet) {
+                MultipleChoiceSet temp = questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
                 multipleChoiceSetWithAllQuestions.add(temp);
             }
         }
@@ -143,6 +151,39 @@ public class ExaminationEventService implements IExaminationEventService {
         fetchedExaminationEvent.setWrittenSets(writtenSetWithAllQuestions);
         System.out.println("te");
         return fetchedExaminationEvent;
+    }
+
+    @Override
+    public ExaminationEvent submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion {
+        validateStudentExaminationPaper(paperToSubmit);
+        List<MultipleChoiceSet> multipleChoiceSetsToSubmit = paperToSubmit.getSubmitMultipleChoiceSets();
+        List<WrittenSet> writtenSetsToSubmit = paperToSubmit.getSubmitWrittenSets();
+
+        List<MultipleChoiceSet> submittedMultipleChoiceSets = new ArrayList<>();
+        List<WrittenSet> submittedWrittenSets = new ArrayList<>();
+        if (multipleChoiceSetsToSubmit != null && !multipleChoiceSetsToSubmit.isEmpty()) {
+            for (var multipleChoiceSet : multipleChoiceSetsToSubmit) {
+                for (var submitQuestion : multipleChoiceSet.getMultipleChoiceQuestionList()) {
+                    questionSetsService.addMultipleChoiceQuestion(submitQuestion);
+                    for (var submitQuestionOption : submitQuestion.getQuestionOptions()) {
+                        questionSetsService.addMultipleChoiceQuestionOption(submitQuestionOption);
+                    }
+                }
+            }
+        }
+        if()
+        return null;
+    }
+
+    private boolean validateStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException {
+        if (paperToSubmit == null) {
+            throw new SubmitExaminationPaperException("Paper to submit is null");
+        } else if (paperToSubmit.getSubmitBy() == null) {
+            throw new SubmitExaminationPaperException("Paper doesn't have an author");
+        } else if (paperToSubmit.getExaminationEvent() == null) {
+            throw new SubmitExaminationPaperException("Examination event is not set");
+        }
+        return true;
     }
 
     private List<ExaminationEvent> showOnlyPassedExaminationEvents(List<ExaminationEvent> fetchedExaminationEvents) {

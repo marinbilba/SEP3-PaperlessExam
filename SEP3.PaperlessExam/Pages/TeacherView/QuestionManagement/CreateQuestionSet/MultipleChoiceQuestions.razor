@@ -158,7 +158,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LogUsername();
+         LogUsername();
         try
         {
             var user = await UserService.FindByUsername(_currentUser.Username);
@@ -220,7 +220,7 @@
 
     private MultipleChoiceSet multipleChoiceSetTemp;
 
-    private async Task LogUsername()
+    private void  LogUsername()
     {
     // await  UserService.LoginUser(new User());
         var user = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();

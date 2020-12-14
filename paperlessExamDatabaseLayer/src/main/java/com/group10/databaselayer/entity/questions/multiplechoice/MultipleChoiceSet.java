@@ -3,6 +3,8 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
+import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -41,6 +43,12 @@ public class MultipleChoiceSet {
     @ManyToMany(mappedBy = "multipleChoiceSets")
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
+    @Hidden
+    @ManyToMany(mappedBy = "submitMultipleChoiceSets")
+    private List<StudentSubmitExaminationPaper> studentSubmitExaminationPapers = new ArrayList<>();
+
+
+
     /**
      * Instantiates a new Multiple choice set.
      */
@@ -59,6 +67,14 @@ public class MultipleChoiceSet {
 
     public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
+    }
+
+    public List<StudentSubmitExaminationPaper> getStudentSubmitExaminationPapers() {
+        return studentSubmitExaminationPapers;
+    }
+
+    public void setStudentSubmitExaminationPapers(List<StudentSubmitExaminationPaper> studentSubmitExaminationPapers) {
+        this.studentSubmitExaminationPapers = studentSubmitExaminationPapers;
     }
 
     /**

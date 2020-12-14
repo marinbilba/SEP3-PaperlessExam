@@ -2,6 +2,7 @@ package com.group10.databaselayer.entity.questions.written;
 
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
+import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -39,6 +40,10 @@ public class WrittenSet {
     @ManyToMany(mappedBy = "writtenSets")
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
+    @Hidden
+    @ManyToMany(mappedBy = "submitMultipleChoiceSets")
+    private List<StudentSubmitExaminationPaper> submitMultipleChoiceSets = new ArrayList<>();
+
 
 
     /**
@@ -59,6 +64,14 @@ public class WrittenSet {
 
     public void setExaminationEvents(List<ExaminationEvent> examinationEvents) {
         this.examinationEvents = examinationEvents;
+    }
+
+    public List<StudentSubmitExaminationPaper> getSubmitMultipleChoiceSets() {
+        return submitMultipleChoiceSets;
+    }
+
+    public void setSubmitMultipleChoiceSets(List<StudentSubmitExaminationPaper> submitMultipleChoiceSets) {
+        this.submitMultipleChoiceSets = submitMultipleChoiceSets;
     }
 
     public Date getUpdatedTimestamp() {

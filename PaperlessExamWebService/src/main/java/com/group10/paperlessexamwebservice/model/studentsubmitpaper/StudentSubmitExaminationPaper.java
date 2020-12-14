@@ -1,15 +1,10 @@
-package com.group10.databaselayer.entity.studentsubmitpaper;
+package com.group10.paperlessexamwebservice.model.studentsubmitpaper;
 
-import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
-import com.group10.databaselayer.entity.user.User;
-import com.sun.istack.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.*;
+import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
+import com.group10.paperlessexamwebservice.model.user.User;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,36 +13,16 @@ import java.util.Objects;
 /**
  * The type Student submit examination paper.
  */
-@Entity
 public class StudentSubmitExaminationPaper {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
     private Long id;
-    @CreationTimestamp
     private Date submitTimestamp;
-
-    @ManyToOne()
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "submit_by", updatable = false)
     private User submitBy;
-
-    @OneToOne
-    @NotNull
-    @JoinColumn(name = "fk_examination_event_id")
     private ExaminationEvent examinationEvent;
 
-    @ManyToMany()
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinTable(name = "submit_paper_written_sets",
-            joinColumns = {@JoinColumn(name = "student_submit_examination_paper_id")},
-            inverseJoinColumns = {@JoinColumn(name = "written_set_id")})
+
     private List<WrittenSet> submitWrittenSets = new ArrayList<>();
 
-    @ManyToMany()
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinTable(name = "submit_paper_multiple_choice_sets",
-            joinColumns = {@JoinColumn(name = "student_submit_examination_paper_id")},
-            inverseJoinColumns = {@JoinColumn(name = "multiple_choice_set_id")})
+
     private List<MultipleChoiceSet> submitMultipleChoiceSets = new ArrayList<>();
 
     /**

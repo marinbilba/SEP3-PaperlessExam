@@ -2,9 +2,13 @@
 @inject IExamService ExamService
 
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Model
 @using SEP3.PaperlessExam.Model.ExamEvent
 @using SEP3.PaperlessExam.Model.Questions.MultipleChoice
 @using SEP3.PaperlessExam.Model.Questions.written
+@using SEP3.PaperlessExam.Model.StudentSubmitPaper
+@using SEP3.PaperlessExam.Authentication
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <link rel="stylesheet" type="text/css" href="css/Student/takeExam.css">
 @if (examinationEvent != null)
@@ -99,10 +103,10 @@
                                 @* <RadzenCheckBox Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.CorrectAnswer")> *@
                                 @* </RadzenCheckBox> *@
                                 <label class="container">
-                                  <input type="checkbox"@bind-value="@questionOption.CorrectAnswer">
-                                  <span class="checkmark"></span>
+                                    <input type="checkbox"@bind-value="@questionOption.CorrectAnswer">
+                                    <span class="checkmark"></span>
                                 </label>
-                                
+
                                 @* <input type="checkbox" name="check" id="check" @bind-value="@questionOption.CorrectAnswer"> *@
                                 @* <label for="check"> *@
                                 @*     <span> *@
@@ -112,7 +116,7 @@
 
                             </div>
                             <div class="col-md-7">
-                                <input type="text" class="form-control" placeholder="Type your question" @bind-value="questionOption.Answer"/>
+                                <input type="text" class="form-control" placeholder="Type your question" @bind="questionOption.Answer"/>
 
                             </div>
 
@@ -147,19 +151,22 @@
     [Parameter]
     public string ExamId { get; set; }
 
+    private User _currentUser;
     private ExaminationEvent examinationEvent;
     private IList<WrittenSet> _writtenSets;
     private IList<MultipleChoiceSet> _multipleChoiceSets;
     private int _counter;
+    private bool? _correctAnswer;
 
     protected override async Task OnInitializedAsync()
     {
+        LogUsername();
         if (ExamId != null)
         {
             try
             {
                 examinationEvent = await ExamService.GetExaminationPaper(ExamId);
-    //    DisplayExamWrittenSets(examinationEvent.WrittenSets);
+                DisplayExamWrittenSets(examinationEvent.WrittenSets);
                 DisplayExamMultipleChoiceSets(examinationEvent.MultipleChoiceSets);
             }
             catch (Exception e)
@@ -167,6 +174,12 @@
                 Console.WriteLine(e);
             }
         }
+    }
+
+
+    private void SubmitMultipleChoiceCorrectAnswer(bool? value)
+    {
+        _correctAnswer = value;
     }
 
     private void DisplayExamMultipleChoiceSets(IList<MultipleChoiceSet> examinationEventMultipleChoiceSets)
@@ -185,9 +198,25 @@
         }
     }
 
+    private void LogUsername()
+    {
+    // await  UserService.LoginUser(new User());
+        var user = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+
+        _currentUser = user;
+    }
 
     private void Finish()
     {
+      
+        StudentSubmitExaminationPaper studentSubmitExaminationPaper = new StudentSubmitExaminationPaper()
+        {
+            ExaminationEvent = examinationEvent,
+            WrittenSets = _writtenSets,
+            MultipleChoiceSet = _multipleChoiceSets,
+            SubmitBy = _currentUser
+        };
+        ExamService.SubmitStudentPaper(studentSubmitExaminationPaper);
         Console.WriteLine("finish");
     }
 

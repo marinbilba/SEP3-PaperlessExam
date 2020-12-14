@@ -1,9 +1,18 @@
 package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.paperlessexamwebservice.service.examinaationevents.IExaminationEventService;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
+import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.EmptyQuestionSetTitleOrTopic;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.NullQuestionSet;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.QuestionSetAlreadyExists;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.EmptyMultipleChoiceQuestion;
+import com.group10.paperlessexamwebservice.service.exceptions.questionsets.multiplechoice.NullQuestionSetQuestion;
+import com.group10.paperlessexamwebservice.service.exceptions.submitpaper.SubmitExaminationPaperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -292,5 +301,48 @@ public class ExaminationEventController {
 
         return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEventPaper);
     }
+    /**
+     * Submit the  examination "paper" .It is processed as a POST request requesting <i>StudentSubmitExaminationPaper object</i>
+     * in format of JSON as an argument.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/createExaminationEvent
+     * </p>
+     *
+     * <b>BODY</b>:
 
+     *
+     * @param paperToSubmit the multiple choice question
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
+     * <i>HTTP 400 - BAD_REQUEST</i>
+     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/submitStudentExaminationPaper", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> submitStudentExaminationPaper(@RequestBody StudentSubmitExaminationPaper paperToSubmit) {
+        ExaminationEvent submittedPaper = null;
+        try {
+            submittedPaper = examinationEventService.submitStudentExaminationPaper(paperToSubmit);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        } catch (NullQuestionSetQuestion nullQuestionSetQuestion) {
+            nullQuestionSetQuestion.printStackTrace();
+        } catch (NullQuestionSet nullQuestionSet) {
+            nullQuestionSet.printStackTrace();
+        } catch (NegativeNumberException e) {
+            e.printStackTrace();
+        } catch (EmptyQuestionSetTitleOrTopic emptyQuestionSetTitleOrTopic) {
+            emptyQuestionSetTitleOrTopic.printStackTrace();
+        } catch (SubmitExaminationPaperException e) {
+            e.printStackTrace();
+        } catch (QuestionSetAlreadyExists questionSetAlreadyExists) {
+            questionSetAlreadyExists.printStackTrace();
+        } catch (UnexpectedError unexpectedError) {
+            unexpectedError.printStackTrace();
+        } catch (EmptyMultipleChoiceQuestion emptyMultipleChoiceQuestion) {
+            emptyMultipleChoiceQuestion.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(submittedPaper);
+    }
 }
