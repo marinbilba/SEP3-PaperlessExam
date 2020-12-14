@@ -1,6 +1,7 @@
 ﻿.questionContainer{
     border:1px solid #222120;
     padding: 10px;
+    margin: 10px;
 }
 /*Black box with question number*/
 .questionNumberBox {

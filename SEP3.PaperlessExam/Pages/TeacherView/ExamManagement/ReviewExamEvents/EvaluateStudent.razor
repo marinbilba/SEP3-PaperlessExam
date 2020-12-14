@@ -12,139 +12,153 @@
 <link rel="stylesheet" type="text/css" href="css/TeacherView/ReviewExamEvents/evaluateStudent.css">
 @if (_studentToEvaluate != null)
 {
-    
-<div class="jumbotron text-center">
-    <h1>Examination Paper of student: @_studentToEvaluate.Id</h1>
-</div>
+    <div class="jumbotron text-center">
+        <h1>Examination Paper of student: @_studentToEvaluate.Id</h1>
+    </div>
 }
 
 @if (_studentWrittenSets != null)
 {
     foreach (var _writtenSet in _studentWrittenSets)
     {
-<EditForm Model="_writtenSet">
-    @for (var i = 0; i < _writtenSet.WrittenQuestions.Count; i++)
-    {
-        _counter = i + 1;
-        var writtenQuestion = _writtenSet.WrittenQuestions[i];
-        <div class="container-fluid questionContainer">
-            @* Type question  *@
-            <div class="row">
-                <div class="col-md-1">
-                    <div class="questionNumberBox d-flex justify-content-center">
-                        <p class="questionNumber">@_counter</p>
-                    </div>
-                </div>
-                <div class="col-md-11">
-                    <input type="text" class="form-control" placeholder="Type your question" @bind-value="writtenQuestion.question"readonly/>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                Title: @_writtenSet.Title || Topic: @_writtenSet.Topic
             </div>
-            @* Type number of points *@
-            <div class="row top-buffer">
-                <div class="col-md-1 offset-1  padding-right0 ">
-                    <input type="number" class="form-control" placeholder="Score" @bind-value="writtenQuestion.Score" readonly/>
-                </div>
-                <div class="col-md-1 padding-left0">
-                    <label>points</label>
-                </div>
-            </div>
-            <div class="row top-buffer">
-                <div class="col-md-12   ">
-                    <RadzenTextArea @bind-Value=@writtenQuestion.questionAnswer Cols="150" Rows="5" ReadOnly="true"/>
-                </div>
+            <div class="card-body">
+                <EditForm Model="_writtenSet">
+                    @for (var i = 0; i < _writtenSet.WrittenQuestions.Count; i++)
+                    {
+                        _counter = i + 1;
+                        var writtenQuestion = _writtenSet.WrittenQuestions[i];
+                        <div class="container-fluid questionContainer">
+                            @* Type question  *@
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div class="questionNumberBox d-flex justify-content-center">
+                                        <p class="questionNumber">@_counter</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-11">
+                                    <input type="text" class="form-control" placeholder="Type your question" @bind-value="writtenQuestion.question"readonly/>
+                                </div>
+                            </div>
+                            @* Type number of points *@
+                            <div class="row top-buffer">
+                                <div class="col-md-1 offset-1  padding-right0 ">
+                                    <input type="number" class="form-control" placeholder="Score" @bind-value="writtenQuestion.Score" readonly/>
+                                </div>
+                                <div class="col-md-1 padding-left0">
+                                    <label>points</label>
+                                </div>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-md-12   ">
+                                    <RadzenTextArea @bind-Value=@writtenQuestion.questionAnswer Cols="150" Rows="5" ReadOnly="true"/>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </EditForm>
             </div>
         </div>
-    }
-</EditForm>
     }
 }
 @if (_studentMultipleChoiceSets != null)
 {
     foreach (var _multipleChoiceSet in _studentMultipleChoiceSets)
     {
-        <EditForm Model="_multipleChoiceSet">
+        <div class="card">
+            <div class="card-header">
+                Title: @_multipleChoiceSet.Title || Topic: @_multipleChoiceSet.Topic
+            </div>
+            <div class="card-body">
+                <EditForm Model="_multipleChoiceSet">
 
-            @for (var _index1 = 0; _index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; _index1++)
-            {
-                var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[_index1];
-                _counter = _index1 + 1;
-                <div class="container-fluid questionContainer">
-                    @* Type question  *@
-                    <div class="row">
-                        <div class="col-md-1">
-                            <div class="questionNumberBox d-flex">
-                                <div class="d-flex">
-                                    <p class="questionNumber">@_counter</p>
+                    @for (var _index1 = 0; _index1 < _multipleChoiceSet.MultipleChoiceQuestions.Count; _index1++)
+                    {
+                        var multipleChoiceQuestion = _multipleChoiceSet.MultipleChoiceQuestions[_index1];
+                        _counter = _index1 + 1;
+                        <div class="container-fluid questionContainer">
+                            @* Type question  *@
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div class="questionNumberBox d-flex">
+                                        <div class="d-flex">
+                                            <p class="questionNumber">@_counter</p>
 
-                                    @* <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber"> *@
+                                            @* <input style="width: 33px; text-align: right;" type="number" placeholder="@_counter" @bind-value="multipleChoiceQuestion.QuestionNumber"> *@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-11">
+
+                                    <input type="text" class="form-control" placeholder="Type your question" @bind-value="multipleChoiceQuestion.question" readonly/>
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-11">
-
-                            <input type="text" class="form-control" placeholder="Type your question" @bind-value="multipleChoiceQuestion.question" readonly/>
-
-                        </div>
-                    </div>
-                    @* Type number of points *@
-                    <div class="row top-buffer">
-                        <div class="col-md-1 offset-1  padding-right0 ">
-                            <input type="number" class="form-control" @bind-value="multipleChoiceQuestion.Score" placeholder="Score" readonly/>
-                        </div>
-                        <div class="col-md-1 padding-left0">
-                            <label>points</label>
-                        </div>
-                    </div>
-
-
-                    @for (var i = 0; i < multipleChoiceQuestion.MultipleChoiceQuestionsOption.Count; i++)
-                    {
-                        var questionOption = multipleChoiceQuestion.MultipleChoiceQuestionsOption[i];
-                        Console.WriteLine(i);
-                        <div class="form-group row top-buffer justify-content-center">
-                            <div class="col-md-1 offset-2">
-                          
-                                     <RadzenCheckBox Disabled="true" Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.CorrectAnswer"  Change=@(args => SetCorrectAnswer(args) )>
-                                                              </RadzenCheckBox>
-                          
-
-                                
-                            </div>
-                            <div class="col-md-7">
-                                <input type="text" class="form-control" placeholder="Type your question" @bind="questionOption.Answer" readonly/>
-
+                            @* Type number of points *@
+                            <div class="row top-buffer">
+                                <div class="col-md-1 offset-1  padding-right0 ">
+                                    <input type="number" class="form-control" @bind-value="multipleChoiceQuestion.Score" placeholder="Score" readonly/>
+                                </div>
+                                <div class="col-md-1 padding-left0">
+                                    <label>points</label>
+                                </div>
                             </div>
 
+
+                            @for (var i = 0; i < multipleChoiceQuestion.MultipleChoiceQuestionsOption.Count; i++)
+                            {
+                                var questionOption = multipleChoiceQuestion.MultipleChoiceQuestionsOption[i];
+                                Console.WriteLine(i);
+                                <div class="form-group row top-buffer justify-content-center">
+                                    <div class="col-md-1 offset-2">
+
+                                        <RadzenCheckBox Disabled="true" Style="width: 36px;height: 34px" TValue="bool" @bind-Value="@questionOption.CorrectAnswer" Change=@(args => SetCorrectAnswer(args))>
+                                        </RadzenCheckBox>
+
+
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" placeholder="Type your question" @bind="questionOption.Answer" readonly/>
+
+                                    </div>
+
+                                </div>
+                            }
+
+
+                            @* Add additional option *@
+
                         </div>
+
+                        multipleChoiceQuestion.QuestionNumber = _counter;
                     }
 
-
-                    @* Add additional option *@
-
-                </div>
-
-                multipleChoiceQuestion.QuestionNumber = _counter;
-            }
-        </EditForm>
+                </EditForm>
+            </div>
+        </div>
     }
 }
 
 @* Finish buttons *@
-    <div class="row top-buffer justify-content-between">
-        <div class="col-md-12">
-            <button type="button" class="btn btn-success btn-lg btn-block" @onclick="Finish" >Finish</button>
-    
-        </div>
-        @* <div class="col-md-3"> *@
-        @*    *@
-        @* </div> *@
+<div class="row top-buffer justify-content-between">
+    <div class="col-md-12">
+        <button type="button" class="btn btn-success btn-lg btn-block" @onclick="Finish">Finish</button>
+
     </div>
+    @* <div class="col-md-3"> *@
+    @*    *@
+    @* </div> *@
+</div>
 
 @code {
-    
+
     private IList<WrittenSet> _studentWrittenSets;
     private IList<MultipleChoiceSet> _studentMultipleChoiceSets;
     private int _counter;
+
     [Parameter]
     public string examId { get; set; }
 
