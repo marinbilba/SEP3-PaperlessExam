@@ -76,10 +76,10 @@ else
                 <td>
                     @if (exam._examResultsAvailable)
                     {
-                         <button @onclick="(() => ViewExamResults(exam.Id))">
-                             @* <button @onclick="ViewExamResults"> *@
-                             <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green"></span>
-                    </button>
+                        <button @onclick="(() => ViewExamResults(exam.Id))">
+                            @* <button @onclick="ViewExamResults"> *@
+                            <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green"></span>
+                        </button>
                     }
                     else
                     {
@@ -150,22 +150,39 @@ else
     private IList<ExaminationEvent> _upcomingExaminationEventsList;
     private IList<ExaminationEvent> _passedExaminationEventsList;
     private bool _showExamResultNotAvailableNotification;
+
     protected override async Task OnInitializedAsync()
     {
     // UserService.LoginUser(new User());
         _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
         try
         {
-            _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
-            _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
-            _upcomingExaminationEventsList = await ExamService.GetStudentsUpcomingExamEvents(_currentUser.Id);
-        await    CheckIfExamResultsAreAvailable(_passedExaminationEventsList);
+ _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            _errorMessage = e.Message;
         }
+        try
+        {
+            _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
+           
+          
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        try
+        {
+            _upcomingExaminationEventsList = await ExamService.GetStudentsUpcomingExamEvents(_currentUser.Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+          
+        }  
+        await CheckIfExamResultsAreAvailable(_passedExaminationEventsList);
     }
 
     private async Task CheckIfExamResultsAreAvailable(IList<ExaminationEvent> passedExaminationEventsList)
@@ -174,7 +191,7 @@ else
         {
             try
             {
-              await  ExamService.GetExaminationEventResultByExamIdAndStudentId(_currentUser.Id,exam.Id);
+                await ExamService.GetExaminationEventResultByExamIdAndStudentId(_currentUser.Id, exam.Id);
                 exam._examResultsAvailable = true;
             }
             catch (Exception e)
@@ -187,6 +204,7 @@ else
 
     private void ViewExamResults(long examId)
     {
+        NavigationManager.NavigateTo($"/viewExamResults/{examId}");
     }
 
 

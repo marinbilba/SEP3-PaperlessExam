@@ -578,7 +578,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
             try
             {
                 responseMessage =
-                    await client.GetAsync($"{uri}/examinationevent/getStudentSubmittedPaper/{currentUserId}/{examId}");
+                    await client.GetAsync($"{uri}/examinationevent/getExaminationEventResultByExamIdAndStudentId/{currentUserId}/{examId}");
                 // 2. Check if the resource was found, else throw exception to the client
                 if (responseMessage.StatusCode == HttpStatusCode.NotFound)
                 {

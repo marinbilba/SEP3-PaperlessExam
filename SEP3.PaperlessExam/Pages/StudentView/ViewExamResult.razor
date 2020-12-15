@@ -1,0 +1,98 @@
+﻿@page "/viewExamResults/{examId}"
+@using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
+@using SEP3.PaperlessExam.Model
+@using SEP3.PaperlessExam.Authentication
+@using SEP3.PaperlessExam.Model.ExamEvent
+@using SEP3.PaperlessExam.Model.TeacherPaperEvaluation
+@inject IExamService ExamService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@if (_evaluationPaperResult != null)
+{
+    <div class="jumbotron text-center">
+        <h1>Your examination results:</h1>
+    </div>
+    <div class="card">
+        <div class="card-header">
+
+            <p> Exam ID: @_examinationEvent.Id</p>
+            <p>Examination Title: @_examinationEvent.ExamTitle</p>
+            <p>Examination Date and Time: @_examinationEvent.ExamDateAndTime</p>
+            <p>Examination Duration: @_examinationEvent.ExamTimeDuration</p>
+            <p>Teacher: @_examinationEvent.CreatedBy.Username</p>
+
+        </div>
+        <div class="card-body">
+            <h4>Results:</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Question sets</th>
+                    <th>Your Score</th>
+                    <th>Total Score</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+
+                <tr>
+                    <td>Written</td>
+                    <td>@_evaluationPaperResult.WrittenSetsTotalScore</td>
+                    <td>@_examinationEvent.WrittenSetsTotalScore</td>
+                </tr>
+                <tr>
+                    <td>Multiple choice</td>
+                    <td>@_evaluationPaperResult.MultipleChoiceSetsTotalScore</td>
+                    <td>@_examinationEvent.MultipleChoiceSetsTotalScore</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>@_evaluationPaperResult.MultipleChoiceSetsTotalScore</td>
+                    <td>@_examinationEvent.MultipleChoiceSetsTotalScore</td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12"></div>
+         <button type="button" class="btn btn-warning btn-lg"  @onclick="(BackToSchedule)" style="margin: 10px">Back</button>
+    </div>
+   
+}
+
+@code {
+
+    [Parameter]
+    public string ExamId { get; set; }
+
+    private User _currentUser;
+    private TeacherEvaluationPaperResult _evaluationPaperResult;
+    private ExaminationEvent _examinationEvent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _currentUser = ((CustomAuthenticationStateProvider) AuthenticationStateProvider).GetCachedUser();
+        try
+        {
+            _evaluationPaperResult = await ExamService.GetExaminationEventResultByExamIdAndStudentId(_currentUser.Id, Convert.ToInt64(ExamId));
+            _examinationEvent = _evaluationPaperResult.StudentSubmitExaminationPaper.ExaminationEvent;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            NavigationManager.NavigateTo("/studentMainPage");
+        }
+    }
+
+
+    private void BackToSchedule()
+    {
+        NavigationManager.NavigateTo("/studentMainPage");
+    }
+
+}
