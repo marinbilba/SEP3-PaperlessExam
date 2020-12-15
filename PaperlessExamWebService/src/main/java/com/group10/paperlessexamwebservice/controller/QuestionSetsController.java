@@ -584,7 +584,9 @@ public class QuestionSetsController {
     public ResponseEntity<Object> createWrittenSet(@RequestBody WrittenSet writtenSet) {
         WrittenSet createdWrittenSet = null;
         try {
+            writtenSet.setId(null);
             createdWrittenSet = questionSetsService.createWrittenSet(writtenSet);
+
         } catch (NullQuestionSet | EmptyQuestionSetTitleOrTopic | UnexpectedError | QuestionSetAlreadyExists | EmptyMultipleChoiceQuestion e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -4,6 +4,7 @@ import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEve
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.paperlessexamwebservice.model.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 
 import java.util.List;
@@ -24,4 +25,8 @@ public interface IExaminationEventRequest {
     StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws ServiceNotAvailable;
 
     StudentSubmitExaminationPaper getStudentSubmittedPaperByStudentIdAndExamId(String studentId, String examId) throws ServiceNotAvailable;
+
+    TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) throws ServiceNotAvailable;
+
+    TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentId, String examId) throws ServiceNotAvailable;
 }

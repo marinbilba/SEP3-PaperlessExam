@@ -2,9 +2,12 @@ package com.group10.paperlessexamwebservice.service.examinaationevents;
 
 import com.group10.paperlessexamwebservice.databaserequests.requests.examinationevent.IExaminationEventRequest;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
+import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.paperlessexamwebservice.model.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
@@ -41,6 +44,18 @@ public class ExaminationEventService implements IExaminationEventService {
     //todo check if only students were assigned
     @Override
     public ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable {
+        double examTotalScore = 0;
+        if (examinationEvent.getMultipleChoiceSets() != null && !examinationEvent.getMultipleChoiceSets().isEmpty()) {
+            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(examinationEvent.getMultipleChoiceSets());
+            examinationEvent.setMultipleChoiceSetsTotalScore(multipleChoiceSetScore);
+            examTotalScore += multipleChoiceSetScore;
+        }
+        if (examinationEvent.getWrittenSets() != null && !examinationEvent.getWrittenSets().isEmpty()) {
+            double writtenSetScore = calculateTotalWrittenSetQuestions(examinationEvent.getWrittenSets());
+          examinationEvent.setWrittenSetsTotalScore(writtenSetScore);
+            examTotalScore +=writtenSetScore;
+        }
+        examinationEvent.setTotalScore(examTotalScore);
         return examinationEventRequest.createExaminationEvent(examinationEvent);
     }
 
@@ -195,18 +210,94 @@ public class ExaminationEventService implements IExaminationEventService {
                 MultipleChoiceSet temp = questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
                 multipleChoiceSetsWithQuestions.add(temp);
             }
-            submitExaminationPaper.setSubmitMultipleChoiceSets(multipleChoiceSetsWithQuestions);
+            List<MultipleChoiceSet> verifiedMultipleChoiceSet = checkMultipleChoiceAnswersAndSetTheCorrectScore(multipleChoiceSetsWithQuestions, submitExaminationPaper.getExaminationEvent());
+            submitExaminationPaper.setSubmitMultipleChoiceSets(verifiedMultipleChoiceSet);
         }
-         if (!submitExaminationPaper.getSubmitWrittenSets().isEmpty() && submitExaminationPaper.getSubmitWrittenSets() != null) {
+        if (!submitExaminationPaper.getSubmitWrittenSets().isEmpty() && submitExaminationPaper.getSubmitWrittenSets() != null) {
             for (var writtenSet : submitExaminationPaper.getSubmitWrittenSets()) {
                 WrittenSet temp = questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
                 writtenSetsWithQuestions.add(temp);
-
             }
             submitExaminationPaper.setSubmitWrittenSets(writtenSetsWithQuestions);
         }
         return submitExaminationPaper;
     }
+//todo check if teacher has put wrritten set score
+    @Override
+    public TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) throws ServiceNotAvailable {
+     double studentScore=0;
+
+      List<MultipleChoiceSet> multipleChoiceQuestionsTemp=teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitMultipleChoiceSets();
+        List<WrittenSet> writtenSetsTemp=teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitWrittenSets();
+
+        if(multipleChoiceQuestionsTemp!=null&&!multipleChoiceQuestionsTemp.isEmpty()){
+            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(multipleChoiceQuestionsTemp);
+            teacherEvaluationPaperResult.setMultipleChoiceSetsTotalScore(multipleChoiceSetScore);
+            studentScore+=multipleChoiceSetScore;
+        }
+       if(writtenSetsTemp!=null&&!writtenSetsTemp.isEmpty()){
+          double writtenSetScore= calculateTotalWrittenSetQuestions(writtenSetsTemp);
+          teacherEvaluationPaperResult.setWrittenSetsTotalScore(writtenSetScore);
+           studentScore +=writtenSetScore;
+       }
+       teacherEvaluationPaperResult.setScore(studentScore);
+
+        return examinationEventRequest.submitEvaluatedStudentPaper(teacherEvaluationPaperResult);
+
+
+    }
+
+    @Override
+    public TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentId, String examId) throws UnexpectedError, ServiceNotAvailable {
+        TeacherEvaluationPaperResult evaluationPaperResult= examinationEventRequest.getExaminationEventResultByExamIdAndStudentId(studentId,examId);
+    if(evaluationPaperResult==null){
+        throw new UnexpectedError("Evaluation paper result not found");
+    }
+        return evaluationPaperResult;
+    }
+
+    private double calculateTotalWrittenSetQuestions(List<WrittenSet> submitWrittenSets) {
+        double score = 0;
+        for (var writtenSet : submitWrittenSets) {
+            for (var question : writtenSet.getWrittenQuestions()) {
+                score += question.getQuestionScore();
+            }
+        }
+        return score;
+    }
+
+    private double calculateTotalMultipleChoiceSetQuestions(List<MultipleChoiceSet> submitMultipleChoiceSets) {
+        double score = 0;
+        for (var multipleChoiceSet : submitMultipleChoiceSets) {
+            for (var question : multipleChoiceSet.getMultipleChoiceQuestionList()
+            ) {
+                score += question.getScore();
+            }
+        }
+        return score;
+    }
+
+    private List<MultipleChoiceSet> checkMultipleChoiceAnswersAndSetTheCorrectScore(List<MultipleChoiceSet> multipleChoiceSet, ExaminationEvent examinationEvent) throws ServiceNotAvailable {
+        // set with correct answers
+        List<MultipleChoiceSet> originalMultipleChoiceSets = examinationEventRequest.getExaminationEventMultipleChoiceSets(examinationEvent);
+
+        // add children to original multiple choice set
+        List<MultipleChoiceSet> originalMultipleChoiceSetsWithChildren = new ArrayList<>();
+        for (var multipleChoiceSetWithoutChildren : originalMultipleChoiceSets) {
+            originalMultipleChoiceSetsWithChildren.add(questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSetWithoutChildren.getId()));
+        }
+//        validate question options if different set question score to 0
+        for (int i = 0; i < originalMultipleChoiceSetsWithChildren.size(); i++) {
+            QuestionOption originalQuestionOption1 = originalMultipleChoiceSetsWithChildren.get(i).getMultipleChoiceQuestionList().get(i).getQuestionOptions().get(i);
+            QuestionOption studentQuestionOption1 = multipleChoiceSet.get(i).getMultipleChoiceQuestionList().get(i).getQuestionOptions().get(i);
+
+            if (originalQuestionOption1.getCorrectAnswer() != studentQuestionOption1.getCorrectAnswer()) {
+                multipleChoiceSet.get(i).getMultipleChoiceQuestionList().get(i).setScore(0);
+            }
+        }
+        return multipleChoiceSet;
+    }
+
 
     private List<WrittenSet> submitWrittenSet(List<WrittenSet> writtenSetsToSubmit) throws UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UserNotFound, ServiceNotAvailable, QuestionSetAlreadyExists {
         List<WrittenSet> writtenSetUpdatedState = new ArrayList<>();

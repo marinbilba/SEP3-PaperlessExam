@@ -10,6 +10,7 @@ import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEve
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.paperlessexamwebservice.model.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -230,6 +231,56 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             throw new ServiceNotAvailable("Couldn't connect to the server");
         }
         return studentExamPaper;
+    }
+
+    @Override
+    public TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) throws ServiceNotAvailable {
+        TeacherEvaluationPaperResult submittedTeacherEvaluationPaperResult = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // Serialize the object
+            String teacherEvaluationPaperResultSerialized = gson.toJson(teacherEvaluationPaperResult);
+            //            Send request
+            requestSharedMethods.sendRequest(teacherEvaluationPaperResultSerialized,  SUBMIT_EVALUATED_STUDENT_PAPER);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            submittedTeacherEvaluationPaperResult = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), TeacherEvaluationPaperResult.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return submittedTeacherEvaluationPaperResult;
+    }
+
+    @Override
+    public TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentId, String examId) throws ServiceNotAvailable {
+        TeacherEvaluationPaperResult studentExamPaperResult = null;
+        // Connect
+        try {
+            socketConnector.connect();
+            // append studntId and examId to form one string and send it
+            String newString=studentId+"&"+examId;
+            // Serialize the object
+            String newStringSerialized = gson.toJson(newString);
+            //            Send request
+            requestSharedMethods.sendRequest(newStringSerialized,  GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID);
+            //            Read response
+            String responseMessage = socketConnector.readFromServer();
+            NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
+            studentExamPaperResult = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), TeacherEvaluationPaperResult.class);
+
+            //            Disconnect
+            socketConnector.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceNotAvailable("Couldn't connect to the server");
+        }
+        return studentExamPaperResult;
     }
 
 }

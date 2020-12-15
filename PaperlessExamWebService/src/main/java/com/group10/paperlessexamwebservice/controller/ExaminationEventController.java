@@ -2,6 +2,7 @@ package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
 import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.paperlessexamwebservice.model.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.paperlessexamwebservice.service.examinaationevents.IExaminationEventService;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
@@ -102,9 +103,7 @@ public class ExaminationEventController {
      * }
      *
      * @param examinationEvent the multiple choice question
-     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
-     * <i>HTTP 400 - BAD_REQUEST</i>
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/createExaminationEvent", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createExaminationEvent(@RequestBody ExaminationEvent examinationEvent) {
@@ -129,9 +128,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param teacherId the teacher id
-     * @return the teachers examination events
-     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return the teachers examination events <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getTeachersUpcomingExamEvents/{teacherId}", method = RequestMethod.GET)
     public ResponseEntity<Object> GetTeachersUpcomingExamEvents(@PathVariable String teacherId) {
@@ -149,6 +146,7 @@ public class ExaminationEventController {
 
         return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
     }
+
     /**
      * Gets teachers passed examination events. It is processed as a GET request requesting <i>teacher id</i>
      * passed through the URI
@@ -159,9 +157,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param teacherId the teacher id
-     * @return the teachers examination events
-     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return the teachers examination events <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getTeachersPassedExamEvents/{teacherId}", method = RequestMethod.GET)
     public ResponseEntity<Object> GetTeachersPassedExamEvents(@PathVariable String teacherId) {
@@ -189,9 +185,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param studentId the teacher id
-     * @return the teachers examination events
-     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return the teachers examination events <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getStudentsUpcomingExamEvents/{studentId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getStudentsUpcomingExamEvents(@PathVariable String studentId) {
@@ -220,9 +214,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param studentId the teacher id
-     * @return the teachers examination events
-     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return the teachers examination events <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getStudentsPassedExamEvents/{studentId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getStudentsPassedExamEvents(@PathVariable String studentId) {
@@ -239,6 +231,7 @@ public class ExaminationEventController {
 
         return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEvents);
     }
+
     /**
      * Gets students ongoing examination events. It is processed as a GET request requesting <i>student id</i>
      * passed through the URI
@@ -249,9 +242,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param studentId the teacher id
-     * @return the teachers examination events
-     * <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return the teachers examination events <i>HTTP 400 - BAD_REQUEST</i> if no scheduled examination events were found <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getStudentsOngoingExamEvents/{studentId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getStudentsOngoingExamEvents(@PathVariable String studentId) {
@@ -280,9 +271,7 @@ public class ExaminationEventController {
      * </p>
      *
      * @param examinationEventId the exam event id
-     * @return  examination events
-     *
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return examination events <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getExaminationPaper/{examinationEventId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getExaminationPaper(@PathVariable String examinationEventId) {
@@ -302,6 +291,7 @@ public class ExaminationEventController {
 
         return ResponseEntity.status(HttpStatus.OK).body(fetchedExaminationEventPaper);
     }
+
     /**
      * Submit the  examination "paper" .It is processed as a POST request requesting <i>StudentSubmitExaminationPaper object</i>
      * in format of JSON as an argument.
@@ -312,12 +302,9 @@ public class ExaminationEventController {
      * </p>
      *
      * <b>BODY</b>:
-
      *
      * @param paperToSubmit the multiple choice question
-     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
-     * <i>HTTP 400 - BAD_REQUEST</i>
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/submitStudentExaminationPaper", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> submitStudentExaminationPaper(@RequestBody StudentSubmitExaminationPaper paperToSubmit) {
@@ -342,13 +329,10 @@ public class ExaminationEventController {
      * <b>EXAMPLE</b>:
      * <p>
      * http://{host}:8080/examinationevent/getStudentSubmittedPaper/12
-
-
      *
      * @param studentId the student id
-     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question
-     * <i>HTTP 400 - BAD_REQUEST</i>
-     * <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     * @param examId    the exam id
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getStudentSubmittedPaper/{studentId}/{examId}", method = RequestMethod.GET)
     public ResponseEntity<Object> getStudentSubmittedPaper(@PathVariable String studentId,@PathVariable String examId) {
@@ -362,4 +346,47 @@ public class ExaminationEventController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(studentExamPaper);
     }
+
+    /**
+     * Submit evaluated student paper by teacher response entity.
+     *
+     * @param teacherEvaluationPaperResult the examination event
+     * @return the response entity
+     */
+    @RequestMapping(value = "/submitEvaluatedStudentPaper", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> SubmitEvaluatedStudentPaper(@RequestBody TeacherEvaluationPaperResult teacherEvaluationPaperResult) {
+        TeacherEvaluationPaperResult createdExaminationEvent = null;
+        try {
+            createdExaminationEvent = examinationEventService.submitEvaluatedStudentPaper(teacherEvaluationPaperResult);
+        } catch (ServiceNotAvailable serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(createdExaminationEvent);
+    }
+    /**
+     * Get student examination "paper" result .It is processed as a GET request requesting <i>Student id and exam id in URI</i>
+     * in format of JSON as an argument.
+     * <p>
+     * <b>EXAMPLE</b>:
+     * <p>
+     * http://{host}:8080/examinationevent/getStudentSubmittedPaper/12
+     *
+     * @param studentId the student id
+     * @param examId    the exam id
+     * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
+     */
+    @RequestMapping(value = "/getExaminationEventResultByExamIdAndStudentId/{studentId}/{examId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getExaminationEventResultByExamIdAndStudentId(@PathVariable String studentId,@PathVariable String examId) {
+        TeacherEvaluationPaperResult studentExamPaperResult = null;
+        try {
+            studentExamPaperResult = examinationEventService.getExaminationEventResultByExamIdAndStudentId(studentId,examId);
+        }
+        catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
+            serviceNotAvailable.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(studentExamPaperResult);
+    }
+
 }

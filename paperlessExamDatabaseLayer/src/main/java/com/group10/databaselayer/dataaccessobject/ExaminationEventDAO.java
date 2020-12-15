@@ -1,17 +1,16 @@
 package com.group10.databaselayer.dataaccessobject;
 
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
-import com.group10.databaselayer.repositories.examinationevent.ISubmitExaminationPaper;
+import com.group10.databaselayer.repositories.examinationevent.ISubmitExaminationPaperRepository;
+import com.group10.databaselayer.repositories.examinationevent.ITeacherEvaluationPaperResultRepository;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +34,9 @@ public class ExaminationEventDAO {
      * The User repository.
      */
     @Autowired
-    private ISubmitExaminationPaper submitExaminationPaper;
+    private ISubmitExaminationPaperRepository submitExaminationPaper;
+    @Autowired
+    private ITeacherEvaluationPaperResultRepository teacherEvaluationPaperResultRepository;
 
     /**
      * Create update examination event.
@@ -118,4 +119,12 @@ public class ExaminationEventDAO {
         return parsedSting;
     }
 
+    public TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) {
+        return teacherEvaluationPaperResultRepository.save(teacherEvaluationPaperResult);
+    }
+    public TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentIdAndExamId) {
+        long submitById = Long.parseLong(parseStudentId(studentIdAndExamId));
+        long examinationEventId = Long.parseLong(parseExamId(studentIdAndExamId));
+return teacherEvaluationPaperResultRepository.getExaminationEventResultByExamIdAndStudentId(examinationEventId,submitById);
+    }
 }

@@ -18,6 +18,9 @@ public class ExaminationEvent {
     private Long id;
     private String examTitle;
     private String examTimeDuration;
+    private double totalScore;
+    private double multipleChoiceSetsTotalScore;
+    private double writtenSetsTotalScore;
     private List<MultipleChoiceSet> multipleChoiceSets = new ArrayList<>();
     private List<WrittenSet> writtenSets = new ArrayList<>();
     private List<User> usersAssigned = new ArrayList<>();
@@ -31,25 +34,52 @@ public class ExaminationEvent {
     public ExaminationEvent() {
     }
 
+
     /**
      * Instantiates a new Examination event.
      *
      * @param examTitle          the exam title
      * @param examTimeDuration   the exam time duration
+     * @param totalScore         the total score
      * @param multipleChoiceSets the multiple choice sets
      * @param writtenSets        the written sets
      * @param usersAssigned      the users assigned
      * @param examDateAndTime    the exam date and time
      * @param createdBy          the created by
      */
-    public ExaminationEvent(String examTitle, String examTimeDuration, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
+    public ExaminationEvent(String examTitle, String examTimeDuration, double totalScore, List<MultipleChoiceSet> multipleChoiceSets, List<WrittenSet> writtenSets, List<User> usersAssigned, Date examDateAndTime, User createdBy) {
         this.examTitle = examTitle;
         this.examTimeDuration = examTimeDuration;
+        this.totalScore = totalScore;
         this.multipleChoiceSets = multipleChoiceSets;
         this.writtenSets = writtenSets;
         this.usersAssigned = usersAssigned;
         this.examDateAndTime = examDateAndTime;
         this.createdBy = createdBy;
+    }
+
+    public double getMultipleChoiceSetsTotalScore() {
+        return multipleChoiceSetsTotalScore;
+    }
+
+    public void setMultipleChoiceSetsTotalScore(double multipleChoiceSetsTotalScore) {
+        this.multipleChoiceSetsTotalScore = multipleChoiceSetsTotalScore;
+    }
+
+    public double getWrittenSetsTotalScore() {
+        return writtenSetsTotalScore;
+    }
+
+    public void setWrittenSetsTotalScore(double writtenSetsTotalScore) {
+        this.writtenSetsTotalScore = writtenSetsTotalScore;
+    }
+
+    public double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(double totalScore) {
+        this.totalScore = totalScore;
     }
 
     /**

@@ -4,6 +4,7 @@
 @using SEP3.PaperlessExam.Authentication
 @using SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 @using SEP3.PaperlessExam.Model.StudentSubmitPaper
+@using SEP3.PaperlessExam.Model.TeacherPaperEvaluation
 @inject IExamService ExamService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -73,10 +74,20 @@ else
                 <td>@exam.ExamTitle</td>
                 <td>@exam.ExamDateAndTime</td>
                 <td>
-                    <button @onclick="(() => TakeExam(exam.Id))">
-                        @* <button @onclick="ViewExamResults"> *@
-                        <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green"></span>
+                    @if (exam._examResultsAvailable)
+                    {
+                         <button @onclick="(() => ViewExamResults(exam.Id))">
+                             @* <button @onclick="ViewExamResults"> *@
+                             <span class="iconify" data-icon="ant-design:eye-outlined" data-inline="false" style="color: green"></span>
                     </button>
+                    }
+                    else
+                    {
+                        <button @onclick="(NotifyThatExamIsNotAvailable)">
+                            <span class="iconify" data-icon="ic:baseline-do-not-disturb-alt" data-inline="false"> No results</span>
+                        </button>
+                    }
+
                 </td>
             </tr>
         }
@@ -125,6 +136,10 @@ else
 {
     toastService.ShowError($"You have submitted one paper already");
 }
+@if (_showExamResultNotAvailableNotification)
+{
+    toastService.ShowInfo($"Teacher has not checked your exam yet");
+}
 
 @code {
     private bool _showRestrictNotification;
@@ -134,7 +149,7 @@ else
     private User _currentUser;
     private IList<ExaminationEvent> _upcomingExaminationEventsList;
     private IList<ExaminationEvent> _passedExaminationEventsList;
-
+    private bool _showExamResultNotAvailableNotification;
     protected override async Task OnInitializedAsync()
     {
     // UserService.LoginUser(new User());
@@ -144,6 +159,7 @@ else
             _passedExaminationEventsList = await ExamService.GetStudentsPassedExamEvents(_currentUser.Id);
             _ongoingExaminationEventsList = await ExamService.GetStudentsOngoingExamEvents(_currentUser.Id);
             _upcomingExaminationEventsList = await ExamService.GetStudentsUpcomingExamEvents(_currentUser.Id);
+        await    CheckIfExamResultsAreAvailable(_passedExaminationEventsList);
         }
         catch (Exception e)
         {
@@ -152,14 +168,31 @@ else
         }
     }
 
-    private void ViewExamResults()
+    private async Task CheckIfExamResultsAreAvailable(IList<ExaminationEvent> passedExaminationEventsList)
     {
-        throw new NotImplementedException();
+        foreach (var exam in passedExaminationEventsList)
+        {
+            try
+            {
+              await  ExamService.GetExaminationEventResultByExamIdAndStudentId(_currentUser.Id,exam.Id);
+                exam._examResultsAvailable = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                exam._examResultsAvailable = false;
+            }
+        }
+    }
+
+    private void ViewExamResults(long examId)
+    {
     }
 
 
     private void NotifyThatExamIsNotAvailable()
     {
+        _showExamResultNotAvailableNotification = true;
     }
 
     private async Task TakeExam(long examId)
@@ -167,15 +200,13 @@ else
         StudentSubmitExaminationPaper studentSubmitExaminationPaper = null;
         try
         {
-             studentSubmitExaminationPaper = await ExamService.GetStudentSubmittedPaper(_currentUser.Id, examId.ToString());
-
+            studentSubmitExaminationPaper = await ExamService.GetStudentSubmittedPaper(_currentUser.Id, examId.ToString());
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-           
         }
-       
+
         if (studentSubmitExaminationPaper != null)
         {
             _showRestrictNotification = true;
@@ -185,5 +216,6 @@ else
             NavigationManager.NavigateTo($"takeExam/{examId}");
         }
     }
+
 
 }

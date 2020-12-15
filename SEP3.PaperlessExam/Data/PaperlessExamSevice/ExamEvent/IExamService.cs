@@ -5,6 +5,7 @@ using SEP3.PaperlessExam.Model.ExamEvent;
 using SEP3.PaperlessExam.Model.Questions.MultipleChoice;
 using SEP3.PaperlessExam.Model.Questions.written;
 using SEP3.PaperlessExam.Model.StudentSubmitPaper;
+using SEP3.PaperlessExam.Model.TeacherPaperEvaluation;
 
 namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 {
@@ -23,5 +24,9 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
         Task<ExaminationEvent> GetExaminationPaper(string examId);
         Task<StudentSubmitExaminationPaper> SubmitStudentPaper(StudentSubmitExaminationPaper studentSubmitExaminationPaper);
         Task<StudentSubmitExaminationPaper> GetStudentSubmittedPaper(int studentId, string examId);
+        Task<TeacherEvaluationPaperResult> SubmitEvaluatedStudentPaperByTeacher(TeacherEvaluationPaperResult teacherEvaluationPaperResult);
+
+        Task<TeacherEvaluationPaperResult> GetExaminationEventResultByExamIdAndStudentId( long currentUserId,long examId);
+        
     }
 }

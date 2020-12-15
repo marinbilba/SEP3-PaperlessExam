@@ -8,6 +8,7 @@ import com.group10.databaselayer.dataaccessobject.ExaminationEventDAO;
 import com.group10.databaselayer.dataaccessobject.RoleDAO;
 import com.group10.databaselayer.dataaccessobject.UserDAO;
 import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.databaselayer.network.networkcontainer.NetworkContainer;
 import com.group10.databaselayer.network.networkcontainer.RequestOperation;
 import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuestionsDAO;
@@ -223,11 +224,39 @@ public class ServerSocketHandler implements Runnable {
                 case GET_STUDENT_EXAM_PAPER:
                     getStudentSubmittedPaperByStudentIdAndExamId(networkContainerRequestDeserialized);
                     break;
-
+                case SUBMIT_EVALUATED_STUDENT_PAPER:
+                    submitEvaluatedStudentPaper(networkContainerRequestDeserialized);
+break;
+                case GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID:
+                    getExaminationEventResultByExamIdAndStudentId(networkContainerRequestDeserialized);
+                    break;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getExaminationEventResultByExamIdAndStudentId(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID start");
+        String studentIdAndExamId = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), String.class);
+        TeacherEvaluationPaperResult studentExamPaperResult = examinationEventDAO.getExaminationEventResultByExamIdAndStudentId(studentIdAndExamId);
+        objectSerialized = gson.toJson(studentExamPaperResult);
+        networkContainer = new NetworkContainer(GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID end");
+    }
+
+
+    private void submitEvaluatedStudentPaper(NetworkContainer networkContainerRequestDeserialized) throws IOException {
+        System.out.println("SUBMIT_EVALUATED_STUDENT_PAPER start");
+        TeacherEvaluationPaperResult teacherEvaluationPaperResult = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), TeacherEvaluationPaperResult.class);
+        TeacherEvaluationPaperResult submittedTeacherEvaluationPaperResult = examinationEventDAO.submitEvaluatedStudentPaper(teacherEvaluationPaperResult);
+        objectSerialized = gson.toJson(submittedTeacherEvaluationPaperResult);
+        networkContainer = new NetworkContainer(SUBMIT_EVALUATED_STUDENT_PAPER, objectSerialized);
+        stringResponseSerialized = gson.toJson(networkContainer);
+        sendResponse(stringResponseSerialized);
+        System.out.println("SUBMIT_EVALUATED_STUDENT_PAPER end");
     }
 
     private void getStudentSubmittedPaperByStudentIdAndExamId(NetworkContainer networkContainerRequestDeserialized) throws IOException {

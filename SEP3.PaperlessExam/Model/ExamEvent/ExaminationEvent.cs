@@ -22,7 +22,11 @@ namespace SEP3.PaperlessExam.Model.ExamEvent
         [JsonPropertyName("examDateAndTime")] public DateTime ExamDateAndTime { get; set; }
         [JsonPropertyName("updatedTimestamp")] private DateTime UpdatedTimestamp { get; set; }
         [JsonPropertyName("createdBy")] public User CreatedBy { get; set; }
-
+        [JsonPropertyName("totalScore")]public double TotalScore { get; set; }
+        [JsonPropertyName("multipleChoiceSetsTotalScore")]public double MultipleChoiceSetsTotalScore { get; set; }
+        [JsonPropertyName("writtenSetsTotalScore")]public double WrittenSetsTotalScore { get; set; }
+        // Required for student view exam
+        public bool _examResultsAvailable { get; set; }
         public ExaminationEvent()
         {
         }

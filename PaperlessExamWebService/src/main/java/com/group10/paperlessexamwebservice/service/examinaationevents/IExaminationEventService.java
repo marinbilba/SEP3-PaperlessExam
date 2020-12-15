@@ -2,6 +2,7 @@ package com.group10.paperlessexamwebservice.service.examinaationevents;
 
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
 import com.group10.paperlessexamwebservice.model.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.paperlessexamwebservice.model.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.paperlessexamwebservice.service.exceptions.examinationevent.ExaminationEventException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
@@ -34,4 +35,9 @@ public interface IExaminationEventService {
     StudentSubmitExaminationPaper submitStudentExaminationPaper(StudentSubmitExaminationPaper paperToSubmit) throws SubmitExaminationPaperException, NegativeNumberException, UnexpectedError, EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, ServiceNotAvailable, NullQuestionSetQuestion, UserNotFound;
 
     StudentSubmitExaminationPaper getStudentSubmittedPaper(String studentId, String examId) throws ServiceNotAvailable, UnexpectedError;
+
+    TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) throws ServiceNotAvailable;
+
+    TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentId, String examId) throws UnexpectedError, ServiceNotAvailable;
+
 }

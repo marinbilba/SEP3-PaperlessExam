@@ -65,6 +65,9 @@ public enum RequestOperation {
     // Student paper
     SUBMIT_EXAM_PAPER,
     GET_STUDENT_EXAM_PAPER,
+    SUBMIT_EVALUATED_STUDENT_PAPER,
+    GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID,
+
 
 
 }

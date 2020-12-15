@@ -142,22 +142,23 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     public MultipleChoiceSet updateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToUpdate) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, NegativeNumberException, NullQuestionSetQuestion, UserNotFound, QuestionSetAlreadyExists, EmptyMultipleChoiceQuestion {
         MultipleChoiceSet tempOldMultipleChoiceSet = getMultipleChoiceSetWithAllChildElements(multipleChoiceSetToUpdate.getId());
 
-      //  Delete old questions
-        for (var question: tempOldMultipleChoiceSet.getMultipleChoiceQuestionList()) {
+        //  Delete old questions
+        for (var question : tempOldMultipleChoiceSet.getMultipleChoiceQuestionList()) {
             question.setMultipleChoiceSet(tempOldMultipleChoiceSet);
             deleteMultipleChoiceQuestion(question);
         }
-       //Populate db again
-        for (var question:multipleChoiceSetToUpdate.getMultipleChoiceQuestionList()) {
+        //Populate db again
+        for (var question : multipleChoiceSetToUpdate.getMultipleChoiceQuestionList()) {
             question.setMultipleChoiceSet(multipleChoiceSetToUpdate);
             addMultipleChoiceQuestion(question);
-            for (var questionOption:question.getQuestionOptions()) {
+            for (var questionOption : question.getQuestionOptions()) {
                 questionOption.setMultipleChoiceQuestion(question);
                 addMultipleChoiceQuestionOption(questionOption);
             }
         }
         return multipleChoiceSetToUpdate;
     }
+
     @Override
     public WrittenSet getWrittenSetWithAllChildElements(long writtenSetId) throws ServiceNotAvailable, UnexpectedError {
         WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSetById(writtenSetId);
@@ -177,7 +178,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         fetchedMultipleChoiceSet.setMultipleChoiceQuestionList(fetchedMultipleChoiceQuestion);
         for (var question : fetchedMultipleChoiceSet.getMultipleChoiceQuestionList()) {
             List<QuestionOption> questionOptionList = questionSetsRequests.getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(question);
-           question.setQuestionOptions(questionOptionList);
+            question.setQuestionOptions(questionOptionList);
         }
         return fetchedMultipleChoiceSet;
     }
@@ -191,10 +192,10 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public WrittenSet getWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable, UnexpectedError {
         if (validateWrittenSetFields(writtenSet)) {
-           if(writtenSet.getId()==null){
-               throw new NullQuestionSet("Written Set" + "with title: " + writtenSet.getTitle() +
-                       "and topic: " + writtenSet.getTopic() + " WAS NOT FOUND");
-           }
+            if (writtenSet.getId() == null) {
+                throw new NullQuestionSet("Written Set" + "with title: " + writtenSet.getTitle() +
+                        "and topic: " + writtenSet.getTopic() + " WAS NOT FOUND");
+            }
             User fetchedUser = userRequests.getUserByUsername(writtenSet.getUser().getUsername());
             writtenSet.setUser(fetchedUser);
             WrittenSet fetchedWrittenSet = questionSetsRequests.getWrittenSet(writtenSet);
@@ -231,7 +232,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public WrittenQuestion getWrittenQuestion(WrittenQuestion writtenQuestion) throws EmptyMultipleChoiceQuestion, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, ServiceNotAvailable, NullQuestionSetQuestion {
         validateWrittenQuestionFields(writtenQuestion);
-        if(writtenQuestion.getId()==null){
+        if (writtenQuestion.getId() == null) {
             throw new NullQuestionSetQuestion("Written Set Question" + "with question: " + writtenQuestion.getQuestion() +
                     "and question score: " + writtenQuestion.getQuestionScore() + " WAS NOT FOUND");
         }
@@ -313,6 +314,8 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion {
         MultipleChoiceSet createdMultipleChoiceSet;
         validateMultipleChoiceSetFields(multipleChoiceSet);
+        multipleChoiceSet = setMultipleChoiceIdToNull(multipleChoiceSet);
+
         User fetchedUser = userRequests.getUserByUsername(multipleChoiceSet.getUser().getUsername());
         if (fetchedUser == null) {
             throw new UserNotFound("User that is trying to create the question set is not authorized");
@@ -333,7 +336,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
 
         for (var multipleChoiceQuestion : multipleChoiceSet.getMultipleChoiceQuestionList()) {
             multipleChoiceQuestion.setMultipleChoiceSet(createdMultipleChoiceSet);
-            MultipleChoiceQuestion temp=addMultipleChoiceQuestion(multipleChoiceQuestion);
+            MultipleChoiceQuestion temp = addMultipleChoiceQuestion(multipleChoiceQuestion);
             for (var multipleChoiceQuestionOption : multipleChoiceQuestion.getQuestionOptions()) {
                 multipleChoiceQuestionOption.setMultipleChoiceQuestion(temp);
                 addMultipleChoiceQuestionOption(multipleChoiceQuestionOption);
@@ -343,10 +346,22 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         return createdMultipleChoiceSet;
     }
 
+    //todo not the best approach
+    private MultipleChoiceSet setMultipleChoiceIdToNull(MultipleChoiceSet multipleChoiceSet) {
+        multipleChoiceSet.setId(null);
+        for (var question : multipleChoiceSet.getMultipleChoiceQuestionList()) {
+            question.setId(null);
+            for (var questionOption : question.getQuestionOptions()) {
+                questionOption.setId(null);
+            }
+        }
+return multipleChoiceSet;
+    }
+
     @Override
     public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         if (validateMultipleChoiceSetFields(multipleChoiceSet)) {
-            if(multipleChoiceSet.getId()==null){
+            if (multipleChoiceSet.getId() == null) {
                 throw new NullQuestionSet("Multiple Choice Set" + "with title: " + multipleChoiceSet.getTitle() +
                         "and topic: " + multipleChoiceSet.getTopic() + " WAS NOT FOUND");
             }
@@ -366,7 +381,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         validateMultipleChoiceQuestionSetFields(multipleChoiceSetQuestion);
-        if(multipleChoiceSetQuestion.getId()==null){
+        if (multipleChoiceSetQuestion.getId() == null) {
             throw new NullQuestionSetQuestion("Multiple Choice Set Question" + "with question: " + multipleChoiceSetQuestion.getQuestion() +
                     "and question score: " + multipleChoiceSetQuestion.getQuestionScore() + " WAS NOT FOUND");
         }
@@ -409,11 +424,11 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws EmptyMultipleChoiceQuestion, NullQuestionSet, UnexpectedError, NullQuestionSetQuestion, NegativeNumberException, EmptyQuestionSetTitleOrTopic, ServiceNotAvailable {
         validateMultipleChoiceQuestionOptionFields(multipleChoiceQuestionOption);
-       if(multipleChoiceQuestionOption.getId()==null){
-           throw new NullQuestionSetQuestion("Multiple Choice Set Question Option" + " with answer: " + multipleChoiceQuestionOption.getAnswer() +
-                   "and question boolean value: " + multipleChoiceQuestionOption.getCorrectAnswer() + " WAS NOT FOUND");
+        if (multipleChoiceQuestionOption.getId() == null) {
+            throw new NullQuestionSetQuestion("Multiple Choice Set Question Option" + " with answer: " + multipleChoiceQuestionOption.getAnswer() +
+                    "and question boolean value: " + multipleChoiceQuestionOption.getCorrectAnswer() + " WAS NOT FOUND");
 
-       }
+        }
         MultipleChoiceQuestion fetchedMultipleChoiceQuestion = getMultipleChoiceSetQuestion(multipleChoiceQuestionOption.getMultipleChoiceQuestion());
         multipleChoiceQuestionOption.setMultipleChoiceQuestion(fetchedMultipleChoiceQuestion);
 

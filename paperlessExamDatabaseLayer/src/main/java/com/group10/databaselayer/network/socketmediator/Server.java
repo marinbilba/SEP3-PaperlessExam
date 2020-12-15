@@ -7,6 +7,7 @@ import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuesti
 import com.group10.databaselayer.dataaccessobject.questions.WrittenQuestionsDAO;
 
 import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
+import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class Server {
     @Autowired
     IExaminationEventRepository examinationEvent;
 
+
     private GsonBuilder gson;
 
     @PostConstruct
@@ -56,6 +58,7 @@ public class Server {
         controllersSet.add(multipleChoiceQuestionsDAO);
         controllersSet.add(writtenQuestionsDAO);
         controllersSet.add(examinationEventDAO);
+
 
         gson = new GsonBuilder();
         gson.setExclusionStrategies(new HiddenAnnotationExclusionStrategy());
