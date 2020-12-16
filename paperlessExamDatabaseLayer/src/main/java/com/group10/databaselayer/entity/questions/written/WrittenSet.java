@@ -39,10 +39,12 @@ public class WrittenSet {
     private boolean submittedWrittenSet;
 @Hidden
     @ManyToMany(mappedBy = "writtenSets")
+@OnDelete(action = OnDeleteAction.CASCADE)
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
     @Hidden
     @ManyToMany(mappedBy = "submitMultipleChoiceSets")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<StudentSubmitExaminationPaper> submitMultipleChoiceSets = new ArrayList<>();
 
 
