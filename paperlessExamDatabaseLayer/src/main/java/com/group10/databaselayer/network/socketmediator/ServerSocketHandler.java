@@ -620,12 +620,6 @@ break;
         System.out.println("CREATE_MULTIPLE_CHOICE_SET start");
         MultipleChoiceSet multipleChoiceSet = gson.fromJson(networkContainerRequestDeserialized.getSerializedObject(), MultipleChoiceSet.class);
         MultipleChoiceSet createdMultipleChoiceSet = null;
-
-        User user = userDAO.getUserByUsername("silvmandrila");
-
-        multipleChoiceSet.setUser(user);
-
-
         createdMultipleChoiceSet = multipleChoiceQuestionsDAO.createUpdateMultipleChoiceSet(multipleChoiceSet);
         objectSerialized = gson.toJson(createdMultipleChoiceSet);
         networkContainer = new NetworkContainer(CREATE_MULTIPLE_CHOICE_SET, objectSerialized);
