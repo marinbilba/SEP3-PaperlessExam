@@ -1,0 +1,78 @@
+body {
+  background-color: #e4e4f2;
+  font-family: Verdana;
+  padding-top:120px ;
+}
+
+/* !!!!!!!!!! BREAKPOINTS  */
+
+.c801 {
+  background-color: cornflowerblue;
+  margin-top: 40%;
+}
+
+.c802 {
+  background-color: cornflowerblue;
+  margin-top: 40%;
+}
+
+.c901 {
+  background-color: #e4e4f2;
+  margin-top: 20%;
+}
+
+.c10 ul {
+  list-style-type: none;
+}
+
+.c10 ul li:before {
+  position: absolute;
+  left: 0px;
+  margin-top: -10px;
+  padding-top: 3px;
+  display: inline-block;
+  text-align: center;
+  margin: 5px 10px;
+  line-height: 20px;
+  transition: all .2s;
+  color: #ffffff;
+  background: #149dcc;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  content: '✓';
+}
+
+.c11 {
+  margin-top: 5%;
+  margin-bottom: 2%;
+}
+
+.c12 {
+  background-color: cornflowerblue;
+}
+
+/* Footer */
+
+#footer
+{
+        background-color: silver;
+    font-family: Helvetica, Helvetica Neue, Arial, sans-serif;
+
+}
+#footerB
+{
+        font-family: Helvetica, Helvetica Neue, Arial, sans-serif;
+    background-color: #696969;
+
+}
+.flink
+{
+    color: red;
+}
+.socialicon:hover
+{
+    
+	transform: scale(1.06);
+	transition: .5s ease;
+}

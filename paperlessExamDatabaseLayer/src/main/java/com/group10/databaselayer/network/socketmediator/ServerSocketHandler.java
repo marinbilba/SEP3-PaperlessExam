@@ -22,6 +22,7 @@ import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.user.UserWasNotDeleted;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.net.Socket;
@@ -47,6 +48,7 @@ import static com.group10.databaselayer.network.networkcontainer.RequestOperatio
  * @author Marin Bilba
  * @version 2.5
  */
+
 public class ServerSocketHandler implements Runnable {
 
     private final Socket socket;

@@ -141,7 +141,7 @@ public class Server {
                 System.out.println("[SERVER] Connected to client");
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
                 serverSocketHandler.run();
-                //   executorService.execute(serverSocketHandler);
+                   //executorService.execute(serverSocketHandler);
                 //executorService.shutdown();
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());

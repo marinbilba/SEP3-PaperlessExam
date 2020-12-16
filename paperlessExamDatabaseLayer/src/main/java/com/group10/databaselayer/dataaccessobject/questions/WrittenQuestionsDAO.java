@@ -11,6 +11,7 @@ import com.group10.databaselayer.repositories.questions.written.IWrittenQuestion
 import com.group10.databaselayer.repositories.questions.written.IWrittenSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
  * @author Marin Bilba
  * @version 1.0
  */
+
 @Component
 public class WrittenQuestionsDAO {
 

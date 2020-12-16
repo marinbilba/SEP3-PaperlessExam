@@ -2,7 +2,7 @@
 
 
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="index">SEP3.PaperlessExam</a>
+    <a class="navbar-brand" href="index">Paperless Exam</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,11 +11,7 @@
 @* Admin views *@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        @* <li class="nav-item px-3"> *@
-        @*     <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> *@
-        @*         <span class="oi oi-home" aria-hidden="true"></span> Home *@
-        @*     </NavLink> *@
-        @* </li> *@
+  <AuthorizeView Policy="MustBeAdmin">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="MainView">
                 <span class="iconify" data-icon="ic:baseline-home" data-inline="false"></span> Main View
@@ -31,14 +27,8 @@
                 <span class="iconify" data-icon="ic:outline-insert-drive-file" data-inline="false"></span> Manage Exams Admin
             </NavLink>
         </li>
-
-        <AuthorizeView Policy="MustBeStudent">
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="mainPage">
-                    <span class="oi oi-lock-unlocked" aria-hidden="true"></span> test
-                </NavLink>
-            </li>
-        </AuthorizeView>
+ </AuthorizeView>
+        <AuthorizeView Policy="MustBeTeacher">
         @* Teacher *@
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="teacherMainPage">
@@ -50,18 +40,20 @@
                 <span class="iconify" data-icon="mdi:calendar-clock" data-inline="false"></span> Manage Exams Teacher
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="questionManagement">
-                <span class="iconify" data-icon="mdi:file-question-outline" data-inline="false"></span> Questions Management
-            </NavLink>
-        </li>
+           <li class="nav-item px-3">
+               <NavLink class="nav-link" href="questionManagement">
+                   <span class="iconify" data-icon="mdi:file-question-outline" data-inline="false"></span> Questions Management
+               </NavLink>
+           </li>
+           </AuthorizeView>
         @* Student views *@
-   
+     <AuthorizeView Policy="MustBeStudent">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="studentMainPage">
                 <span class="iconify" data-icon="mdi:calendar-clock" data-inline="false"></span> Main Page Student
             </NavLink>
         </li>
+         </AuthorizeView>
     </ul>
 </div>
 
