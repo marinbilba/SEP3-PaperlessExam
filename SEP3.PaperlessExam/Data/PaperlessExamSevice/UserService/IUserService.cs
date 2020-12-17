@@ -1,8 +1,8 @@
-﻿﻿using System.Collections.Generic;
- using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SEP3.PaperlessExam.Model;
 
-namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
+namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.UserService
 {
     public interface IUserService
     {
@@ -11,9 +11,5 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice
        Task<IList<User>> FindByFirstName(string firstName);
        Task<User> FindByUsername(string username);
        Task<User> DeleteUser(User user);
-       Task<User> UpdateUser(User user);
-
-       Task<User> FindStudentByUsername(string username);
-       Task<IList<User>> FindStudentByFirstName(string firstName);
-    }
+       Task<User> UpdateUser(User user); }
 }

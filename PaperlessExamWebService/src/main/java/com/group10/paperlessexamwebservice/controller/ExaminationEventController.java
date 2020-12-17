@@ -298,7 +298,7 @@ public class ExaminationEventController {
      * <p>
      * <b>EXAMPLE</b>:
      * <p>
-     * http://{host}:8080/examinationevent/createExaminationEvent
+     * http://{host}:8080/examinationevent/submitStudentExaminationPaper
      * </p>
      *
      * <b>BODY</b>:
