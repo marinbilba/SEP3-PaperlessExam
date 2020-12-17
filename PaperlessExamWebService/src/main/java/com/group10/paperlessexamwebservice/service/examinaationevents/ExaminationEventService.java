@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The type Examination event service.
@@ -385,6 +382,7 @@ public class ExaminationEventService implements IExaminationEventService {
                 String examDuration = exam.getExamTimeDuration();
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+               // dateFormat.setTimeZone(TimeZone.setDefaultZone());
                 Date parsedDate = dateFormat.parse(examDuration);
                 System.out.println(parsedDate.getTime());
                 Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
