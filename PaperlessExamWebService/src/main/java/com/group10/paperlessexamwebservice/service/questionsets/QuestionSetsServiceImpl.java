@@ -1,5 +1,8 @@
 package com.group10.paperlessexamwebservice.service.questionsets;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.group10.paperlessexamwebservice.annotations.hidden.HiddenAnnotationExclusionStrategy;
 import com.group10.paperlessexamwebservice.databaserequests.requests.questionsets.IQuestionSetsRequests;
 import com.group10.paperlessexamwebservice.databaserequests.requests.user.IUserRequests;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
@@ -33,6 +36,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Autowired
     private IUserRequests userRequests;
 
+    private Gson gson=new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();;;
 
     private boolean validateMultipleChoiceSetFields(MultipleChoiceSet multipleChoiceSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic {
         // Validate multiple choice set on null. Check if title and  topic are not empty
@@ -118,11 +122,9 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Override
     //TODO A better approach must be found. It is not a very good idea to delete data from database
     public WrittenSet updateWrittenSet(WrittenSet writtenSet) throws NullQuestionSet, UnexpectedError, ServiceNotAvailable, EmptyQuestionSetTitleOrTopic, EmptyMultipleChoiceQuestion, QuestionSetAlreadyExists {
-        // WrittenSet writtenSetToUpdate = getWrittenSet(writtenSet);
+
         WrittenSet oldWrittenSet = getWrittenSetWithAllChildElements(writtenSet.getId());
-        if (writtenSet.getWrittenQuestions().equals(oldWrittenSet.getWrittenQuestions())) {
-            return writtenSet;
-        } else {
+
 //           Delete old questions
             for (var question : oldWrittenSet.getWrittenQuestions()) {
                 question.setWrittenSet(writtenSet);
@@ -133,30 +135,34 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
                 question.setWrittenSet(writtenSet);
                 addWrittenQuestion(question);
             }
-        }
-        return writtenSet;
+            return getWrittenSetWithAllChildElements(writtenSet.getId());
     }
 
     @Override
     //TODO A better approach must be found. It is not a very good idea to delete data from database
     public MultipleChoiceSet updateMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToUpdate) throws ServiceNotAvailable, NullQuestionSet, EmptyQuestionSetTitleOrTopic, UnexpectedError, NegativeNumberException, NullQuestionSetQuestion, UserNotFound, QuestionSetAlreadyExists, EmptyMultipleChoiceQuestion {
         MultipleChoiceSet tempOldMultipleChoiceSet = getMultipleChoiceSetWithAllChildElements(multipleChoiceSetToUpdate.getId());
-
         //  Delete old questions
         for (var question : tempOldMultipleChoiceSet.getMultipleChoiceQuestionList()) {
             question.setMultipleChoiceSet(tempOldMultipleChoiceSet);
             deleteMultipleChoiceQuestion(question);
         }
+
         //Populate db again
         for (var question : multipleChoiceSetToUpdate.getMultipleChoiceQuestionList()) {
             question.setMultipleChoiceSet(multipleChoiceSetToUpdate);
-            addMultipleChoiceQuestion(question);
+            var tempQuestion = addMultipleChoiceQuestion(question);
+
+
             for (var questionOption : question.getQuestionOptions()) {
-                questionOption.setMultipleChoiceQuestion(question);
-                addMultipleChoiceQuestionOption(questionOption);
+                questionOption.setMultipleChoiceQuestion(tempQuestion);
+                // set to null because we want to create a new record
+                questionOption.setId(null);
+               addMultipleChoiceQuestionOption(questionOption);
             }
+
         }
-        return multipleChoiceSetToUpdate;
+        return getMultipleChoiceSetWithAllChildElements(multipleChoiceSetToUpdate.getId());
     }
 
     @Override
@@ -355,7 +361,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
                 questionOption.setId(null);
             }
         }
-return multipleChoiceSet;
+        return multipleChoiceSet;
     }
 
     @Override
@@ -381,6 +387,10 @@ return multipleChoiceSet;
     @Override
     public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws NullQuestionSet, NegativeNumberException, EmptyMultipleChoiceQuestion, ServiceNotAvailable, NullQuestionSetQuestion, EmptyQuestionSetTitleOrTopic, UnexpectedError {
         validateMultipleChoiceQuestionSetFields(multipleChoiceSetQuestion);
+        if (multipleChoiceSetQuestion.getId() == null) {
+            throw new NullQuestionSetQuestion("Multiple Choice Set Question" + "with question: " + multipleChoiceSetQuestion.getQuestion() +
+                    "and question score: " + multipleChoiceSetQuestion.getQuestionScore() + " WAS NOT FOUND");
+        }
         if (multipleChoiceSetQuestion.getId() == null) {
             throw new NullQuestionSetQuestion("Multiple Choice Set Question" + "with question: " + multipleChoiceSetQuestion.getQuestion() +
                     "and question score: " + multipleChoiceSetQuestion.getQuestionScore() + " WAS NOT FOUND");

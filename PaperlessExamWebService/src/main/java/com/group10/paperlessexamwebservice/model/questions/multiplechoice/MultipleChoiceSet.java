@@ -32,6 +32,7 @@ public class MultipleChoiceSet extends QuestionsSet {
     public MultipleChoiceSet() {
     }
 
+
     /**
      * Instantiates a new Multiple choice set.
      *

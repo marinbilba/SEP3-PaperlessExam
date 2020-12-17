@@ -140,7 +140,6 @@ public class ExaminationEventController {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         } catch (ExaminationEventException e) {
             e.printStackTrace();
-            System.out.println(fetchedExaminationEvents.get(0).getId());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 

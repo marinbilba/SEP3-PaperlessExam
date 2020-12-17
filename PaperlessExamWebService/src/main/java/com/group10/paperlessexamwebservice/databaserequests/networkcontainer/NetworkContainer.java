@@ -16,7 +16,7 @@ public class NetworkContainer  {
      * Instantiates a new Network container.
      *
      * @param requestOperation the request operation
-     * @param serializedObject   the serialized object
+     * @param serializedObject the serialized object
      */
     public NetworkContainer(RequestOperation requestOperation, String serializedObject) {
         this.requestOperation=requestOperation;

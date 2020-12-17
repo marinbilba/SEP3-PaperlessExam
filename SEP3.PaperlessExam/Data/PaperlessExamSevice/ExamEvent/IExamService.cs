@@ -11,9 +11,6 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
 {
     public interface IExamService
     {
- 
-        Task<IList<WrittenSet>> GetWrittenSets(User currentUser);
-        Task<IList<MultipleChoiceSet>> GetMultipleChoiceSets(User currentUser);
         Task<ExaminationEvent> CreateExaminationEvent(ExaminationEvent examinationEvent);
 
         Task<IList<ExaminationEvent>> GetTeachersUpcomingExamEvents(int currentUserId);

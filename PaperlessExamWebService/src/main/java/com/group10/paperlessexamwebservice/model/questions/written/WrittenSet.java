@@ -129,13 +129,14 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
         if (!(o instanceof WrittenSet)) return false;
         if (!super.equals(o)) return false;
         WrittenSet that = (WrittenSet) o;
-        return updatedTimestamp.equals(that.updatedTimestamp) &&
+        return submittedWrittenSet == that.submittedWrittenSet &&
+                updatedTimestamp.equals(that.updatedTimestamp) &&
                 user.equals(that.user) &&
                 writtenQuestions.equals(that.writtenQuestions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), updatedTimestamp, user, writtenQuestions);
+        return Objects.hash(super.hashCode(), updatedTimestamp, user, submittedWrittenSet, writtenQuestions);
     }
 }

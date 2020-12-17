@@ -60,11 +60,11 @@ public class ExaminationEventService implements IExaminationEventService {
     public List<ExaminationEvent> getTeachersUpcomingExamEvents(String teacherId) throws ServiceNotAvailable, ExaminationEventException {
         List<ExaminationEvent> fetchedExaminationEvents = examinationEventRequest.getTeachersExamEvents(teacherId);
         if (fetchedExaminationEvents == null) {
-            throw new ExaminationEventException("This user does not have any scheduled examination events");
+            throw new ExaminationEventException("You do not have any scheduled examination events");
         }
         List<ExaminationEvent> upcomingEvents = showOnlyUpcomingExaminationEvents(fetchedExaminationEvents);
         if (upcomingEvents.isEmpty()) {
-            throw new ExaminationEventException("This user does not have any scheduled upcoming examination events");
+            throw new ExaminationEventException("You do not  have any scheduled upcoming examination events");
 
         }
         return upcomingEvents;
@@ -372,6 +372,7 @@ public class ExaminationEventService implements IExaminationEventService {
     }
 
     // todo bug here, when examDuration is 1h or less the system can not calculate the passed milliseconds
+    // our solution was adding 1h to eliminate the time zone offset but that is not the best choice
     private List<ExaminationEvent> showOnlyOngoingExaminationEvents(List<ExaminationEvent> fetchedExaminationEvents) {
         List<ExaminationEvent> ongoingExaminationEvents = new ArrayList<>();
         Date date = null;
@@ -382,16 +383,17 @@ public class ExaminationEventService implements IExaminationEventService {
                 String examDuration = exam.getExamTimeDuration();
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-               // dateFormat.setTimeZone(TimeZone.setDefaultZone());
+                dateFormat.setTimeZone(TimeZone.getDefault());
                 Date parsedDate = dateFormat.parse(examDuration);
+
                 System.out.println(parsedDate.getTime());
-                Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+                Timestamp timestamp = new Timestamp(parsedDate.getTime());
 
                 startDate = (Date) exam.getExamDateAndTime().clone();
                 endDate = (Date) exam.getExamDateAndTime().clone();
 
-                long originalTime = timestamp.getTime();
-                long addTime = startDate.getTime();
+                long originalTime = timestamp.getTime()+3600000;
+                long addTime = startDate.getTime()+3600000;
                 long result = originalTime + addTime;
                 endDate.setTime(result);
             } catch (Exception e) { //this generic but you can control another types of exception

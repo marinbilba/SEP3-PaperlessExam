@@ -120,7 +120,7 @@
 
         try
         {
-            _multipleChoiceSetsToShow = await ExamService.GetMultipleChoiceSets(_currentUser);
+            _multipleChoiceSetsToShow = await QuestionSetsService.GetMultipleChoiceSets(_currentUser);
             if (_multipleChoiceSetsToShow == null)
             {
                 _errorMessage = "You haven't created any multiple choice sets";
@@ -134,7 +134,7 @@
         }
         try
         {
-            _writtenSetsToShow = await ExamService.GetWrittenSets(_currentUser);
+            _writtenSetsToShow = await QuestionSetsService.GetWrittenSets(_currentUser);
             if (_multipleChoiceSetsToShow == null)
             {
                 _errorMessage = "You haven't created any written sets";
