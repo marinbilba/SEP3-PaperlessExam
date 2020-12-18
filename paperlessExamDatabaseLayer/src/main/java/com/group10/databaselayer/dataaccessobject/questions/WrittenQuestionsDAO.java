@@ -5,13 +5,12 @@ import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
-import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
+import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.repositories.questions.written.IWrittenQuestionRepository;
 import com.group10.databaselayer.repositories.questions.written.IWrittenSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +37,7 @@ public class WrittenQuestionsDAO {
      */
     @Autowired
     public WrittenQuestionsDAO(IWrittenSetRepository writtenSetRepository, IWrittenQuestionRepository writtenQuestionRepository
-            ) {
+    ) {
         this.writtenSetRepository = writtenSetRepository;
         this.writtenQuestionRepository = writtenQuestionRepository;
 
@@ -77,6 +76,7 @@ public class WrittenQuestionsDAO {
         }
 
     }
+
     /**
      * Create/update written set written set.
      *
@@ -151,7 +151,6 @@ public class WrittenQuestionsDAO {
     }
 
 
-
     /**
      * Find question in written set. Method checks if the passed WrittenSet exists, otherwise exception is thrown.
      * The list of written question are retrieved from the database based on the passed written set. The passed
@@ -191,9 +190,10 @@ public class WrittenQuestionsDAO {
     }
 
     public WrittenQuestion getWrittenSetQuestion(WrittenQuestion writtenSetQuestion) {
-        WrittenSet writtenSet=writtenSetQuestion.getWrittenSet();
-        return writtenQuestionRepository.findByWrittenSetTopicAndWrittenSetTitleAndWrittenSetIdAndQuestionNumberAndQuestionAndScore(writtenSet.getTopic(),writtenSet.getTitle(),writtenSet.getId(),writtenSetQuestion.getQuestionNumber(),writtenSetQuestion.getQuestion(),writtenSetQuestion.getScore());
+        WrittenSet writtenSet = writtenSetQuestion.getWrittenSet();
+        return writtenQuestionRepository.findByWrittenSetTopicAndWrittenSetTitleAndWrittenSetIdAndQuestionNumberAndQuestionAndScore(writtenSet.getTopic(), writtenSet.getTitle(), writtenSet.getId(), writtenSetQuestion.getQuestionNumber(), writtenSetQuestion.getQuestion(), writtenSetQuestion.getScore());
     }
+
     public List<WrittenSet> getAllWrittenSet(User userDeserialized) {
         return writtenSetRepository.findByUserId(userDeserialized.getId());
     }

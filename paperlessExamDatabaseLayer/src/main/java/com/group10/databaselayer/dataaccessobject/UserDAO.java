@@ -3,9 +3,7 @@ package com.group10.databaselayer.dataaccessobject;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +22,7 @@ public class UserDAO {
     public User getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
+
     /**
      * Create/update user.
      *
@@ -38,11 +37,11 @@ public class UserDAO {
     }
 
     public List<User> getUsersListByFirstName(String firstNameDeserialized) {
-       return userRepository.findByFirstNameIgnoreCaseContaining(firstNameDeserialized);
+        return userRepository.findByFirstNameIgnoreCaseContaining(firstNameDeserialized);
     }
 
     public void deleteUser(User userToDelete) {
-         userRepository.delete(userToDelete);
+        userRepository.delete(userToDelete);
     }
 
     public User getUserById(long parsedTeacherId) {

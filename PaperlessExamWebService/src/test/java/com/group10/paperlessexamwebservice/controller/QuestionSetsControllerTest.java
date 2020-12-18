@@ -1,30 +1,20 @@
 package com.group10.paperlessexamwebservice.controller;
 
-import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.Role;
 import com.group10.paperlessexamwebservice.model.user.User;
-import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
-import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.EmptyQuestionSetTitleOrTopic;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.NullQuestionSet;
-import com.group10.paperlessexamwebservice.service.exceptions.questionsets.QuestionSetAlreadyExists;
-import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
-import com.group10.paperlessexamwebservice.service.questionsets.IQuestionSetsService;
-import com.group10.paperlessexamwebservice.service.user.IUserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class QuestionSetsControllerTest {
     private static String businessTierUrl;

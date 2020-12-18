@@ -27,6 +27,7 @@ public class RequestSharedMethods {
         gson = new GsonBuilder().setPrettyPrinting().create();
 
     }
+
     /**
      * Sends a request through the socket connection.
      * 1. Create the NetworkContainer with the received parameters{@param objectSerialized},{@param requestOperation}.

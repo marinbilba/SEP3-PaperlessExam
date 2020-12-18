@@ -30,6 +30,7 @@ public interface IQuestionSetsRequests {
     WrittenQuestion createWrittenQuestion(WrittenQuestion writtenQuestion) throws ServiceNotAvailable;
 
     WrittenQuestion getWrittenQuestion(WrittenQuestion writtenQuestion) throws ServiceNotAvailable;
+
     List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(User fetchedUser) throws ServiceNotAvailable;
 
     List<WrittenSet> getUsersAllWrittenSet(User fetchedUser) throws ServiceNotAvailable;

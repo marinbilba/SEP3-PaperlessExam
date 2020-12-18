@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 
-public class MultipleChoiceQuestion  {
+public class MultipleChoiceQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

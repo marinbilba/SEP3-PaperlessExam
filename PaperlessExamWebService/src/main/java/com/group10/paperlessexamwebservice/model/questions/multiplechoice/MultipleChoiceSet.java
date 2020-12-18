@@ -3,9 +3,7 @@ package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
 import com.group10.paperlessexamwebservice.model.user.User;
-import com.sun.istack.NotNull;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +22,7 @@ public class MultipleChoiceSet extends QuestionsSet {
     private Date updatedTimestamp;
     private boolean submittedMultipleChoiceSet;
     @Hidden
-    private List<MultipleChoiceQuestion> multipleChoiceQuestionList=new ArrayList<>();
+    private List<MultipleChoiceQuestion> multipleChoiceQuestionList = new ArrayList<>();
 
     /**
      * Instantiates a new Multiple choice set.

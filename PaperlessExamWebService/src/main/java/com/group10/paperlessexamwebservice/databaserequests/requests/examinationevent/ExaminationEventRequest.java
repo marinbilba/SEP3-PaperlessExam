@@ -48,7 +48,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             String examinationEventSerialized = gson.toJson(examinationEvent);
             System.out.println(examinationEventSerialized);
             //            Send request
-            requestSharedMethods.sendRequest(examinationEventSerialized,  CREATE_EXAMINATION_EVENT);
+            requestSharedMethods.sendRequest(examinationEventSerialized, CREATE_EXAMINATION_EVENT);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -120,7 +120,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             // Serialize the object
             String teacherIdSerialized = gson.toJson(examinationEventId);
             //            Send request
-            requestSharedMethods.sendRequest(teacherIdSerialized,  GET_EXAMINATION_EVENT_BY_ID);
+            requestSharedMethods.sendRequest(teacherIdSerialized, GET_EXAMINATION_EVENT_BY_ID);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -192,7 +192,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             // Serialize the object
             String teacherIdSerialized = gson.toJson(paperToSubmit);
             //            Send request
-            requestSharedMethods.sendRequest(teacherIdSerialized,  SUBMIT_EXAM_PAPER);
+            requestSharedMethods.sendRequest(teacherIdSerialized, SUBMIT_EXAM_PAPER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -213,12 +213,12 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
         // Connect
         try {
             socketConnector.connect();
-           // append studntId and examId to form one string and send it
-            String newString=studentId+"&"+examId;
+            // append studntId and examId to form one string and send it
+            String newString = studentId + "&" + examId;
             // Serialize the object
             String newStringSerialized = gson.toJson(newString);
             //            Send request
-            requestSharedMethods.sendRequest(newStringSerialized,  GET_STUDENT_EXAM_PAPER);
+            requestSharedMethods.sendRequest(newStringSerialized, GET_STUDENT_EXAM_PAPER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -242,7 +242,7 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
             // Serialize the object
             String teacherEvaluationPaperResultSerialized = gson.toJson(teacherEvaluationPaperResult);
             //            Send request
-            requestSharedMethods.sendRequest(teacherEvaluationPaperResultSerialized,  SUBMIT_EVALUATED_STUDENT_PAPER);
+            requestSharedMethods.sendRequest(teacherEvaluationPaperResultSerialized, SUBMIT_EVALUATED_STUDENT_PAPER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -264,11 +264,11 @@ public class ExaminationEventRequest implements IExaminationEventRequest {
         try {
             socketConnector.connect();
             // append studntId and examId to form one string and send it
-            String newString=studentId+"&"+examId;
+            String newString = studentId + "&" + examId;
             // Serialize the object
             String newStringSerialized = gson.toJson(newString);
             //            Send request
-            requestSharedMethods.sendRequest(newStringSerialized,  GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID);
+            requestSharedMethods.sendRequest(newStringSerialized, GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);

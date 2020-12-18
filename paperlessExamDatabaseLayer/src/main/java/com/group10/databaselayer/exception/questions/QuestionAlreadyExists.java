@@ -9,7 +9,7 @@ public class QuestionAlreadyExists extends Exception {
      *
      * @param message the message
      */
-    public QuestionAlreadyExists(String message){
+    public QuestionAlreadyExists(String message) {
         super(message);
     }
 }

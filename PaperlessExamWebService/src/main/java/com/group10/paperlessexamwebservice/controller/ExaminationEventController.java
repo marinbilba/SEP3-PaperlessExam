@@ -110,7 +110,7 @@ public class ExaminationEventController {
         ExaminationEvent createdExaminationEvent = null;
         try {
             createdExaminationEvent = examinationEventService.createExaminationEvent(examinationEvent);
-        } catch (ServiceNotAvailable |UnexpectedError serviceNotAvailable) {
+        } catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
@@ -310,11 +310,10 @@ public class ExaminationEventController {
         StudentSubmitExaminationPaper submittedPaper = null;
         try {
             submittedPaper = examinationEventService.submitStudentExaminationPaper(paperToSubmit);
-        }  catch (NullQuestionSet | SubmitExaminationPaperException | NegativeNumberException | UnexpectedError | EmptyMultipleChoiceQuestion | EmptyQuestionSetTitleOrTopic | QuestionSetAlreadyExists  | NullQuestionSetQuestion | UserNotFound e) {
+        } catch (NullQuestionSet | SubmitExaminationPaperException | NegativeNumberException | UnexpectedError | EmptyMultipleChoiceQuestion | EmptyQuestionSetTitleOrTopic | QuestionSetAlreadyExists | NullQuestionSetQuestion | UserNotFound e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-        catch (ServiceNotAvailable serviceNotAvailable) {
+        } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
@@ -334,12 +333,11 @@ public class ExaminationEventController {
      * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getStudentSubmittedPaper/{studentId}/{examId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getStudentSubmittedPaper(@PathVariable String studentId,@PathVariable String examId) {
+    public ResponseEntity<Object> getStudentSubmittedPaper(@PathVariable String studentId, @PathVariable String examId) {
         StudentSubmitExaminationPaper studentExamPaper = null;
         try {
-            studentExamPaper = examinationEventService.getStudentSubmittedPaper(studentId,examId);
-        }
-        catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
+            studentExamPaper = examinationEventService.getStudentSubmittedPaper(studentId, examId);
+        } catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }
@@ -363,6 +361,7 @@ public class ExaminationEventController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(createdExaminationEvent);
     }
+
     /**
      * Get student examination "paper" result .It is processed as a GET request requesting <i>Student id and exam id in URI</i>
      * in format of JSON as an argument.
@@ -376,12 +375,11 @@ public class ExaminationEventController {
      * @return <i>HTTP 200 - OK</i> with the created multiple choice set question <i>HTTP 400 - BAD_REQUEST</i> <i>HTTP 503 - SERVICE_UNAVAILABLE</i> code if there are connection problems with the third tier
      */
     @RequestMapping(value = "/getExaminationEventResultByExamIdAndStudentId/{studentId}/{examId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getExaminationEventResultByExamIdAndStudentId(@PathVariable String studentId,@PathVariable String examId) {
+    public ResponseEntity<Object> getExaminationEventResultByExamIdAndStudentId(@PathVariable String studentId, @PathVariable String examId) {
         TeacherEvaluationPaperResult studentExamPaperResult = null;
         try {
-            studentExamPaperResult = examinationEventService.getExaminationEventResultByExamIdAndStudentId(studentId,examId);
-        }
-        catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
+            studentExamPaperResult = examinationEventService.getExaminationEventResultByExamIdAndStudentId(studentId, examId);
+        } catch (ServiceNotAvailable | UnexpectedError serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }

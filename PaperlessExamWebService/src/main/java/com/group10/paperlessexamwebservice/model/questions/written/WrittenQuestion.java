@@ -1,10 +1,8 @@
 package com.group10.paperlessexamwebservice.model.questions.written;
 
 
-import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.Question;
 
-import javax.persistence.*;
 import java.util.Objects;
 
 
@@ -52,15 +50,6 @@ public class WrittenQuestion extends Question {
         this.writtenSet = writtenSet;
     }
 
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(long id) {
-        super.setId(id);
-    }
-
     public double getStudentScore() {
         return studentScore;
     }
@@ -71,6 +60,15 @@ public class WrittenQuestion extends Question {
 
     public Long getId() {
         return super.getId();
+    }
+
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
+    public void setId(long id) {
+        super.setId(id);
     }
 
     public String getQuestionAnswer() {
@@ -127,21 +125,21 @@ public class WrittenQuestion extends Question {
     }
 
     /**
-     * Get question score double.
-     *
-     * @return the double
-     */
-    public double getQuestionScore() {
-        return super.getScore();
-    }
-
-    /**
      * Sets question.
      *
      * @param question the question
      */
     public void setQuestion(String question) {
         super.setQuestion(question);
+    }
+
+    /**
+     * Get question score double.
+     *
+     * @return the double
+     */
+    public double getQuestionScore() {
+        return super.getScore();
     }
 
     /**

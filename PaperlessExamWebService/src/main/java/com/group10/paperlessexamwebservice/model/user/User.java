@@ -1,11 +1,5 @@
 package com.group10.paperlessexamwebservice.model.user;
 
-import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
-import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Simple JavaBean domain object that represents a User
  *

@@ -9,7 +9,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -37,9 +40,9 @@ public class WrittenSet {
     @UpdateTimestamp
     private Date updatedTimestamp;
     private boolean submittedWrittenSet;
-@Hidden
+    @Hidden
     @ManyToMany(mappedBy = "writtenSets")
-@OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
     @Hidden
@@ -95,6 +98,15 @@ public class WrittenSet {
     }
 
     /**
+     * Sets submit multiple choice sets.
+     *
+     * @param submitMultipleChoiceSets the submit multiple choice sets
+     */
+    public void setSubmitMultipleChoiceSets(List<StudentSubmitExaminationPaper> submitMultipleChoiceSets) {
+        this.submitMultipleChoiceSets = submitMultipleChoiceSets;
+    }
+
+    /**
      * Is submitted written set boolean.
      *
      * @return the boolean
@@ -110,15 +122,6 @@ public class WrittenSet {
      */
     public void setSubmittedWrittenSet(boolean submittedWrittenSet) {
         this.submittedWrittenSet = submittedWrittenSet;
-    }
-
-    /**
-     * Sets submit multiple choice sets.
-     *
-     * @param submitMultipleChoiceSets the submit multiple choice sets
-     */
-    public void setSubmitMultipleChoiceSets(List<StudentSubmitExaminationPaper> submitMultipleChoiceSets) {
-        this.submitMultipleChoiceSets = submitMultipleChoiceSets;
     }
 
     /**

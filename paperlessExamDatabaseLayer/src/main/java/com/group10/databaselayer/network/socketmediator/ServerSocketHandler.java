@@ -7,10 +7,6 @@ import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStr
 import com.group10.databaselayer.dataaccessobject.ExaminationEventDAO;
 import com.group10.databaselayer.dataaccessobject.RoleDAO;
 import com.group10.databaselayer.dataaccessobject.UserDAO;
-import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
-import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
-import com.group10.databaselayer.network.networkcontainer.NetworkContainer;
-import com.group10.databaselayer.network.networkcontainer.RequestOperation;
 import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuestionsDAO;
 import com.group10.databaselayer.dataaccessobject.questions.WrittenQuestionsDAO;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
@@ -19,14 +15,18 @@ import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceS
 import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
 import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
 import com.group10.databaselayer.entity.questions.written.WrittenSet;
+import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
+import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.user.UserWasNotDeleted;
-import org.springframework.transaction.annotation.Transactional;
+import com.group10.databaselayer.network.networkcontainer.NetworkContainer;
+import com.group10.databaselayer.network.networkcontainer.RequestOperation;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -53,15 +53,12 @@ public class ServerSocketHandler implements Runnable {
 
     private final Socket socket;
     private final HashSet<Object> controllersSet;
-
+    private final Gson gson;
     private RoleDAO roleDAO;
     private UserDAO userDAO;
     private MultipleChoiceQuestionsDAO multipleChoiceQuestionsDAO;
     private WrittenQuestionsDAO writtenQuestionsDAO;
     private ExaminationEventDAO examinationEventDAO;
-
-    private final Gson gson;
-
     private String objectSerialized;
     private NetworkContainer networkContainer;
     private String stringResponseSerialized;
@@ -228,7 +225,7 @@ public class ServerSocketHandler implements Runnable {
                     break;
                 case SUBMIT_EVALUATED_STUDENT_PAPER:
                     submitEvaluatedStudentPaper(networkContainerRequestDeserialized);
-break;
+                    break;
                 case GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID:
                     getExaminationEventResultByExamIdAndStudentId(networkContainerRequestDeserialized);
                     break;

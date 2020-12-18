@@ -1,7 +1,5 @@
 package com.group10.paperlessexamwebservice.databaserequests.networkcontainer;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.Enumerated;
 
 /**
@@ -67,7 +65,6 @@ public enum RequestOperation {
     GET_STUDENT_EXAM_PAPER,
     SUBMIT_EVALUATED_STUDENT_PAPER,
     GET_EVALUATED_STUDENT_PAPER_BY_EXAM_ID_AND_STUDENT_ID,
-
 
 
 }

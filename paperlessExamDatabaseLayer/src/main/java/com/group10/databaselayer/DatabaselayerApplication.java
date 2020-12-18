@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableJpaRepositories
 public class DatabaselayerApplication {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         SpringApplication.run(DatabaselayerApplication.class, args);
 
 

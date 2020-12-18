@@ -3,7 +3,6 @@ package com.group10.databaselayer.entity.questions.multiplechoice;
 
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
 import com.group10.databaselayer.entity.user.User;
 import org.hibernate.annotations.OnDelete;
@@ -11,7 +10,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * MultipleChoiceSet entity. Class provides the functionality to add/remove
@@ -31,7 +33,7 @@ public class MultipleChoiceSet {
     private Long id;
     private String title;
     private String topic;
-private boolean submittedMultipleChoiceSet;
+    private boolean submittedMultipleChoiceSet;
     @UpdateTimestamp
     private Date updatedTimestamp;
 
@@ -46,7 +48,6 @@ private boolean submittedMultipleChoiceSet;
     @Hidden
     @ManyToMany(mappedBy = "submitMultipleChoiceSets")
     private List<StudentSubmitExaminationPaper> studentSubmitExaminationPapers = new ArrayList<>();
-
 
 
     /**

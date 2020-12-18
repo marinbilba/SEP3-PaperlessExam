@@ -1,7 +1,6 @@
 package com.group10.databaselayer.repositories.user;
 
 
-import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
 import com.group10.databaselayer.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,6 +15,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     List<User> findByLastName(String lastname);
 
     User findByUsername(String username);
+
     User getUserByUsername(String username);
 
     List<User> findByFirstNameIgnoreCaseContaining(String firstName);

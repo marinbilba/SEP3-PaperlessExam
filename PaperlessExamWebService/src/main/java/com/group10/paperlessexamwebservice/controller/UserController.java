@@ -1,10 +1,10 @@
 package com.group10.paperlessexamwebservice.controller;
 
 import com.group10.paperlessexamwebservice.model.user.User;
-import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
-import com.group10.paperlessexamwebservice.service.user.IUserService;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
+import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
 import com.group10.paperlessexamwebservice.service.exceptions.user.*;
+import com.group10.paperlessexamwebservice.service.user.IUserService;
 import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -203,6 +203,7 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
+
     /**
      * Get Method that fetches only <i>STUDENT</i> users in the system by their firstname. Firstname should be pass as path parameter in the URI
      * <p>
@@ -273,15 +274,16 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (ServiceNotAvailable serviceNotAvailable) {
-           serviceNotAvailable.printStackTrace();
+            serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
-        } catch (UsernameNotMatchEmail | PasswordException | EmailException|UserNotFound e) {
+        } catch (UsernameNotMatchEmail | PasswordException | EmailException | UserNotFound e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(temp);
     }
+
     /**
      * Delete user. Method processed as a POST request requiring a <i>User object</i> in format of JSON
      * as an argument that should be deleted.
@@ -314,7 +316,7 @@ public class UserController {
     public ResponseEntity<Object> deleteUser(@RequestBody User user) {
         User temp = null;
         try {
-           temp= userService.deleteUser(user);
+            temp = userService.deleteUser(user);
         } catch (ServiceNotAvailable serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());

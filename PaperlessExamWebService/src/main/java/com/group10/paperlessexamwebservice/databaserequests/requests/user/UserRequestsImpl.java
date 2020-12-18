@@ -12,11 +12,11 @@ import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAv
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
 /**
  * Class Handles the client requests to the third tier through a Socket connection
@@ -36,7 +36,7 @@ public class UserRequestsImpl implements IUserRequests {
     @Autowired
     private RequestSharedMethods requestSharedMethods;
     @Autowired
-   private ISocketConnector socketConnector;
+    private ISocketConnector socketConnector;
     //private User cashedUser;
     private Gson gson;
 
@@ -47,7 +47,6 @@ public class UserRequestsImpl implements IUserRequests {
         gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();
 
     }
-
 
 
     @Override
@@ -134,7 +133,7 @@ public class UserRequestsImpl implements IUserRequests {
 
     @Override
     public List<User> getUsersByFirstName(String firstName) throws ServiceNotAvailable {
-        List<User> userList=null;
+        List<User> userList = null;
         try {
 
             socketConnector.connect();
@@ -144,7 +143,7 @@ public class UserRequestsImpl implements IUserRequests {
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
             User[] tempList = gson.fromJson(networkContainerResponseDeserialized.getSerializedObject(), User[].class);
-            userList= Arrays.asList(tempList);
+            userList = Arrays.asList(tempList);
             //            Disconnect
             socketConnector.disconnect();
         } catch (IOException e) {
@@ -163,7 +162,7 @@ public class UserRequestsImpl implements IUserRequests {
             // Serialize the object
             String userSerialized = gson.toJson(userToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(userSerialized,  DELETE_USER);
+            requestSharedMethods.sendRequest(userSerialized, DELETE_USER);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -181,6 +180,7 @@ public class UserRequestsImpl implements IUserRequests {
     public List<User> getAllUsersList() {
         return null;
     }
+
     /**
      * Make a quire to the database with the purpose of finding the role id by the given name, passing the {@param name}.
      * <p>

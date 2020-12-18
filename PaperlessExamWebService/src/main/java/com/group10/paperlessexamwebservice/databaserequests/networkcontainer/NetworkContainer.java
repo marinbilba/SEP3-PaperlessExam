@@ -8,7 +8,7 @@ package com.group10.paperlessexamwebservice.databaserequests.networkcontainer;
  * @author Marin Bilba
  * @version 1.0
  */
-public class NetworkContainer  {
+public class NetworkContainer {
     private RequestOperation requestOperation;
     private String serializedObject;
 
@@ -19,7 +19,7 @@ public class NetworkContainer  {
      * @param serializedObject the serialized object
      */
     public NetworkContainer(RequestOperation requestOperation, String serializedObject) {
-        this.requestOperation=requestOperation;
+        this.requestOperation = requestOperation;
         this.serializedObject = serializedObject;
 
     }

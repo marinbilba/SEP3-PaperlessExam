@@ -16,11 +16,11 @@ import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAv
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.group10.paperlessexamwebservice.databaserequests.networkcontainer.RequestOperation.*;
 
 /**
  * The type Question sets requests.
@@ -42,13 +42,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
      * Instantiates a new User requests.
      */
     public IQuestionSetsRequestsImpl() {
-        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();;
+        gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();
+        ;
 
     }
 
     @Override
     public MultipleChoiceSet getMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
-        MultipleChoiceSet fetchedMultipleChoiceSet=null;
+        MultipleChoiceSet fetchedMultipleChoiceSet = null;
         // Connect
         try {
             socketConnector.connect();
@@ -120,7 +121,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public MultipleChoiceQuestion getMultipleChoiceSetQuestion(MultipleChoiceQuestion multipleChoiceSetQuestion) throws ServiceNotAvailable {
-        MultipleChoiceQuestion fetchedMultipleChoiceSet=null;
+        MultipleChoiceQuestion fetchedMultipleChoiceSet = null;
         // Connect
         try {
             socketConnector.connect();
@@ -144,7 +145,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public QuestionOption createMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws ServiceNotAvailable {
-        QuestionOption createdMultipleChoiceQuestionOption=null;
+        QuestionOption createdMultipleChoiceQuestionOption = null;
         // Connect
         try {
             socketConnector.connect();
@@ -167,7 +168,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public QuestionOption getMultipleChoiceSetQuestionOption(QuestionOption multipleChoiceQuestionOption) throws ServiceNotAvailable {
-        QuestionOption fetchedMultipleChoiceSetQuestionOption=null;
+        QuestionOption fetchedMultipleChoiceSetQuestionOption = null;
         // Connect
         try {
             socketConnector.connect();
@@ -190,7 +191,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenSet createWrittenSet(WrittenSet writtenSet) throws ServiceNotAvailable {
-        WrittenSet createdWrittenSet=null;
+        WrittenSet createdWrittenSet = null;
         // Connect
         try {
             socketConnector.connect();
@@ -213,7 +214,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenSet getWrittenSet(WrittenSet writtenSet) throws ServiceNotAvailable {
-        WrittenSet fetchedWrittenSet=null;
+        WrittenSet fetchedWrittenSet = null;
         // Connect
         try {
             socketConnector.connect();
@@ -236,7 +237,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenQuestion createWrittenQuestion(WrittenQuestion writtenQuestion) throws ServiceNotAvailable {
-        WrittenQuestion createdWrittenSetQuestion=null;
+        WrittenQuestion createdWrittenSetQuestion = null;
         // Connect
         try {
             socketConnector.connect();
@@ -259,7 +260,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenQuestion getWrittenQuestion(WrittenQuestion writtenQuestion) throws ServiceNotAvailable {
-        WrittenQuestion fetchedWrittenQuestion=null;
+        WrittenQuestion fetchedWrittenQuestion = null;
         // Connect
         try {
             socketConnector.connect();
@@ -282,14 +283,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public List<MultipleChoiceSet> getUsersAllMultipleChoiceSet(User fetchedUser) throws ServiceNotAvailable {
-        List<MultipleChoiceSet> fetchedMultipleChoiceList=null;
+        List<MultipleChoiceSet> fetchedMultipleChoiceList = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String multipleChoiceSetSerialized = gson.toJson(fetchedUser);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,  GET_ALL_MULTIPLE_CHOICE_SETS);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, GET_ALL_MULTIPLE_CHOICE_SETS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -307,14 +308,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public List<WrittenSet> getUsersAllWrittenSet(User fetchedUser) throws ServiceNotAvailable {
-        List<WrittenSet> fetchedWrittenSetList=null;
+        List<WrittenSet> fetchedWrittenSetList = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String writtenSetListSerialized = gson.toJson(fetchedUser);
             //            Send request
-            requestSharedMethods.sendRequest(writtenSetListSerialized,  GET_ALL_WRITTEN_SETS);
+            requestSharedMethods.sendRequest(writtenSetListSerialized, GET_ALL_WRITTEN_SETS);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -331,21 +332,22 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
     }
 
     /**
-     *  Method makes a Delete for the given {@param writtenSetToDelete} request to tier 3
+     * Method makes a Delete for the given {@param writtenSetToDelete} request to tier 3
+     *
      * @param writtenSetToDelete
      * @return the deleted written set
      * @throws ServiceNotAvailable
      */
     @Override
     public WrittenSet deleteWrittenSet(WrittenSet writtenSetToDelete) throws ServiceNotAvailable {
-        WrittenSet deletedWrittenSet=null;
+        WrittenSet deletedWrittenSet = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String writtenSetSerialized = gson.toJson(writtenSetToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(writtenSetSerialized,  DELETE_WRITTEN_SET);
+            requestSharedMethods.sendRequest(writtenSetSerialized, DELETE_WRITTEN_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -362,20 +364,21 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     /**
      * Method makes a Delete for the given {@param multipleChoiceSetToDelete} request to tier 3
+     *
      * @param multipleChoiceSetToDelete
      * @return the deleted multiple choice set  set
      * @throws ServiceNotAvailable
      */
     @Override
     public MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) throws ServiceNotAvailable {
-        MultipleChoiceSet deletedMultipleChoiceSet=null;
+        MultipleChoiceSet deletedMultipleChoiceSet = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String multipleChoiceSetSerialized = gson.toJson(multipleChoiceSetToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceSetSerialized,  DELETE_MULTIPLE_CHOICE_SET);
+            requestSharedMethods.sendRequest(multipleChoiceSetSerialized, DELETE_MULTIPLE_CHOICE_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -392,14 +395,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public MultipleChoiceQuestion deleteMultipleChoiceQuestion(MultipleChoiceQuestion multipleChoiceQuestionToDelete) throws ServiceNotAvailable {
-        MultipleChoiceQuestion deletedMultipleChoiceQuestion=null;
+        MultipleChoiceQuestion deletedMultipleChoiceQuestion = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String multipleChoiceQuestionSerialized = gson.toJson(multipleChoiceQuestionToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(multipleChoiceQuestionSerialized,  DELETE_MULTIPLE_CHOICE_SET_QUESTION);
+            requestSharedMethods.sendRequest(multipleChoiceQuestionSerialized, DELETE_MULTIPLE_CHOICE_SET_QUESTION);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -416,14 +419,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenQuestion deleteWrittenSetQuestion(WrittenQuestion writtenQuestionToDelete) throws ServiceNotAvailable {
-        WrittenQuestion deletedWrittenQuestion=null;
+        WrittenQuestion deletedWrittenQuestion = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String writtenQuestionToDeleteSerialized = gson.toJson(writtenQuestionToDelete);
             //            Send request
-            requestSharedMethods.sendRequest(writtenQuestionToDeleteSerialized,  DELETE_WRITTEN_QUESTION);
+            requestSharedMethods.sendRequest(writtenQuestionToDeleteSerialized, DELETE_WRITTEN_QUESTION);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -440,14 +443,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public WrittenSet getWrittenSetById(long writtenSetId) throws ServiceNotAvailable {
-        WrittenSet fetchedWrittenQuestion=null;
+        WrittenSet fetchedWrittenQuestion = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String idSerialized = gson.toJson(writtenSetId);
             //            Send request
-            requestSharedMethods.sendRequest(idSerialized,  GET_WRITTEN_SET_BY_ID);
+            requestSharedMethods.sendRequest(idSerialized, GET_WRITTEN_SET_BY_ID);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -464,14 +467,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public List<WrittenQuestion> getWrittenSetQuestionsByWrittenSet(WrittenSet fetchedWrittenSet) throws ServiceNotAvailable {
-        List<WrittenQuestion> fetchedWrittenSetQuestionsList=null;
+        List<WrittenQuestion> fetchedWrittenSetQuestionsList = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String writtenSetSerialized = gson.toJson(fetchedWrittenSet);
             //            Send request
-            requestSharedMethods.sendRequest(writtenSetSerialized,  GET_WRITTEN_SET_QUESTIONS_BY_WRITTEN_SET);
+            requestSharedMethods.sendRequest(writtenSetSerialized, GET_WRITTEN_SET_QUESTIONS_BY_WRITTEN_SET);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -489,14 +492,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public List<MultipleChoiceQuestion> getMultipleChoiceQuestionByMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable {
-        List<MultipleChoiceQuestion> fetchedMultipleChoiceQuestionList=null;
+        List<MultipleChoiceQuestion> fetchedMultipleChoiceQuestionList = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String writtenSetSerialized = gson.toJson(multipleChoiceSet);
             //            Send request
-            requestSharedMethods.sendRequest(writtenSetSerialized,  GET_MULTIPLE_CHOICE_QUESTIONS_BY_MULTIPLE_CHOICE);
+            requestSharedMethods.sendRequest(writtenSetSerialized, GET_MULTIPLE_CHOICE_QUESTIONS_BY_MULTIPLE_CHOICE);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);
@@ -514,7 +517,7 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public List<QuestionOption> getMultipleChoiceQuestionOptionsByMultipleChoiceQuestion(MultipleChoiceQuestion question) throws ServiceNotAvailable {
-        List<QuestionOption> fetchedQuestionOptionList=null;
+        List<QuestionOption> fetchedQuestionOptionList = null;
         // Connect
         try {
             socketConnector.connect();
@@ -539,14 +542,14 @@ public class IQuestionSetsRequestsImpl implements IQuestionSetsRequests {
 
     @Override
     public MultipleChoiceSet getMultipleChoiceSetById(long multipleChoiceSetId) throws ServiceNotAvailable {
-        MultipleChoiceSet fetchedMultipleChoiceSet=null;
+        MultipleChoiceSet fetchedMultipleChoiceSet = null;
         // Connect
         try {
             socketConnector.connect();
             // Serialize the object
             String idSerialized = gson.toJson(multipleChoiceSetId);
             //            Send request
-            requestSharedMethods.sendRequest(idSerialized,  GET_MULTIPLE_CHOICE_SET_BY_ID);
+            requestSharedMethods.sendRequest(idSerialized, GET_MULTIPLE_CHOICE_SET_BY_ID);
             //            Read response
             String responseMessage = socketConnector.readFromServer();
             NetworkContainer networkContainerResponseDeserialized = gson.fromJson(responseMessage, NetworkContainer.class);

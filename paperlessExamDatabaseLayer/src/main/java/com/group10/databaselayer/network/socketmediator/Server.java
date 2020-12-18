@@ -2,12 +2,12 @@ package com.group10.databaselayer.network.socketmediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.group10.databaselayer.dataaccessobject.*;
+import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
+import com.group10.databaselayer.dataaccessobject.ExaminationEventDAO;
+import com.group10.databaselayer.dataaccessobject.RoleDAO;
+import com.group10.databaselayer.dataaccessobject.UserDAO;
 import com.group10.databaselayer.dataaccessobject.questions.MultipleChoiceQuestionsDAO;
 import com.group10.databaselayer.dataaccessobject.questions.WrittenQuestionsDAO;
-
-import com.group10.databaselayer.annotations.hidden.HiddenAnnotationExclusionStrategy;
-import com.group10.databaselayer.entity.teacherpaperevaluation.TeacherEvaluationPaperResult;
 import com.group10.databaselayer.repositories.examinationevent.IExaminationEventRepository;
 import com.group10.databaselayer.repositories.user.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,31 +24,23 @@ import java.util.concurrent.Executors;
 @Component
 public class Server {
     private static final int SERVER_PORT = 8000;
-
+    private static final HashSet<Object> controllersSet = new HashSet<>();
+    @Autowired
+    IExaminationEventRepository examinationEvent;
     @Autowired
     private RoleDAO roleDAO;
     @Autowired
     private UserDAO userDAO;
-
     @Autowired
     private WrittenQuestionsDAO writtenQuestionsDAO;
-
     @Autowired
     private MultipleChoiceQuestionsDAO multipleChoiceQuestionsDAO;
     @Autowired
     private ExaminationEventDAO examinationEventDAO;
-
     private ExecutorService executorService = Executors.newFixedThreadPool(100);
-
-    private static final HashSet<Object> controllersSet = new HashSet<>();
     // No need
     @Autowired
     private IUserRepository userRepository;
-
-    @Autowired
-    IExaminationEventRepository examinationEvent;
-
-
     private GsonBuilder gson;
 
     @PostConstruct
@@ -141,7 +133,7 @@ public class Server {
                 System.out.println("[SERVER] Connected to client");
                 ServerSocketHandler serverSocketHandler = new ServerSocketHandler(socket, controllersSet);
                 serverSocketHandler.run();
-                   //executorService.execute(serverSocketHandler);
+                //executorService.execute(serverSocketHandler);
                 //executorService.shutdown();
                 // serverSocketHandler.start();
                 // executorService.execute(serverSocketHandler.run());

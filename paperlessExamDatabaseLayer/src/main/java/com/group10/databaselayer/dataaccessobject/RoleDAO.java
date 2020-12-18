@@ -18,11 +18,12 @@ public class RoleDAO {
     IRoleRepository roleRepository;
 
     //    Roles
+
     /**
      * Method will return the user filtered by id
      *
-     * @return the list of all users
      * @param roleDeserialized
+     * @return the list of all users
      */
     public Role getRoleByName(String roleDeserialized) {
         return roleRepository.findByName(roleDeserialized);

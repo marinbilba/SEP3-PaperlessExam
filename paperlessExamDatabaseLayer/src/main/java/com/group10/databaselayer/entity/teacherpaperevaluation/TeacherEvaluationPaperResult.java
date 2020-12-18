@@ -1,7 +1,6 @@
 package com.group10.databaselayer.entity.teacherpaperevaluation;
 
 import com.group10.databaselayer.entity.studentsubmitpaper.StudentSubmitExaminationPaper;
-import com.group10.databaselayer.entity.user.Role;
 import com.group10.databaselayer.entity.user.User;
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.CreationTimestamp;

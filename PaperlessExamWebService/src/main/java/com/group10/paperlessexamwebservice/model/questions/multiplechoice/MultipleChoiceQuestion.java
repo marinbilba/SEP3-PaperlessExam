@@ -4,7 +4,6 @@ package com.group10.paperlessexamwebservice.model.questions.multiplechoice;
 import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.Question;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,12 +38,12 @@ public class MultipleChoiceQuestion extends Question {
         this.multipleChoiceSet = multipleChoiceSet;
     }
 
-    public void setId(long id) {
-        super.setId(id);
-    }
-
     public Long getId() {
         return super.getId();
+    }
+
+    public void setId(long id) {
+        super.setId(id);
     }
 
     public boolean isSubmittedMultipleChoiceQuestion() {
@@ -97,21 +96,21 @@ public class MultipleChoiceQuestion extends Question {
     }
 
     /**
-     * Get question score double.
-     *
-     * @return the double
-     */
-    public double getQuestionScore() {
-        return super.getScore();
-    }
-
-    /**
      * Sets question.
      *
      * @param question the question
      */
     public void setQuestion(String question) {
         super.setQuestion(question);
+    }
+
+    /**
+     * Get question score double.
+     *
+     * @return the double
+     */
+    public double getQuestionScore() {
+        return super.getScore();
     }
 
     /**

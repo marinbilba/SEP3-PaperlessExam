@@ -70,9 +70,9 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public User createUser(User user) throws UsernameNotMatchEmail, PasswordException, ServiceNotAvailable, UsernameFoundException, EmailException, UnexpectedError {
-    if(user==null){
-        throw new UnexpectedError("Something went wrong");
-    }
+        if (user == null) {
+            throw new UnexpectedError("Something went wrong");
+        }
         // Check if the username exists in the database
         User requestedUserFromTheDatabase = userRequest.getUserByUsername(user.getUsername());
         if (requestedUserFromTheDatabase != null) {
@@ -170,7 +170,7 @@ public class UserServiceImpl implements IUserService {
     public User getUserStudentByUsername(String username) throws ServiceNotAvailable, UserNotFound {
         User user = userRequest.getUserByUsername(username);
         if (user != null) {
-            if(user.getRole().getName().equals("Teacher")){
+            if (user.getRole().getName().equals("Teacher")) {
                 throw new UserNotFound("This user is a teacher");
             }
             return user;
@@ -179,15 +179,15 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> getUsersStudentsByFirstName(String firstName) throws ServiceNotAvailable, UserNotFound {
-        List<User> onlyStudentsList=new ArrayList<>();
+        List<User> onlyStudentsList = new ArrayList<>();
         List<User> usersList = userRequest.getUsersByFirstName(firstName);
         if (!usersList.isEmpty()) {
-            for (var user:usersList  ) {
-                if(user.getRole().getName().equals("Student")){
+            for (var user : usersList) {
+                if (user.getRole().getName().equals("Student")) {
                     onlyStudentsList.add(user);
                 }
             }
-            if(onlyStudentsList.isEmpty()){
+            if (onlyStudentsList.isEmpty()) {
                 throw new UserNotFound("Students by given first name were not found");
             }
             return usersList;

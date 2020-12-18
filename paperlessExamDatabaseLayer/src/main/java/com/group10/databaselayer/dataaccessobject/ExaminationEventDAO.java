@@ -122,9 +122,10 @@ public class ExaminationEventDAO {
     public TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) {
         return teacherEvaluationPaperResultRepository.save(teacherEvaluationPaperResult);
     }
+
     public TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentIdAndExamId) {
         long submitById = Long.parseLong(parseStudentId(studentIdAndExamId));
         long examinationEventId = Long.parseLong(parseExamId(studentIdAndExamId));
-return teacherEvaluationPaperResultRepository.getExaminationEventResultByExamIdAndStudentId(examinationEventId,submitById);
+        return teacherEvaluationPaperResultRepository.getExaminationEventResultByExamIdAndStudentId(examinationEventId, submitById);
     }
 }

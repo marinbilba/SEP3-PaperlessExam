@@ -12,7 +12,7 @@ import java.util.List;
  * Repository that provides CRUD operations for WrittenSet entity{@link WrittenSet}
  */
 @Repository
-public interface IWrittenSetRepository extends JpaRepository<WrittenSet,Long> {
+public interface IWrittenSetRepository extends JpaRepository<WrittenSet, Long> {
     WrittenSet findByTitleAndTopicAndUserId(String title, String topic, Long id);
 
     List<WrittenSet> findByUserId(Long id);
@@ -22,9 +22,9 @@ public interface IWrittenSetRepository extends JpaRepository<WrittenSet,Long> {
             "join writtenSets.examinationEvents examEvents \n" +
             "join examEvents.writtenSets writtenSet \n" +
             "where examEvents.id = :id")
-    List<WrittenSet>getExaminationEventWrittenSets(long id);
+    List<WrittenSet> getExaminationEventWrittenSets(long id);
 
 // List<Map<String, Object>> findByTitleAndTopic(String title, String topic);
- }
+}
 
 

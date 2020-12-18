@@ -5,11 +5,10 @@ import com.google.gson.FieldAttributes;
 
 
 /**
- *  Strategy that excludes any field (or class) that is tagged with an "@Hidden"
+ * Strategy that excludes any field (or class) that is tagged with an "@Hidden"
  */
 
-public class HiddenAnnotationExclusionStrategy implements ExclusionStrategy
-{
+public class HiddenAnnotationExclusionStrategy implements ExclusionStrategy {
     public boolean shouldSkipClass(Class<?> clazz) {
         return clazz.getAnnotation(Hidden.class) != null;
     }

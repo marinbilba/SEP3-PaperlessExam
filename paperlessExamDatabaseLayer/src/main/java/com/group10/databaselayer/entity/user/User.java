@@ -2,12 +2,12 @@ package com.group10.databaselayer.entity.user;
 
 import com.group10.databaselayer.annotations.hidden.Hidden;
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceQuestion;
-import com.group10.databaselayer.entity.questions.multiplechoice.MultipleChoiceSet;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Simple JavaBean domain object that represents a User
@@ -43,7 +43,7 @@ public class User {
 
     @Hidden
     @ManyToMany(mappedBy = "usersAssigned")
-     private List<ExaminationEvent> examinationEvents = new ArrayList<>();
+    private List<ExaminationEvent> examinationEvents = new ArrayList<>();
 
 
     /**

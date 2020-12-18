@@ -1,13 +1,9 @@
 package com.group10.paperlessexamwebservice.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
-import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenQuestion;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
-import com.group10.paperlessexamwebservice.model.user.User;
 import com.group10.paperlessexamwebservice.service.exceptions.other.NegativeNumberException;
 import com.group10.paperlessexamwebservice.service.exceptions.other.ServiceNotAvailable;
 import com.group10.paperlessexamwebservice.service.exceptions.other.UnexpectedError;
@@ -22,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -38,13 +31,13 @@ import java.util.List;
 @RequestMapping("/questionsets")
 public class QuestionSetsController {
 
-    @Autowired
-    private IQuestionSetsService questionSetsService;
     /**
      * The User controller.
      */
     @Autowired
     IUserService userController;
+    @Autowired
+    private IQuestionSetsService questionSetsService;
 
     /**
      * Create multiple choice set.It is processed as a POST request requesting <i>MultipleChoiceSet object</i>
@@ -425,6 +418,7 @@ public class QuestionSetsController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(deletedMultipleChoiceSet);
     }
+
     /**
      * Deletes the passed written sets of a user.
      * It is processed as a POST request requesting the <i>Written Set object to delete</i>

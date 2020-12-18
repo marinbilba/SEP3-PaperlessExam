@@ -1,8 +1,5 @@
 package com.group10.paperlessexamwebservice.model.questions;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -26,14 +23,6 @@ public class Question implements Serializable {
     public Question() {
     }
 
-    public int getQuestionNumber() {
-        return questionNumber;
-    }
-
-    public void setQuestionNumber(int questionNumber) {
-        this.questionNumber = questionNumber;
-    }
-
     /**
      * Instantiates a new Question.
      *
@@ -51,6 +40,14 @@ public class Question implements Serializable {
         this.question = question;
         this.questionAnswer = questionAnswer;
         this.score = score;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
     }
 
     public String getQuestionAnswer() {

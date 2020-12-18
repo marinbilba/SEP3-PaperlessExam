@@ -6,8 +6,8 @@ import com.group10.databaselayer.entity.questions.multiplechoice.QuestionOption;
 import com.group10.databaselayer.entity.user.User;
 import com.group10.databaselayer.exception.questions.QuestionAlreadyExists;
 import com.group10.databaselayer.exception.questions.QuestionNotFound;
-import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.exception.questions.QuestionSetNotFound;
+import com.group10.databaselayer.exception.questions.TitleOrTopicAreNull;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceQuestionOptionRepository;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceQuestionRepository;
 import com.group10.databaselayer.repositories.questions.multiplechoice.IMultipleChoiceSetRepository;
@@ -88,7 +88,7 @@ public class MultipleChoiceQuestionsDAO {
     public boolean existsMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws TitleOrTopicAreNull {
         Optional<MultipleChoiceSet> queriedMultipleChoiceSet = Optional.empty();
         if (checkTitleTopicNotNull(multipleChoiceSet)) {
-            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserIdAndSubmittedMultipleChoiceSet(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId(),multipleChoiceSet.isSubmittedMultipleChoiceSet()));
+            queriedMultipleChoiceSet = Optional.ofNullable(multipleChoiceSetRepository.findByTitleAndTopicAndUserIdAndSubmittedMultipleChoiceSet(multipleChoiceSet.getTitle(), multipleChoiceSet.getTopic(), multipleChoiceSet.getUser().getId(), multipleChoiceSet.isSubmittedMultipleChoiceSet()));
         }
         return queriedMultipleChoiceSet.isPresent();
     }
@@ -276,8 +276,8 @@ public class MultipleChoiceQuestionsDAO {
      */
     public MultipleChoiceSet deleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSetToDelete) {
 
-         multipleChoiceSetRepository.delete(multipleChoiceSetToDelete);
-         return multipleChoiceSetToDelete;
+        multipleChoiceSetRepository.delete(multipleChoiceSetToDelete);
+        return multipleChoiceSetToDelete;
     }
 
     /**

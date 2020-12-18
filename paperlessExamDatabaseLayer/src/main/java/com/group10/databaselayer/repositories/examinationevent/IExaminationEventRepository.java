@@ -1,8 +1,6 @@
 package com.group10.databaselayer.repositories.examinationevent;
 
 import com.group10.databaselayer.entity.examinationevent.ExaminationEvent;
-import com.group10.databaselayer.entity.questions.written.WrittenQuestion;
-import com.group10.databaselayer.entity.questions.written.WrittenSet;
 import com.group10.databaselayer.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,9 +17,6 @@ public interface IExaminationEventRepository extends JpaRepository<ExaminationEv
             "join users.examinationEvents examEvent \n" +
             "where users.id = :id")
     List<ExaminationEvent> findUsersExaminationEvents(long id);
-
-
-
 
 
 //    List <ExaminationEvent> findByExaminationEvent()

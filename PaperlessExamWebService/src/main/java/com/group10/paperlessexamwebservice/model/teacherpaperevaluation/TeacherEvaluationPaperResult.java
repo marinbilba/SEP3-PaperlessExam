@@ -24,6 +24,7 @@ public class TeacherEvaluationPaperResult {
     private double score;
     private double multipleChoiceSetsTotalScore;
     private double writtenSetsTotalScore;
+
     public TeacherEvaluationPaperResult() {
     }
 

@@ -11,6 +11,7 @@ public class QuestionOption {
     private String answer;
     private MultipleChoiceQuestion multipleChoiceQuestion;
     private boolean submittedQuestionOption;
+
     /**
      * Instantiates a new Question option.
      */
@@ -20,34 +21,34 @@ public class QuestionOption {
     /**
      * Instantiates a new Question option.
      *
-     * @param correctAnswer        the is correct answer
+     * @param correctAnswer          the is correct answer
      * @param answer                 the answer
      * @param multipleChoiceQuestion the multiple choice question
      */
     public QuestionOption(boolean correctAnswer, String answer, MultipleChoiceQuestion multipleChoiceQuestion) {
         this.correctAnswer = correctAnswer;
         this.answer = answer;
-        this.multipleChoiceQuestion=multipleChoiceQuestion;
+        this.multipleChoiceQuestion = multipleChoiceQuestion;
     }
 
     public boolean isSubmittedQuestionOption() {
         return submittedQuestionOption;
     }
 
-    public Long getId() {
-        return id;
+    public void setSubmittedQuestionOption(boolean submittedQuestionOption) {
+        this.submittedQuestionOption = submittedQuestionOption;
     }
 
-    public boolean isCorrectAnswer() {
-        return correctAnswer;
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setSubmittedQuestionOption(boolean submittedQuestionOption) {
-        this.submittedQuestionOption = submittedQuestionOption;
+    public boolean isCorrectAnswer() {
+        return correctAnswer;
     }
 
     public boolean getCorrectAnswer() {

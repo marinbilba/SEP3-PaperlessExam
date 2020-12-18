@@ -36,7 +36,8 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     @Autowired
     private IUserRequests userRequests;
 
-    private Gson gson=new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();;;
+    private Gson gson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy()).setPrettyPrinting().create();
+    ;;
 
     private boolean validateMultipleChoiceSetFields(MultipleChoiceSet multipleChoiceSet) throws NullQuestionSet, EmptyQuestionSetTitleOrTopic {
         // Validate multiple choice set on null. Check if title and  topic are not empty
@@ -126,16 +127,16 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
         WrittenSet oldWrittenSet = getWrittenSetWithAllChildElements(writtenSet.getId());
 
 //           Delete old questions
-            for (var question : oldWrittenSet.getWrittenQuestions()) {
-                question.setWrittenSet(writtenSet);
-                deleteWrittenQuestion(question);
-            }
+        for (var question : oldWrittenSet.getWrittenQuestions()) {
+            question.setWrittenSet(writtenSet);
+            deleteWrittenQuestion(question);
+        }
 //           Populate db again
-            for (var question : writtenSet.getWrittenQuestions()) {
-                question.setWrittenSet(writtenSet);
-                addWrittenQuestion(question);
-            }
-            return getWrittenSetWithAllChildElements(writtenSet.getId());
+        for (var question : writtenSet.getWrittenQuestions()) {
+            question.setWrittenSet(writtenSet);
+            addWrittenQuestion(question);
+        }
+        return getWrittenSetWithAllChildElements(writtenSet.getId());
     }
 
     @Override
@@ -158,7 +159,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
                 questionOption.setMultipleChoiceQuestion(tempQuestion);
                 // set to null because we want to create a new record
                 questionOption.setId(null);
-               addMultipleChoiceQuestionOption(questionOption);
+                addMultipleChoiceQuestionOption(questionOption);
             }
 
         }

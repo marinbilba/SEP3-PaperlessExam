@@ -4,7 +4,6 @@ import com.group10.paperlessexamwebservice.model.questions.multiplechoice.Multip
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
 import com.group10.paperlessexamwebservice.model.user.User;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,7 @@ public class ExaminationEvent {
     private List<User> usersAssigned = new ArrayList<>();
     private Date examDateAndTime;
     private Date updatedTimestamp;
-    private User createdBy ;
+    private User createdBy;
 
     /**
      * Instantiates a new Examination event.

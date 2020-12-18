@@ -4,7 +4,6 @@ package com.group10.paperlessexamwebservice.model.questions.written;
 import com.group10.paperlessexamwebservice.annotations.hidden.Hidden;
 import com.group10.paperlessexamwebservice.model.questions.QuestionsSet;
 import com.group10.paperlessexamwebservice.model.user.User;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,6 +80,15 @@ public class WrittenSet extends QuestionsSet {
     }
 
     /**
+     * Sets written questions.
+     *
+     * @param writtenQuestions the written questions
+     */
+    public void setWrittenQuestions(List<WrittenQuestion> writtenQuestions) {
+        this.writtenQuestions = writtenQuestions;
+    }
+
+    /**
      * Is submitted written set boolean.
      *
      * @return the boolean
@@ -89,8 +97,6 @@ public class WrittenSet extends QuestionsSet {
         return submittedWrittenSet;
     }
 
-
-
     /**
      * Sets submitted written set.
      *
@@ -98,15 +104,6 @@ public class WrittenSet extends QuestionsSet {
      */
     public void setSubmittedWrittenSet(boolean submittedWrittenSet) {
         this.submittedWrittenSet = submittedWrittenSet;
-    }
-
-    /**
-     * Sets written questions.
-     *
-     * @param writtenQuestions the written questions
-     */
-    public void setWrittenQuestions(List<WrittenQuestion> writtenQuestions) {
-        this.writtenQuestions = writtenQuestions;
     }
 
     /**
