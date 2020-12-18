@@ -67,8 +67,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
             }
 
             return multipleChoiceSetDeserialize;
-
-            // return new MultipleChoiceSet("valera", "jora", new User());
+            
         }
 
         public async Task<MultipleChoiceSet> DeleteMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet)

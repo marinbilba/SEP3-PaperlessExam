@@ -39,7 +39,6 @@ public class MultipleChoiceSet {
 
     @ManyToOne()
     @JoinColumn(name = "user_id", updatable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
     @Hidden
     @ManyToMany(mappedBy = "multipleChoiceSets")
