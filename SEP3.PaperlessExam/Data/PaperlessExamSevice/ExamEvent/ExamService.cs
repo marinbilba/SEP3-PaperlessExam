@@ -18,7 +18,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.ExamEvent
     public class ExamService : IExamService
     {
         
-        private string uri = "http://localhost:8080";
+        private string uri = "http://localhost:8005";
              private readonly HttpClient client;
 
              public ExamService()

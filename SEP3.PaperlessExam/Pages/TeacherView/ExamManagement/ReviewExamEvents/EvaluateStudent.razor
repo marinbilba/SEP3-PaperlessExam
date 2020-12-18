@@ -52,7 +52,7 @@
                             @* Type number of points *@
                             <div class="row top-buffer">
                                 <div class="col-md-1 offset-1  padding-right0 ">
-                                    <input type="number" class="form-control" placeholder="Score" @bind-value="writtenQuestion.Score" required/>out of
+                                    <input type="number" class="form-control" placeholder="Score" @bind-value="writtenQuestion.StudentScore" required/>out of
                                 </div>
                                 
                                 <div class="col-md-1 offset-1  padding-right0 ">
@@ -219,6 +219,7 @@
         };
         
         TeacherEvaluationPaperResult teacherEvaluationPaperResult2 = await ExamService.SubmitEvaluatedStudentPaperByTeacher(teacherEvaluationPaperResult);
+        NavigationManager.NavigateTo("/ReviewExamEvents");
     }
 
     private void SetCorrectAnswer(bool? value)

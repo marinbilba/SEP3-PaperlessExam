@@ -23,8 +23,9 @@ public class WrittenSet extends QuestionsSet {
     private Date updatedTimestamp;
     private User user;
     private boolean submittedWrittenSet;
+
     @Hidden
-private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
+    private List<WrittenQuestion> writtenQuestions = new ArrayList<>();
 
     /**
      * Instantiates a new Written set.
@@ -39,9 +40,9 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
      * @param topic the topic
      * @param user  the user
      */
-    public WrittenSet(String title, String topic,User user) {
+    public WrittenSet(String title, String topic, User user) {
         super(title, topic);
-        this.user=user;
+        this.user = user;
     }
 
     /**
@@ -63,8 +64,9 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
     }
 
     public String getTitle() {
-       return super.getTitle();
+        return super.getTitle();
     }
+
     public String getTopic() {
         return super.getTopic();
     }
@@ -86,6 +88,8 @@ private List<WrittenQuestion> writtenQuestions=new ArrayList<>();
     public boolean isSubmittedWrittenSet() {
         return submittedWrittenSet;
     }
+
+
 
     /**
      * Sets submitted written set.

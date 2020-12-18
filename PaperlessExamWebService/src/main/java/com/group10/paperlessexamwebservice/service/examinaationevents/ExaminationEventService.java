@@ -2,7 +2,6 @@ package com.group10.paperlessexamwebservice.service.examinaationevents;
 
 import com.group10.paperlessexamwebservice.databaserequests.requests.examinationevent.IExaminationEventRequest;
 import com.group10.paperlessexamwebservice.model.examinationevent.ExaminationEvent;
-import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceQuestion;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.MultipleChoiceSet;
 import com.group10.paperlessexamwebservice.model.questions.multiplechoice.QuestionOption;
 import com.group10.paperlessexamwebservice.model.questions.written.WrittenSet;
@@ -40,17 +39,18 @@ public class ExaminationEventService implements IExaminationEventService {
 
     //todo check if only students were assigned
     @Override
-    public ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable {
+    public ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable, UnexpectedError {
         double examTotalScore = 0;
+
         if (examinationEvent.getMultipleChoiceSets() != null && !examinationEvent.getMultipleChoiceSets().isEmpty()) {
-            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(examinationEvent.getMultipleChoiceSets());
+            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(examinationEvent.getMultipleChoiceSets(), true);
             examinationEvent.setMultipleChoiceSetsTotalScore(multipleChoiceSetScore);
             examTotalScore += multipleChoiceSetScore;
         }
         if (examinationEvent.getWrittenSets() != null && !examinationEvent.getWrittenSets().isEmpty()) {
             double writtenSetScore = calculateTotalWrittenSetQuestions(examinationEvent.getWrittenSets());
-          examinationEvent.setWrittenSetsTotalScore(writtenSetScore);
-            examTotalScore +=writtenSetScore;
+            examinationEvent.setWrittenSetsTotalScore(writtenSetScore);
+            examTotalScore += writtenSetScore;
         }
         examinationEvent.setTotalScore(examTotalScore);
         return examinationEventRequest.createExaminationEvent(examinationEvent);
@@ -219,25 +219,26 @@ public class ExaminationEventService implements IExaminationEventService {
         }
         return submitExaminationPaper;
     }
-//todo check if teacher has put wrritten set score
+
+    //todo check if teacher has put wrritten set score
     @Override
     public TeacherEvaluationPaperResult submitEvaluatedStudentPaper(TeacherEvaluationPaperResult teacherEvaluationPaperResult) throws ServiceNotAvailable {
-     double studentScore=0;
+        double studentScore = 0;
 
-      List<MultipleChoiceSet> multipleChoiceQuestionsTemp=teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitMultipleChoiceSets();
-        List<WrittenSet> writtenSetsTemp=teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitWrittenSets();
+        List<MultipleChoiceSet> multipleChoiceQuestionsTemp = teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitMultipleChoiceSets();
+        List<WrittenSet> writtenSetsTemp = teacherEvaluationPaperResult.getStudentSubmitExaminationPaper().getSubmitWrittenSets();
 
-        if(multipleChoiceQuestionsTemp!=null&&!multipleChoiceQuestionsTemp.isEmpty()){
-            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(multipleChoiceQuestionsTemp);
+        if (multipleChoiceQuestionsTemp != null && !multipleChoiceQuestionsTemp.isEmpty()) {
+            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(multipleChoiceQuestionsTemp, true);
             teacherEvaluationPaperResult.setMultipleChoiceSetsTotalScore(multipleChoiceSetScore);
-            studentScore+=multipleChoiceSetScore;
+            studentScore += multipleChoiceSetScore;
         }
-       if(writtenSetsTemp!=null&&!writtenSetsTemp.isEmpty()){
-          double writtenSetScore= calculateTotalWrittenSetQuestions(writtenSetsTemp);
-          teacherEvaluationPaperResult.setWrittenSetsTotalScore(writtenSetScore);
-           studentScore +=writtenSetScore;
-       }
-       teacherEvaluationPaperResult.setScore(studentScore);
+        if (writtenSetsTemp != null && !writtenSetsTemp.isEmpty()) {
+            double writtenSetScore = calculateStudentTotalWrittenSetQuestions(writtenSetsTemp);
+            teacherEvaluationPaperResult.setWrittenSetsTotalScore(writtenSetScore);
+            studentScore += writtenSetScore;
+        }
+        teacherEvaluationPaperResult.setScore(studentScore);
 
         return examinationEventRequest.submitEvaluatedStudentPaper(teacherEvaluationPaperResult);
 
@@ -246,29 +247,52 @@ public class ExaminationEventService implements IExaminationEventService {
 
     @Override
     public TeacherEvaluationPaperResult getExaminationEventResultByExamIdAndStudentId(String studentId, String examId) throws UnexpectedError, ServiceNotAvailable {
-        TeacherEvaluationPaperResult evaluationPaperResult= examinationEventRequest.getExaminationEventResultByExamIdAndStudentId(studentId,examId);
-    if(evaluationPaperResult==null){
-        throw new UnexpectedError("Evaluation paper result not found");
-    }
+        TeacherEvaluationPaperResult evaluationPaperResult = examinationEventRequest.getExaminationEventResultByExamIdAndStudentId(studentId, examId);
+        if (evaluationPaperResult == null) {
+            throw new UnexpectedError("Evaluation paper result not found");
+        }
         return evaluationPaperResult;
     }
 
-    private double calculateTotalWrittenSetQuestions(List<WrittenSet> submitWrittenSets) {
+    private double calculateStudentTotalWrittenSetQuestions(List<WrittenSet> submitWrittenSets) {
         double score = 0;
         for (var writtenSet : submitWrittenSets) {
             for (var question : writtenSet.getWrittenQuestions()) {
+                score += question.getStudentScore();
+            }
+        }
+        return score;
+    }
+
+    private double calculateTotalWrittenSetQuestions(List<WrittenSet> submitWrittenSets) throws ServiceNotAvailable, UnexpectedError {
+        double score = 0;
+        for (var writtenSet : submitWrittenSets) {
+            var questionSet = questionSetsService.getWrittenSetWithAllChildElements(writtenSet.getId());
+
+            for (var question : questionSet.getWrittenQuestions()) {
                 score += question.getQuestionScore();
             }
         }
         return score;
     }
 
-    private double calculateTotalMultipleChoiceSetQuestions(List<MultipleChoiceSet> submitMultipleChoiceSets) {
+    private double calculateTotalMultipleChoiceSetQuestions(List<MultipleChoiceSet> submitMultipleChoiceSets, boolean teacherEvaluation) throws ServiceNotAvailable {
         double score = 0;
-        for (var multipleChoiceSet : submitMultipleChoiceSets) {
-            for (var question : multipleChoiceSet.getMultipleChoiceQuestionList()
-            ) {
-                score += question.getScore();
+        if (!teacherEvaluation) {
+            for (var multipleChoiceSet : submitMultipleChoiceSets) {
+                var questionSet = questionSetsService.getMultipleChoiceSetWithAllChildElements(multipleChoiceSet.getId());
+                for (var question : questionSet.getMultipleChoiceQuestionList()
+                ) {
+                    score += question.getScore();
+                }
+            }
+        } else {
+
+            for (var multipleChoiceSet : submitMultipleChoiceSets) {
+                for (var question : multipleChoiceSet.getMultipleChoiceQuestionList()
+                ) {
+                    score += question.getScore();
+                }
             }
         }
         return score;
@@ -392,8 +416,8 @@ public class ExaminationEventService implements IExaminationEventService {
                 startDate = (Date) exam.getExamDateAndTime().clone();
                 endDate = (Date) exam.getExamDateAndTime().clone();
 
-                long originalTime = timestamp.getTime()+3600000;
-                long addTime = startDate.getTime()+3600000;
+                long originalTime = timestamp.getTime() + 3600000;
+                long addTime = startDate.getTime() + 3600000;
                 long result = originalTime + addTime;
                 endDate.setTime(result);
             } catch (Exception e) { //this generic but you can control another types of exception

@@ -15,6 +15,7 @@ public class WrittenQuestion extends Question {
 
     private WrittenSet writtenSet;
     private boolean submittedQuestion;
+    private double studentScore;
 
     /**
      * Instantiates a new Written question.
@@ -58,6 +59,14 @@ public class WrittenQuestion extends Question {
      */
     public void setId(long id) {
         super.setId(id);
+    }
+
+    public double getStudentScore() {
+        return studentScore;
+    }
+
+    public void setStudentScore(double studentScore) {
+        this.studentScore = studentScore;
     }
 
     public Long getId() {

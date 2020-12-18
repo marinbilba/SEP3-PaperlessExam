@@ -49,8 +49,8 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td>@_evaluationPaperResult.MultipleChoiceSetsTotalScore</td>
-                    <td>@_examinationEvent.MultipleChoiceSetsTotalScore</td>
+                    <td>@CalculateTotalStudentScore()</td>
+                    <td>@CalculateTotalExamEventScore()</td>
                 </tr>
 
 
@@ -93,6 +93,17 @@
     private void BackToSchedule()
     {
         NavigationManager.NavigateTo("/studentMainPage");
+    }
+
+
+    private double CalculateTotalStudentScore()
+    {
+        return _evaluationPaperResult.WrittenSetsTotalScore + _evaluationPaperResult.MultipleChoiceSetsTotalScore;
+    }
+
+    private double CalculateTotalExamEventScore()
+    {
+        return _examinationEvent.MultipleChoiceSetsTotalScore + _examinationEvent.WrittenSetsTotalScore;
     }
 
 }

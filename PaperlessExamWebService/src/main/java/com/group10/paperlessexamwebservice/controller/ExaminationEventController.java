@@ -110,7 +110,7 @@ public class ExaminationEventController {
         ExaminationEvent createdExaminationEvent = null;
         try {
             createdExaminationEvent = examinationEventService.createExaminationEvent(examinationEvent);
-        } catch (ServiceNotAvailable serviceNotAvailable) {
+        } catch (ServiceNotAvailable |UnexpectedError serviceNotAvailable) {
             serviceNotAvailable.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(serviceNotAvailable.getMessage());
         }

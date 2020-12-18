@@ -707,6 +707,7 @@
         {
             _loadingShow = true;
             await ExamService.CreateExaminationEvent(_examinationEvent);
+            NavigationManager.NavigateTo("/ReviewExamEvents");
         }
         catch (Exception e)
         {

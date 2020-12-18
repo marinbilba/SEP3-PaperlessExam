@@ -15,7 +15,7 @@ namespace SEP3.PaperlessExam.Data.PaperlessExamSevice.QuestionSetsService
 {
     public class QuestionSetsServiceImpl : IQuestionSetsService
     {
-        private string uri = "http://localhost:8080";
+        private string uri = "http://localhost:8005";
         private readonly HttpClient client;
 
         public QuestionSetsServiceImpl()

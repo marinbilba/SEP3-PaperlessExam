@@ -11,6 +11,7 @@ namespace SEP3.PaperlessExam.Model.Questions.written
         [JsonPropertyName("updatedTimestamp")] public DateTime UpdatedTimestamp { get; set; }
 
         [JsonPropertyName("writtenQuestions")] public List<WrittenQuestion> WrittenQuestions { get; set; }
+     
         public WrittenSet() {}
 
         public WrittenSet(string title, string topic, User user) : base(title, topic)

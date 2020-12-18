@@ -24,6 +24,8 @@ public class WrittenQuestion {
     private String question;
     private String questionAnswer;
     private double score;
+    @Column(columnDefinition = "int default 100")
+    private double studentScore;
     private boolean submittedQuestion;
 
     @ManyToOne()
@@ -68,6 +70,24 @@ public class WrittenQuestion {
         this.questionAnswer = questionAnswer;
         this.score = score;
         this.writtenSet = writtenSet;
+    }
+
+    /**
+     * Gets student score.
+     *
+     * @return the student score
+     */
+    public double getStudentScore() {
+        return studentScore;
+    }
+
+    /**
+     * Sets student score.
+     *
+     * @param studentScore the student score
+     */
+    public void setStudentScore(double studentScore) {
+        this.studentScore = studentScore;
     }
 
     /**

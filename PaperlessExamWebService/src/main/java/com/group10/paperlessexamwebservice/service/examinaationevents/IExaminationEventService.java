@@ -18,7 +18,7 @@ import com.group10.paperlessexamwebservice.service.exceptions.user.UserNotFound;
 import java.util.List;
 
 public interface IExaminationEventService {
-    ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable;
+    ExaminationEvent createExaminationEvent(ExaminationEvent examinationEvent) throws ServiceNotAvailable, UnexpectedError;
 
     List<ExaminationEvent> getTeachersUpcomingExamEvents(String teacherId) throws ServiceNotAvailable, ExaminationEventException;
 
