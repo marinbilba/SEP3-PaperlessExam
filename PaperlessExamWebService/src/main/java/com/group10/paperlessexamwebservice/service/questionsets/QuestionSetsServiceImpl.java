@@ -318,7 +318,7 @@ public class QuestionSetsServiceImpl implements IQuestionSetsService {
     }
 
     @Override
-    public MultipleChoiceSet createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion {
+    public MultipleChoiceSet    createMultipleChoiceSet(MultipleChoiceSet multipleChoiceSet) throws ServiceNotAvailable, UnexpectedError, UserNotFound, EmptyQuestionSetTitleOrTopic, QuestionSetAlreadyExists, NullQuestionSet, NullQuestionSetQuestion, NegativeNumberException, EmptyMultipleChoiceQuestion {
         MultipleChoiceSet createdMultipleChoiceSet;
         validateMultipleChoiceSetFields(multipleChoiceSet);
         multipleChoiceSet = setMultipleChoiceIdToNull(multipleChoiceSet);

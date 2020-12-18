@@ -23,7 +23,6 @@ public class MultipleChoiceQuestion {
     private double score;
     private boolean submittedMultipleChoiceQuestion;
     @ManyToOne()
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private MultipleChoiceSet multipleChoiceSet;
 
     /**

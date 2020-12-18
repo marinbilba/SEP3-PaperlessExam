@@ -287,31 +287,26 @@ class QuestionSetsControllerTest {
         MultipleChoiceSet createdMultipleChoiceSet2 = new MultipleChoiceSet("Test", "test");
         MultipleChoiceSet createdMultipleChoiceSet3 = new MultipleChoiceSet(null, "test");
 //        Create set with not existing user
-        MultipleChoiceSet createdMultipleChoiceSet4 = new MultipleChoiceSet(null, "test", new User("NotExist", "NotExist", "NotExist", "NotExist@va.cs", "111111", new Role(1, "Strudent")));
+        MultipleChoiceSet createdMultipleChoiceSet4 = new MultipleChoiceSet(null, "test", new User("NotExist", "NotExist", "NotExist", "NotExist@va.cs", "111111", new Role(1, "Student")));
 
-//        ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
-//        assertEquals(result1.getStatusCode(), HttpStatus.OK);
+        ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
+        assertEquals(result1.getStatusCode(), HttpStatus.OK);
 
         Assertions.assertThrows(HttpClientErrorException.class, () -> {
             ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet2, createdMultipleChoiceSet2.getClass());
             assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
         });
-        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
             ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet3, createdMultipleChoiceSet3.getClass());
             assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
         });
-        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
             ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet3, createdMultipleChoiceSet3.getClass());
             assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
         });
-        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> {
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
             ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet4, createdMultipleChoiceSet3.getClass());
             assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST, "User that is trying to create the question set is not authorized");
-        });
-
-        Assertions.assertThrows(HttpServerErrorException.ServiceUnavailable.class, () -> {
-            ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createMultipleChoiceSet", createdMultipleChoiceSet, createdMultipleChoiceSet.getClass());
-            assertNotEquals(result2.getStatusCode(), HttpStatus.SERVICE_UNAVAILABLE, "Service is available");
         });
 
     }
@@ -319,21 +314,61 @@ class QuestionSetsControllerTest {
     @Test
     void createWrittenQuestion() {
         WrittenSet writtenSet = new WrittenSet("Test", "Test", user);
+        User user1 = new User("Silvestru", "Mandrila", "silvmandrila1", "silvmandr@va.cs", "111111", new Role(1, "Strudent"));
+        User user2 = null;
+        WrittenSet writtenSet1 = new WrittenSet("Test", "Test", user1);
+        WrittenSet writtenSet2 = new WrittenSet(null, "Test", user);
+        WrittenSet writtenSet3 = new WrittenSet("", "", user);
 
         ResponseEntity result1 = restUtility.postForEntity(businessTierUrl + "/questionsets/createWrittenSet", writtenSet, writtenSet.getClass());
         assertEquals(result1.getStatusCode(), HttpStatus.OK);
-//        Delete the created test
-//        ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createWrittenQuestion", writtenSet, writtenSet.getClass());
-//        assertEquals(result1.getStatusCode(), HttpStatus.OK);
 
-    }
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result2 = restUtility.postForEntity(businessTierUrl + "/questionsets/createWrittenSet", writtenSet3, writtenSet3.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST, "Title & Topic are empyu");
+        });
 
-    @Test
-    void createMultipleWrittenSet() {
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createWrittenSet", writtenSet2, writtenSet2.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result3 = restUtility.postForEntity(businessTierUrl + "/questionsets/createWrittenSet", writtenSet1, writtenSet1.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.UNAUTHORIZED, "null User");
+        });
+
     }
 
     @Test
     void findMultipleChoiceSet() {
+// Good case
+        MultipleChoiceSet createdMultipleChoiceSet = new MultipleChoiceSet("Test", "test", user);
+// Null fields
+        MultipleChoiceSet createdMultipleChoiceSet2 = new MultipleChoiceSet("Test", "test");
+        MultipleChoiceSet createdMultipleChoiceSet3 = new MultipleChoiceSet(null, "test");
+//        Create set with not existing user
+        MultipleChoiceSet createdMultipleChoiceSet4 = new MultipleChoiceSet(null, "test", new User("NotExist", "NotExist", "NotExist", "NotExist@va.cs", "111111", new Role(1, "Student")));
+
+        ResponseEntity result1 = restUtility.getForEntity(businessTierUrl + "/questionsets/findMultipleChoiceSet", createdMultipleChoiceSet.getClass());
+        assertEquals(result1.getStatusCode(), HttpStatus.OK);
+
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result2 = restUtility.getForEntity(businessTierUrl + "/questionsets/findMultipleChoiceSet", createdMultipleChoiceSet2.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result2 = restUtility.getForEntity(businessTierUrl + "/questionsets/findMultipleChoiceSet", createdMultipleChoiceSet3.getClass());
+            assertEquals(result2.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result3 = restUtility.getForEntity(businessTierUrl + "/questionsets/findMultipleChoiceSet", createdMultipleChoiceSet3.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST, "Null fields");
+        });
+        Assertions.assertThrows(HttpClientErrorException.class, () -> {
+            ResponseEntity result3 = restUtility.getForEntity(businessTierUrl + "/questionsets/findMultipleChoiceSet", createdMultipleChoiceSet3.getClass());
+            assertEquals(result3.getStatusCode(), HttpStatus.BAD_REQUEST, "User that is trying to create the question set is not authorized");
+        });
+
     }
 
     @Test
