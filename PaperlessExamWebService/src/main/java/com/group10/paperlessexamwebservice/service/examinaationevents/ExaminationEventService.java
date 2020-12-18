@@ -43,7 +43,7 @@ public class ExaminationEventService implements IExaminationEventService {
         double examTotalScore = 0;
 
         if (examinationEvent.getMultipleChoiceSets() != null && !examinationEvent.getMultipleChoiceSets().isEmpty()) {
-            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(examinationEvent.getMultipleChoiceSets(), true);
+            double multipleChoiceSetScore = calculateTotalMultipleChoiceSetQuestions(examinationEvent.getMultipleChoiceSets(), false);
             examinationEvent.setMultipleChoiceSetsTotalScore(multipleChoiceSetScore);
             examTotalScore += multipleChoiceSetScore;
         }
